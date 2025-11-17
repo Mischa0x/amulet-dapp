@@ -23,17 +23,16 @@ export const seiTestnet: Chain = {
       url: 'https://testnet.seiscan.io',
     },
   },
-  // Optional, if you want an icon in the modal:
-  iconBackground: '#000',
-  // iconUrl: 'https://your-icon-url.png',
+  iconBackground: '#050816',
+  // Optional: put a real icon in /public
+  // iconUrl: '/sei-logo.svg',
 } as const;
 
 // 2) Use RainbowKit’s helper to create the wagmi config
 export const config = getDefaultConfig({
-  appName: 'Amulet AI dApp',
+  appName: 'Amulet AI',
   projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID!,
   chains: [seiTestnet],
-  // You can still pass wagmi options like transports if you want:
   transports: {
     [seiTestnet.id]: http(),
   },

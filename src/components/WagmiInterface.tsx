@@ -1,13 +1,11 @@
 // src/components/WagmiInterface.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   useAccount,
-  useConnect,
   useReadContract,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from 'wagmi';
-import { injected } from 'wagmi/connectors';
 import { parseEther, formatEther } from 'viem';
 import { ERC20_ABI, TOKEN_CONTRACT_ADDRESS } from '../shared/constants';
 
@@ -15,9 +13,7 @@ export function WagmiInterface() {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
 
-  // Wallet state
   const { address, isConnected } = useAccount();
-  const { connect } = useConnect();
 
   // Read token metadata
   const { data: name } = useReadContract({
@@ -60,10 +56,14 @@ export function WagmiInterface() {
       hash: txHash,
     });
 
-  // Connect wallet (Rabby / MetaMask / etc.)
-  const handleConnect = () => {
-    connect({ connector: injected() });
-  };
+  // After confirmation, clean up & refresh balance once
+// AFTER – only side-effect is refetching from chain
+useEffect(() => {
+  if (isConfirmed) {
+    refetchBalance();
+  }
+}, [isConfirmed, refetchBalance]);
+
 
   const handleTransfer = () => {
     if (!recipient || !amount) return;
@@ -71,24 +71,18 @@ export function WagmiInterface() {
       address: TOKEN_CONTRACT_ADDRESS,
       abi: ERC20_ABI,
       functionName: 'transfer',
-      args: [recipient, parseEther(amount)],
+      args: [recipient as `0x${string}`, parseEther(amount)],
     });
   };
-
-  // After confirmation, clean up & refresh balance
-  if (isConfirmed) {
-    refetchBalance();
-    if (recipient || amount) {
-      setRecipient('');
-      setAmount('');
-    }
-  }
 
   if (!isConnected) {
     return (
       <div className="card">
-        <h2>Amulet AI – Wagmi dApp</h2>
-        <button onClick={handleConnect}>Connect Wallet (Rabby, MetaMask…)</button>
+        <h2>Amulet AI – AMULET Token</h2>
+        <p style={{ opacity: 0.8 }}>
+          Connect your wallet using the button in the top-right to see your
+          AMULET balance and send tokens.
+        </p>
       </div>
     );
   }
@@ -98,7 +92,8 @@ export function WagmiInterface() {
 
   return (
     <div className="card">
-      <h2>Amulet AI – Wagmi dApp</h2>
+      <h2>Amulet AI – AMULET Token</h2>
+
       <h3>
         {(name as string) ?? 'Loading'} ({(symbol as string) ?? '...'})
       </h3>
@@ -110,22 +105,28 @@ export function WagmiInterface() {
       </p>
 
       <div style={{ marginTop: 20 }}>
+        <label style={{ fontSize: 12, opacity: 0.8 }}>Recipient</label>
+        <br />
         <input
           type="text"
-          placeholder="Recipient address (0x...)"
+          placeholder="0x..."
           value={recipient}
           onChange={(e) => setRecipient(e.target.value)}
-          style={{ width: 320, marginBottom: 8 }}
+          style={{ width: 320, marginBottom: 10 }}
         />
+        <br />
+
+        <label style={{ fontSize: 12, opacity: 0.8 }}>Amount (AMULET)</label>
         <br />
         <input
           type="number"
-          placeholder="Amount (AMULET)"
+          placeholder="0.0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          style={{ width: 320, marginBottom: 8 }}
+          style={{ width: 320, marginBottom: 10 }}
         />
         <br />
+
         <button
           onClick={handleTransfer}
           disabled={isSending || isConfirming}
