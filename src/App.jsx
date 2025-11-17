@@ -23,6 +23,8 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />   
+
 
 
             {/* Agent layout wraps main app pages */}
@@ -34,7 +36,6 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/orderhistory" element={<OrderHistory />} /> 
               <Route path="/visits" element={<Visits />} /> 
-                  <Route path="/dashboard" element={<Dashboard />} />   
 
 
 
@@ -46,6 +47,7 @@ function App() {
             <Route path="/agent/checkout" element={<Navigate to="/checkout" replace />} /> 
             <Route path="/agent/orderhistory" element={<Navigate to="/orderhistory" replace />} /> 
             <Route path="/agent/visits" element={<Navigate to="/visits" replace />} /> 
+            
 
 
           </Routes>

@@ -3,9 +3,9 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "@rainbow-me/rainbowkit/styles.css";
 import App from "./App.jsx";
-import "./index.css";
+import './index.css';
+import './styleguide.css';
 import Web3Provider from "./providers/Web3Provider";
-import "@rainbow-me/rainbowkit/styles.css";
 
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
