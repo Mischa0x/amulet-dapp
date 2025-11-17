@@ -295,7 +295,7 @@ export default function AgentChat() {
                               aria-label={`Add ${p.name} to cart`}
                             >
                               <img
-                                src="/assets/icon-cart.svg"
+                                src="/assets/cart.svg"
                                 alt=""
                                 className={styles.actionIcon}
                               />

@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useCartCount } from "../../store/CartContext";
 import styles from "./AgentHeader.module.css";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 
 export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
   const [credits] = useState({ total: 32, free: 4 });
@@ -113,6 +115,9 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
             >
               <img src="/assets/cartblue.svg" alt="" className={styles.cartIcon} />
             </button>
+
+    <ConnectButton />
+            
           </div>
         </section>
       </header>
