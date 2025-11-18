@@ -41,7 +41,6 @@ export const ERC20_ABI = [
     type: 'function',
   },
     {
-    // ⬇️ NEW
     inputs: [],
     name: 'totalSupply',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
@@ -77,6 +76,6 @@ export const ERC20_ABI = [
   },
 ];
 
-// ⬇️ Your Sei testnet ERC20 address
+// ⬇️ Sei testnet ERC20 address
 export const TOKEN_CONTRACT_ADDRESS =
   '0xe8564273D6346Db0Ff54d3a6CCb1Dd12993A042c' as `0x${string}`;
