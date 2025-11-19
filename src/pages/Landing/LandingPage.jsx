@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './LandingPage.module.css';
 import GhostBackground from '../../components/GhostBackground/GhostBackground';
 import RotatingSubtitle from '../../components/RotatingSubtitle';
-import ConnectButtonCustom from '../../components/ConnectButtonCustom';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 
 
@@ -135,25 +135,8 @@ function LandingPage() {
 
 
               <div className={styles.tabs} role="tablist" aria-label="Auth mode">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === 'login'}
-            className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`}
-            onClick={() => goToAuth('login')}
-          >
-            LOGIN
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={mode === 'signup'}
-            className={`${styles.tab} ${mode === 'signup' ? styles.tabActive : ''}`}
-            onClick={() => goToAuth('signup')}
-          >
-            SIGN UP
-          </button>
-      <ConnectButtonCustom />
+     
+      <ConnectButton />
         </div>
   </span>
   <span className={`${styles.corner} ${styles.bottomLeft}`}>.</span>
