@@ -99,12 +99,7 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
               </form>
             </div>
 
-            <div className={styles.goldContainer} aria-label={`${credits.total} credits`} title="Credits">
-              <div className={styles.gold}>
-                <img className={styles.vector} src="/assets/gold.svg" alt="" />
-              </div>
-              <div className={styles.counterText}>{credits.total}</div>
-            </div>
+    
 
             <button
               type="button"

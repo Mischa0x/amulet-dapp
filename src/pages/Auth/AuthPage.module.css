@@ -110,8 +110,8 @@
   background: var(--brand-grey-lighter-2);
   border: 1px solid var(--brand-grey-light);
   width: fit-content;
-  width: 100%;
-    white-space: nowrap;
+
+ 
 
 }
 .tab {
@@ -127,17 +127,18 @@
   background: transparent;
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease, transform 0.08s ease;
-  width: 100%;
-    white-space: nowrap;
+  white-space: nowrap;
+
+
 
   
 }
 .tabActive {
-
+background-color: var(--brand-blue-default);
+color: var(--brand-white-always);
   transform: translateY(-1px);
   width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
+
 }
 
 /* Form */

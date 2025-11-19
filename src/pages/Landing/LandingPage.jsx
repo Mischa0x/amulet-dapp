@@ -130,7 +130,9 @@ function LandingPage() {
 
 {/* Four corner words */}
 <div className={styles.cornerWords}>
-  <span className={`${styles.corner} ${styles.topLeft}`}>AMULET.AI</span>
+  <span className={`${styles.corner} ${styles.topLeft}`}>
+    <img src="./assets/infinite-ouline-blue.svg" alt="Amulet Logo" className={styles.logo} />
+  </span>
   <span className={`${styles.corner} ${styles.topRight}`}>
 
 
