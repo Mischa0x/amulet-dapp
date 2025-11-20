@@ -4,7 +4,6 @@ import { SiweMessage } from "siwe";
 
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
-// Point frontend → Vercel backend in production
 const API_BASE =
   import.meta.env.MODE === "production"
     ? "https://siwe-server.vercel.app"
@@ -24,30 +23,48 @@ interface VerifyArgs {
 export function createSiweAdapter(setStatus: (status: AuthStatus) => void) {
   return createAuthenticationAdapter({
     getNonce: async (): Promise<string> => {
-      console.log("SIWE: getNonce");
+      console.log("SIWE: getNonce →", API_BASE || "(dev local)");
+
       const res = await fetch(`${API_BASE}/api/siwe/nonce`, {
         credentials: "include",
       });
-      return res.text();
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("SIWE: getNonce FAILED", res.status, text);
+        throw new Error(`Nonce request failed: ${res.status}`);
+      }
+
+      const nonce = await res.text();
+      console.log("SIWE: getNonce result →", nonce);
+      return nonce;
     },
 
     createMessage: ({ nonce, address, chainId }: CreateMessageArgs): string => {
-      console.log("SIWE: createMessage", { nonce, address, chainId });
-      const message = new SiweMessage({
-        domain: window.location.host,
-        address,
-        statement: "Sign in to AMULET.AI",
-        uri: window.location.origin,
-        version: "1",
-        chainId,
-        nonce,
-      });
+      try {
+        console.log("SIWE: createMessage args →", { nonce, address, chainId });
 
-      return message.prepareMessage();
+        const message = new SiweMessage({
+          domain: window.location.host,
+          address,
+          statement: "Sign in to AMULET.AI",
+          uri: window.location.origin,
+          version: "1",
+          chainId,
+          nonce,
+        });
+
+        const prepared = message.prepareMessage();
+        console.log("SIWE: prepared message →", prepared);
+        return prepared;
+      } catch (err) {
+        console.error("SIWE: createMessage ERROR →", err);
+        throw err;
+      }
     },
 
     verify: async ({ message, signature }: VerifyArgs): Promise<boolean> => {
-      console.log("SIWE: verify", { message, signature });
+      console.log("SIWE: verify args →", { message, signature });
 
       const res = await fetch(`${API_BASE}/api/siwe/verify`, {
         method: "POST",
@@ -56,20 +73,32 @@ export function createSiweAdapter(setStatus: (status: AuthStatus) => void) {
         body: JSON.stringify({ message, signature }),
       });
 
-      const ok = res.ok;
-      setStatus(ok ? "authenticated" : "unauthenticated");
-      return ok;
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("SIWE: verify FAILED", res.status, text);
+        setStatus("unauthenticated");
+        return false;
+      }
+
+      console.log("SIWE: verify success");
+      setStatus("authenticated");
+      return true;
     },
 
     signOut: async (): Promise<void> => {
       console.log("SIWE: signOut");
 
-      await fetch(`${API_BASE}/api/siwe/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-
-      setStatus("unauthenticated");
+      try {
+        const res = await fetch(`${API_BASE}/api/siwe/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
+        console.log("SIWE: signOut status →", res.status);
+      } catch (err) {
+        console.error("SIWE: signOut ERROR →", err);
+      } finally {
+        setStatus("unauthenticated");
+      }
     },
   });
 }
