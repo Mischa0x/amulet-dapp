@@ -1,30 +1,59 @@
-// src/providers/Web3Provider.tsx
-import React from "react";
+/* eslint-disable react-refresh/only-export-components */
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  createContext,
+} from "react";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  RainbowKitProvider,
+  RainbowKitAuthenticationProvider,
+} from "@rainbow-me/rainbowkit";
 
 import { config } from "../wagmi";
-// If you want an explicit initial chain later:
-// import { seiTestnet } from "../wagmi";
+import { createSiweAdapter } from "../auth/siwe";
+import type { AuthStatus } from "../auth/siwe";
+
+export const AuthStatusContext = createContext<AuthStatus>("loading");
 
 const queryClient = new QueryClient();
 
-type Props = {
-  children: React.ReactNode;
-};
+const Web3Provider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
 
-const Web3Provider: React.FC<Props> = ({ children }) => {
+  // Load SIWE session
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/siwe/me", { credentials: "include" });
+        const json = await res.json();
+        setAuthStatus(json.address ? "authenticated" : "unauthenticated");
+      } catch {
+        setAuthStatus("unauthenticated");
+      }
+    })();
+  }, []);
+
+  const siweAdapter = useMemo(
+    () => createSiweAdapter(setAuthStatus),
+    []
+  );
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        {/* ✅ No chains prop in v2 when using getDefaultConfig */}
-        <RainbowKitProvider
-          // optional:
-          // initialChain={seiTestnet}  // or seiTestnet.id
-        >
-          {children}
-        </RainbowKitProvider>
+        <AuthStatusContext.Provider value={authStatus}>
+          <RainbowKitAuthenticationProvider
+            adapter={siweAdapter}
+            status={authStatus}
+          >
+            <RainbowKitProvider>
+              {children}
+            </RainbowKitProvider>
+          </RainbowKitAuthenticationProvider>
+        </AuthStatusContext.Provider>
       </QueryClientProvider>
     </WagmiProvider>
   );

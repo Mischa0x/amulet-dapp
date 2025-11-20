@@ -1,22 +1,21 @@
-// src/components/WalletGuard.jsx
-import { useAccount } from 'wagmi';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAccount } from "wagmi";
+import { useAmuletAuthStatus } from "../providers/useAmuletAuthStatus";
 
 export default function WalletGuard() {
   const { isConnected } = useAccount();
+  const authStatus = useAmuletAuthStatus();
   const location = useLocation();
 
-  if (!isConnected) {
-    // redirect to /auth and remember where the user wanted to go
+  if (authStatus === "loading") {
+    return <div>Checking secure session…</div>;
+  }
+
+  if (!isConnected || authStatus !== "authenticated") {
     return (
-      <Navigate
-        to="/auth"
-        replace
-        state={{ from: location }}
-      />
+      <Navigate to="/auth" replace state={{ from: location }} />
     );
   }
 
-  // wallet is connected → render protected routes
   return <Outlet />;
 }
