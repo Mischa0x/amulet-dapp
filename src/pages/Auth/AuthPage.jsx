@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./AuthPage.module.css";
-import GhostBackground from "../../components/GhostBackground/GhostBackground"; // 👈 igual que en Landing
+//import GhostBackground from "../../components/GhostBackground/GhostBackground"; // 👈 igual que en Landing
 import logo from "../Auth/infinite-ouline-blue.svg"
 
 
@@ -13,7 +13,7 @@ export default function AuthPage() {
     <div className={styles.pageRoot}>
       {/* BACKGROUND */}
       <div className={styles.bgWrap} aria-hidden="true">
-        <GhostBackground />
+        {/*  <GhostBackground /> */}
         {/* opcional: velo para contraste */}
         <div className={styles.bgOverlay} />
       </div>
