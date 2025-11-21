@@ -10,7 +10,7 @@ import {
 } from "wagmi";
 import { parseEther, formatEther, formatUnits } from "viem";
 import { ERC20_ABI, TOKEN_CONTRACT_ADDRESS } from "../shared/constants";
-import ConnectButtonCustom from "./ConnectButtonCustom";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import "./Dashboard.css";
 
 export function Dashboard() {
@@ -131,7 +131,7 @@ export function Dashboard() {
               </p>
             </div>
 
-            <ConnectButtonCustom/>
+            <ConnectButton/>
 
 
 
@@ -157,7 +157,7 @@ export function Dashboard() {
               Overview of your wallet and AMULET token on Sei Testnet.
             </p>
           </div>
-          <ConnectButtonCustom />
+          <ConnectButton />
         </div>
 
         {/* Grid: wallet + balances + token info */}
