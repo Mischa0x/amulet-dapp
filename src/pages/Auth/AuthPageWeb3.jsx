@@ -23,11 +23,11 @@ export default function AuthPageWeb3() {
   }, [isConnected, location, navigate]);
 
   // Auto-open the RainbowKit "Connect Wallet" modal when this page mounts
-  useEffect(() => {
+    {/*useEffect(() => {
     if (openConnectModal) {
       openConnectModal();
     }
-  }, [openConnectModal]);
+  }, [openConnectModal]); */}
 
   return (
     <div className={styles.pageRoot}>
