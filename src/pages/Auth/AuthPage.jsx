@@ -127,7 +127,7 @@ export default function AuthPage() {
           <div className={styles.sidePanel}>
             <h2 className={styles.sideTitle}>Live longer, live better</h2>
            
-                           <GhostBackground />
+                           {/* <GhostBackground />*/}
          
           </div>
         </aside>
