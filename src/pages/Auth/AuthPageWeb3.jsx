@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 import styles from "./AuthPage.module.css";
-import GhostBackground from "../../components/GhostBackground/GhostBackground";
+//import GhostBackground from "../../components/GhostBackground/GhostBackground";
 import logo from "../Auth/infinite-ouline-blue.svg";
 
 export default function AuthPageWeb3() {
@@ -33,7 +33,7 @@ export default function AuthPageWeb3() {
     <div className={styles.pageRoot}>
       {/* BACKGROUND */}
       <div className={styles.bgWrap} aria-hidden="true">
-        <GhostBackground />
+          {/*<GhostBackground />*/}
         <div className={styles.bgOverlay} />
       </div>
 
@@ -92,7 +92,7 @@ export default function AuthPageWeb3() {
         <aside className={styles.rightCol} aria-hidden="true">
           <div className={styles.sidePanel}>
             <h2 className={styles.sideTitle}>Live longer, live better</h2>
-            <GhostBackground />
+            {/* <GhostBackground /> */}
           </div>
         </aside>
 
