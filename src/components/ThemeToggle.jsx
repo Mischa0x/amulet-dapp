@@ -1,3 +1,5 @@
+/* ThemeToggle.jsx */
+
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -5,31 +7,96 @@ import { useEffect, useRef, useState } from "react";
  * RIGHT: the var whose LIGHT value should be used in DARK mode.
  */
 const VAR_SWAP = {
+  /* Base white/black */
   "--brand-white": "--brand-black",
   "--brand-black": "--brand-white",
-  "--brand-blue-lighter": "--brand-neon-cards-surface-light-blue-transparency",
-  "--brand-neon-cards-surface-light-green": "--brand-neon-cards-surface-light-green-transparency",
+
+  /* Blue lighter ↔ transparency */
+  "--brand-blue-lighter":
+    "--brand-neon-cards-surface-light-blue-transparency",
+  "--brand-neon-cards-surface-light-blue-transparency":
+    "--brand-blue-lighter",
+
+  /* Blue main ↔ transparency-cards */
+  "--brand-neon-cards-surface-light-blue":
+    "--brand-neon-cards-surface-light-blue-transparency-cards",
+  "--brand-neon-cards-surface-light-blue-transparency-cards":
+    "--brand-neon-cards-surface-light-blue",
+
+  /* Green surface ↔ green transparent */
+  "--brand-neon-cards-surface-light-green":
+    "--brand-neon-cards-surface-light-green-transparency",
+  "--brand-neon-cards-surface-light-green-transparency":
+    "--brand-neon-cards-surface-light-green",
+
+  /* Green darker ↔ green lighter */
   "--brand-green-darker": "--brand-green-lighter",
+  "--brand-green-lighter": "--brand-green-darker",
+
+  /* Green dark ↔ green lighter (Your original mapping) */
   "--brand-green-dark": "--brand-green-lighter",
-  "--brand-neon-cards-surface-light-purple": "--brand-neon-cards-surface-light-purple-transparency",
+  "--brand-green-lighter": "--brand-green-dark",
+
+  /* Purple surface ↔ purple transparent */
+  "--brand-neon-cards-surface-light-purple":
+    "--brand-neon-cards-surface-light-purple-transparency",
+  "--brand-neon-cards-surface-light-purple-transparency":
+    "--brand-neon-cards-surface-light-purple",
+
+  /* Purple darker ↔ purple lighter */
   "--brand-purple-darker": "--brand-purple-lighter",
+  "--brand-purple-lighter": "--brand-purple-darker",
+
+  /* Purple dark ↔ purple lighter */
   "--brand-purple-dark": "--brand-purple-lighter",
-  "--brand-neon-cards-surface-light-blue": "--brand-neon-cards-surface-light-blue-transparency-cards",
+  "--brand-purple-lighter": "--brand-purple-dark",
+
+  /* Blue darker ↔ blue lighter */
   "--brand-blue-darker": "--brand-blue-lighter",
+  "--brand-blue-lighter": "--brand-blue-darker",
+
+  /* Blue dark ↔ blue lighter */
   "--brand-blue-dark": "--brand-blue-lighter",
+  "--brand-blue-lighter": "--brand-blue-dark",
+
+  /* Grey lighter ↔ black (your mapping) */
   "--brand-grey-lighter-2": "--brand-black",
+  "--brand-black": "--brand-grey-lighter-2",
+
+  /* Checkout page grey ↔ blue */
   "--brand-checkoutpage-bg-grey": "--brand-checkoutpage-bg-blue",
+  "--brand-checkoutpage-bg-blue": "--brand-checkoutpage-bg-grey",
 
-  "--brand-ghostbackground-bg1":"--brand-ghostbackground-bg1-inverted",
+  /* Ghost background main */
+  "--brand-ghostbackground-bg1": "--brand-ghostbackground-bg1-inverted",
+  "--brand-ghostbackground-bg1-inverted": "--brand-ghostbackground-bg1",
+
   "--brand-ghostbackground-bg2": "--brand-ghostbackground-bg2-inverted",
+  "--brand-ghostbackground-bg2-inverted": "--brand-ghostbackground-bg2",
 
+  /* Ghost background colors c1–c5 */
   "--brand-ghostbackground-c1": "--brand-ghostbackground-c1-inverted",
+  "--brand-ghostbackground-c1-inverted": "--brand-ghostbackground-c1",
+
   "--brand-ghostbackground-c2": "--brand-ghostbackground-c2-inverted",
+  "--brand-ghostbackground-c2-inverted": "--brand-ghostbackground-c2",
+
   "--brand-ghostbackground-c3": "--brand-ghostbackground-c3-inverted",
+  "--brand-ghostbackground-c3-inverted": "--brand-ghostbackground-c3",
+
   "--brand-ghostbackground-c4": "--brand-ghostbackground-c4-inverted",
+  "--brand-ghostbackground-c4-inverted": "--brand-ghostbackground-c4",
+
   "--brand-ghostbackground-c5": "--brand-ghostbackground-c5-inverted",
-  "--brand-ghostbackground-interactive": "--brand-ghostbackground-interactive-inverted"
+  "--brand-ghostbackground-c5-inverted": "--brand-ghostbackground-c5",
+
+  /* Ghost interactive */
+  "--brand-ghostbackground-interactive":
+    "--brand-ghostbackground-interactive-inverted",
+  "--brand-ghostbackground-interactive-inverted":
+    "--brand-ghostbackground-interactive",
 };
+
 
 /** Inline SVG icons */
 const MoonSVG = ({ style }) => (
