@@ -45,14 +45,7 @@ function LandingPage() {
     <>
       <div
         className={styles.landingMainContainer}
-        style={{
-          position: 'relative',
-          minHeight: '100vh',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+   
       >
         <GhostBackground />
 

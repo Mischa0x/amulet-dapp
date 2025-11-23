@@ -1,6 +1,12 @@
-.landingMainContainer{
-  background-color:var(--brand-white);
-    z-index: 1; 
+.landingMainContainer {
+  background-color: var(--brand-white);
+  z-index: 1;
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
