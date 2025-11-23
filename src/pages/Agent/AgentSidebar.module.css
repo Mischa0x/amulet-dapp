@@ -23,6 +23,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+ 
 }
 
 .logoButton, .logoButtonBar {
@@ -247,6 +248,10 @@
     display: none;
   }
 
+  :global(body.sidebar-collapsed) :local(.logoIcon) {
+    width: 30px;
+  }
+
   /* Keep the original flow/positions (full-width rows, same gap) */
   :global(body.sidebar-collapsed) :local(.bottomDock .cardGroup) {
     display: grid;
@@ -274,9 +279,15 @@
     width: 24px;
     height: 24px;
   }
+    :global(body.sidebar-collapsed) :local(.logoBar) {
+justify-content: center;
+  }
 
   /* Hide the text stack only */
   :global(body.sidebar-collapsed) :local(.bottomDock .frame) {
+    display: none;
+  }
+  :global(body.sidebar-collapsed) :local(.connectWrapper){
     display: none;
   }
 
@@ -385,6 +396,7 @@
   .frame {
     display:none;
   }
+
   .cardGroup{
     display: flex;
     flex-direction: row;
@@ -409,13 +421,7 @@
 }
 
 
-/* Backdrop to catch outside clicks on mobile */
-.backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  z-index: 2147483646; /* super high */
-}
+
 
 /* Ensure sidebar sits above backdrop on mobile */
 @media (max-width: 768px) {
@@ -438,5 +444,11 @@
 :global(body.drawer-open) :local(.drawerBackdrop) {
   opacity: 1;
   pointer-events: none;      /* keep none so document listener/backdrop get events */
+}
+
+.connectWrapper button {
+
+  border-radius: var(--alias-border-width-lg) !important;
+
 }
 

@@ -228,9 +228,9 @@ useEffect(() => {
           <div className={styles.sidebarFooter}>
             
                   <ThemeToggle/>
-                  <div className="connectWrapper">
-  <ConnectButton />
-</div>
+                  <div className={styles.connectWrapper}>
+                    <ConnectButton />
+                  </div>
           </div>
         </div>
       </div>
