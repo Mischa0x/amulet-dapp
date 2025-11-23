@@ -3,6 +3,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import layout from "./AgentPage.module.css";
 import AgentSidebar from "./AgentSidebar";
 import AgentHeader from "./AgentHeader";
+import WalletBar from "../../components/WalletBar";
+
 
 export default function AgentPage() {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ export default function AgentPage() {
 
   return (
     <div className={layout.agentLightMode}>
+      <WalletBar />
       <div className={layout.grid}>
         <aside className={layout.sidebar}>
           <AgentSidebar onNavigate={handleNavigate} />
