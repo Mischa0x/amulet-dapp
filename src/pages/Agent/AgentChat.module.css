@@ -134,6 +134,7 @@ background: radial-gradient(circle at top left,
 }
 
 .icon24 { width:24px; height:24px; }
+.icon208 {  height:24px; }
 
 .sendButton {
   display: inline-flex;
@@ -256,7 +257,28 @@ background: radial-gradient(circle at top left,
   opacity: 0.75;
 }
 
+.composerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
+.attachButton {
+   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--brand-blue-default);
+  border: none;
+  border-radius: var(--alias-border-radius-md);
+  cursor: pointer;
+}
+
+.attachButton img {
+
+  height: 24px;
+}
 
 @media (max-width: 768px) {
 

@@ -165,10 +165,10 @@ export default function AgentChat() {
     const offsetTop = el.offsetTop;
 
     container.scrollTo({
-      top: Math.max(offsetTop - TOP_OFFSET_PX, 0), // with TOP_OFFSET_PX = 0 → flush to top
-      behavior: "auto", // use "smooth" if you like the animation
+      top: Math.max(offsetTop - TOP_OFFSET_PX, 0),
+      behavior: "auto",
     });
-  }, [latestUserId, messages.length]); // depend on length, not whole array for stability
+  }, [latestUserId, messages.length]);
 
   // Handle sending messages
   const send = () => {
@@ -221,104 +221,100 @@ export default function AgentChat() {
     clearAllTimers();
     setTyping(null);
     setIsPlaying(false);
-    // partial text/cards that already rendered stay as static content
   };
 
   // 🧭 Navigate to product page when clicking "View details"
   const handleViewProduct = (product) => {
-    // Adjust this path to match your router setup:
-    // e.g. <Route path="/products/:id" element={<ProductPage />} />
     navigate(`/product/${product.id}`);
   };
 
   return (
     <>
-    
-    <div className={styles.chatColumn}>
-      
-      <div className={styles.messagesList} ref={messagesListRef}>
+      <div className={styles.chatColumn}>
+        <div className={styles.messagesList} ref={messagesListRef}>
           <div className={styles.messagesInner}>
-
-        {messages.map((m) =>
-          m.role === "user" ? (
-            <div
-              className={styles.userBubble}
-              key={m.id}
-              ref={m.id === latestUserId ? latestPromptRef : null}
-            >
-              <div className={styles.frame3}>
-                <p className={styles.shopSupplements4}>{m.text}</p>
-              </div>
-            </div>
-          ) : (
-            <div className={styles.assistantBubble} key={m.id}>
-              <div className={styles.frame2}>
-                {/* 1️⃣ First paragraph (typed) */}
-                <p className={styles.bodyCopy}>{m.intro || ""}</p>
-
-                {/* 2️⃣ Cards (appear 1s after intro finishes) */}
-                {m.showCards && edProducts.length > 0 && (
-                  <div className={styles.productsList}>
-                    {edProducts.map((p) => (
-                      <div key={p.id} className={styles.productCard}>
-                        <img
-                          src={p.image}
-                          alt={p.name}
-                          className={styles.productImage}
-                        />
-                        <div className={styles.productMeta}>
-                          <div className={styles.productName}>{p.name}</div>
-                          <div className={styles.productPrice}>
-                            ${p.price.toFixed(2)}
-                          </div>
-                          <p className={styles.bodyCopyDescription}>{p.description}</p>
-                          <p className={styles.bodyCopyCategory}>
-                            {p.category} · {p.status}
-                          </p>
-
-                          <div className={styles.productActions}>
-                            <button
-                              type="button"
-                              className={styles.iconButton}
-                              aria-label={`View details for ${p.name}`}
-                              onClick={() => handleViewProduct(p)}
-                            >
-                              <img
-                                src="/assets/icon-eye.svg"
-                                alt=""
-                                className={styles.actionIcon}
-                              />
-                            </button>
-                            <button
-                              type="button"
-                              className={styles.iconButton}
-                              aria-label={`Add ${p.name} to cart`}
-                            >
-                              <img
-                                src="/assets/cart.svg"
-                                alt=""
-                                className={styles.actionIcon}
-                              />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+            {messages.map((m) =>
+              m.role === "user" ? (
+                <div
+                  className={styles.userBubble}
+                  key={m.id}
+                  ref={m.id === latestUserId ? latestPromptRef : null}
+                >
+                  <div className={styles.frame3}>
+                    <p className={styles.shopSupplements4}>{m.text}</p>
                   </div>
-                )}
+                </div>
+              ) : (
+                <div className={styles.assistantBubble} key={m.id}>
+                  <div className={styles.frame2}>
+                    {/* 1️⃣ First paragraph (typed) */}
+                    <p className={styles.bodyCopy}>{m.intro || ""}</p>
 
-                {/* 3️⃣ Second paragraph (typed after 4s) */}
-                {m.followup && (
-                  <p className={styles.bodyCopy}>{m.followup}</p>
-                )}
-              </div>
-            </div>
-          )
-        )}
-      </div>
+                    {/* 2️⃣ Cards (appear 1s after intro finishes) */}
+                    {m.showCards && edProducts.length > 0 && (
+                      <div className={styles.productsList}>
+                        {edProducts.map((p) => (
+                          <div key={p.id} className={styles.productCard}>
+                            <img
+                              src={p.image}
+                              alt={p.name}
+                              className={styles.productImage}
+                            />
+                            <div className={styles.productMeta}>
+                              <div className={styles.productName}>{p.name}</div>
+                              <div className={styles.productPrice}>
+                                ${p.price.toFixed(2)}
+                              </div>
+                              <p className={styles.bodyCopyDescription}>
+                                {p.description}
+                              </p>
+                              <p className={styles.bodyCopyCategory}>
+                                {p.category} · {p.status}
+                              </p>
+
+                              <div className={styles.productActions}>
+                                <button
+                                  type="button"
+                                  className={styles.iconButton}
+                                  aria-label={`View details for ${p.name}`}
+                                  onClick={() => handleViewProduct(p)}
+                                >
+                                  <img
+                                    src="/assets/icon-eye.svg"
+                                    alt=""
+                                    className={styles.actionIcon}
+                                  />
+                                </button>
+                                <button
+                                  type="button"
+                                  className={styles.iconButton}
+                                  aria-label={`Add ${p.name} to cart`}
+                                >
+                                  <img
+                                    src="/assets/cart.svg"
+                                    alt=""
+                                    className={styles.actionIcon}
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 3️⃣ Second paragraph (typed after 4s) */}
+                    {m.followup && (
+                      <p className={styles.bodyCopy}>{m.followup}</p>
+                    )}
+                  </div>
+                </div>
+              )
+            )}
+          </div>
         </div>
+      </div>
 
-    </div>
       {/* Composer */}
       <div className={styles.composer}>
         <textarea
@@ -341,26 +337,49 @@ export default function AgentChat() {
           }}
         />
 
-        {/* Single button: send OR pause, never both */}
-        {isPlaying ? (
+        <div className={styles.composerActions}>
+          {/* 📎 Attach button */}
           <button
             type="button"
-            className={styles.sendButton}
-            onClick={pauseRendering}
-            aria-label="Pause response"
-          >
-          
-          </button>
-        ) : (
-          <button
-            className={styles.sendButton}
-            onClick={send}
-            aria-label="Send"
+            className={styles.attachButton}
             disabled={!draft.trim()}
+            onClick={() => {
+              // TODO: open file picker or document modal
+            }}
+            aria-label="Attach document"
           >
-            <img className={styles.icon24} src="/assets/send.svg" alt="Send" />
+            <img
+              className={styles.icon208}
+              src="/assets/attached.svg"
+              alt="Attach"
+            />
           </button>
-        )}
+
+          {/* Single button: send OR pause */}
+          {isPlaying ? (
+            <button
+              type="button"
+              className={styles.sendButton}
+              onClick={pauseRendering}
+              aria-label="Pause response"
+            >
+              {/* you can put a pause icon here if you want */}
+            </button>
+          ) : (
+            <button
+              className={styles.sendButton}
+              onClick={send}
+              aria-label="Send"
+              disabled={!draft.trim()}
+            >
+              <img
+                className={styles.icon24}
+                src="/assets/send.svg"
+                alt="Send"
+              />
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
