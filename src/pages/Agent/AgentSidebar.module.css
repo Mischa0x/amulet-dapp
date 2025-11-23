@@ -30,7 +30,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px; height: 44px;
+  
   border-radius:var(--alias-border-width-lg);
   cursor: pointer;
   position: relative; /* for tooltip */
@@ -226,7 +226,7 @@
 .sidebarFooter {
   margin-top: 1rem;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
   border-top: 1px solid var(--mapped-border-and-dividers-primary);
   padding-top: 1rem;
