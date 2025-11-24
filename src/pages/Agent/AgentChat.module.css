@@ -67,7 +67,7 @@
   color: var(--brand-black);
 }
 
-.frame2 { display:inline-flex; flex-direction:column; gap:24px;     padding: 12px 6px 24px 6px; }
+.frame2 { display:inline-flex; flex-direction:column; gap:24px;     padding: 12px 12px 24px 12px; }
 .frame3 { display:inline-flex; flex-direction:column; gap:12px; }
 .bodyCopy { font: 400 16px/24px "Satoshi-Regular", Helvetica, Arial, sans-serif; color: var(--brand-black); }
 
