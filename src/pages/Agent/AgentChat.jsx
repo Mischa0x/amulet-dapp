@@ -280,7 +280,7 @@ export default function AgentChat() {
                                   onClick={() => handleViewProduct(p)}
                                 >
                                   <img
-                                    src="/assets/icon-eye.svg"
+                                    src="/assets/eyelink.svg"
                                     alt=""
                                     className={styles.actionIcon}
                                   />
