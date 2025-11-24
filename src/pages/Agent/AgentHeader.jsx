@@ -5,8 +5,10 @@ import { useCartCount } from "../../store/CartContext";
 import styles from "./AgentHeader.module.css";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-
-export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
+export default function AgentHeader({
+  placeholder = "LONGEVITY SEARCH",
+  onToggleSidebar,
+}) {
   const [credits] = useState({ total: 32, free: 4 });
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -17,8 +19,9 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
   const location = useLocation();
 
   const toggleDrawer = useCallback(() => {
-    document.body.classList.toggle("drawer-open");
-  }, []);
+    onToggleSidebar?.();
+  }, [onToggleSidebar]);
+
   const toggleSearch = () => setIsSearchOpen((v) => !v);
 
   useEffect(() => {
@@ -39,7 +42,9 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
     setQuery(next);
     const q = next.trim();
     const search = q ? `?q=${encodeURIComponent(q)}` : "";
-    navigate(`/shop${search}`, { replace: location.pathname.startsWith("/shop") });
+    navigate(`/shop${search}`, {
+      replace: location.pathname.startsWith("/shop"),
+    });
   };
 
   const onKeyDown = (e) => {
@@ -58,7 +63,11 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
           onClick={toggleDrawer}
           aria-label="Open sidebar"
         >
-          <img src="/assets/infinite-ouline-blue.svg" alt="" className={styles.icon24} />
+          <img
+            src="/assets/infinite-ouline-blue.svg"
+            alt=""
+            className={styles.icon24}
+          />
         </button>
 
         <section className={styles.headerSection}>
@@ -75,17 +84,26 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
               aria-controls="inline-search"
               aria-label="Toggle search"
             >
-              <img src="/assets/magnify.svg" alt="" className={styles.icon24} />
+              <img
+                src="/assets/magnify.svg"
+                alt=""
+                className={styles.icon24}
+              />
             </button>
 
-            {/* Desktop inline search (unchanged) */}
+            {/* Desktop inline search */}
             <div
               id="inline-search"
-              className={`${styles.inlineSearch} ${isSearchOpen ? styles.inlineSearchOpen : ""}`}
+              className={`${styles.inlineSearch} ${
+                isSearchOpen ? styles.inlineSearchOpen : ""
+              }`}
               role="search"
               aria-hidden={!isSearchOpen}
             >
-              <form className={styles.inlineSearchField} onSubmit={(e) => e.preventDefault()}>
+              <form
+                className={styles.inlineSearchField}
+                onSubmit={(e) => e.preventDefault()}
+              >
                 <input
                   ref={inputRef}
                   type="search"
@@ -99,31 +117,40 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
               </form>
             </div>
 
-    
-
             <button
               type="button"
-              className={`${styles.cartButton} ${cartCount > 0 ? styles.cartHasItems : ""}`}
+              className={`${styles.cartButton} ${
+                cartCount > 0 ? styles.cartHasItems : ""
+              }`}
               onClick={() => navigate("/cart")}
               aria-label={`View cart, ${cartCount} items`}
               data-count={cartCount}
             >
-              <img src="/assets/cartblue.svg" alt="" className={styles.cartIcon} />
+              <img
+                src="/assets/cartblue.svg"
+                alt=""
+                className={styles.cartIcon}
+              />
             </button>
 
-
-            
+            {/* If you actually use ConnectButton in the header, put it here */}
+            {/* <ConnectButton /> */}
           </div>
         </section>
       </header>
 
       {/* Mobile full-width search bar under the header */}
       <div
-        className={`${styles.mobileSearch} ${isSearchOpen ? styles.mobileSearchOpen : ""}`}
+        className={`${styles.mobileSearch} ${
+          isSearchOpen ? styles.mobileSearchOpen : ""
+        }`}
         role="search"
         aria-hidden={!isSearchOpen}
       >
-        <form className={styles.mobileSearchField} onSubmit={(e) => e.preventDefault()}>
+        <form
+          className={styles.mobileSearchField}
+          onSubmit={(e) => e.preventDefault()}
+        >
           <input
             ref={inputRef}
             type="search"
@@ -134,7 +161,6 @@ export default function AgentHeader({ placeholder = "LONGEVITY SEARCH" }) {
             onKeyDown={onKeyDown}
             aria-label="Search site"
           />
-      
         </form>
       </div>
     </>

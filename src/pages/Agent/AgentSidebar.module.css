@@ -491,11 +491,7 @@
   z-index: 2147483645; /* below sidebar's 2147483647 */
 }
 
-/* Only show it when the sidebar is open (body.drawer-open) */
-:global(body.drawer-open) :local(.drawerBackdrop) {
-  opacity: 1;
-  pointer-events: none; /* still none -> clicks go through to document */
-}
+
 
 .connectWrapper button {
   border-radius: var(--alias-border-width-lg) !important;

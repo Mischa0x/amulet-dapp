@@ -1,19 +1,31 @@
 // AgentSidebar.jsx
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import styles from "./AgentSidebar.module.css";
 import ThemeToggle from "../../components/ThemeToggle";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-const isDesktop = () => window.matchMedia("(min-width: 769px)").matches;
+const isDesktop = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(min-width: 769px)").matches;
 
-export default function AgentSidebar({ onNavigate }) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+export default function AgentSidebar({
+  onNavigate,
+  drawerOpen,
+  setDrawerOpen,
+}) {
   const panelRef = useRef(null);
 
-  // reflect state on body
+  // Reflect state on body
   useEffect(() => {
-    document.body.classList.toggle("drawer-open", drawerOpen);
-    return () => document.body.classList.remove("drawer-open");
+    const body = document.body;
+    if (drawerOpen) {
+      body.classList.add("drawer-open");
+    } else {
+      body.classList.remove("drawer-open");
+    }
+    return () => {
+      body.classList.remove("drawer-open");
+    };
   }, [drawerOpen]);
 
   // Close on Escape (mobile only)
@@ -22,7 +34,7 @@ export default function AgentSidebar({ onNavigate }) {
     const onKey = (e) => e.key === "Escape" && setDrawerOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [drawerOpen]);
+  }, [drawerOpen, setDrawerOpen]);
 
   // Close when clicking/touching anywhere outside the sidebar (mobile only)
   useEffect(() => {
@@ -32,7 +44,8 @@ export default function AgentSidebar({ onNavigate }) {
       const el = panelRef.current;
       if (!el) return;
 
-      const path = typeof e.composedPath === "function" ? e.composedPath() : [];
+      const path =
+        typeof e.composedPath === "function" ? e.composedPath() : [];
       const clickedInside = path.length
         ? path.includes(el)
         : el.contains(e.target);
@@ -47,7 +60,7 @@ export default function AgentSidebar({ onNavigate }) {
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown, true);
     };
-  }, [drawerOpen]);
+  }, [drawerOpen, setDrawerOpen]);
 
   const toggleLogo = () => {
     if (isDesktop()) {
