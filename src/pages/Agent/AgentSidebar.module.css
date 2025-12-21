@@ -101,14 +101,11 @@
 }
 
 .chatCard:hover {
-  background: var(--brand-blue-lighter);
+  background: var(--brand-grey-checkout-forms);
   border-color: var(--brand-blue-light);
 }
 
-.chatCardActive {
-  background: var(--brand-blue-lighter);
-  border-color: var(--brand-blue-light);
-}
+
 
 .chatTextBlock {
   display: flex;

@@ -472,7 +472,7 @@
   border-radius: 10px;
   border: none;
   background: var(--brand-blue-default);
-  color: var(--brand-white);
+  color: white;
   cursor: pointer;
   font-family: var(--body-md-bold-font-family);
   font-weight: var(--body-md-bold-font-weight);
