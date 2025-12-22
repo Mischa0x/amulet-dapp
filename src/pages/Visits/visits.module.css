@@ -195,7 +195,8 @@ background: radial-gradient(circle at top left,
 .panelHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 1rem;
 }
 .panelTitle {
   font-family: var(--body-lg-bold-font-family);

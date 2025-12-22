@@ -1,6 +1,8 @@
 // visits.js
 import React, { useState } from "react";
 import styles from "./visits.module.css";
+import PrivacyPolicyAgreement from "../../components/Questionnaries/PrivacyPolicyAgreement.jsx";
+
 
 const VISITS = [
   {
@@ -44,7 +46,7 @@ const VISITS = [
 // Config para clases/íconos según estado
 const STATUS_CONFIG = {
   pending: {
-    label: "PENDING",
+    label: "PENDING QUESTIONNAIRE",
     cardClass: styles.cardBlue,
     chipClass: styles.chipWarn,
     textClass: styles.statusTextWarn,
@@ -67,10 +69,15 @@ const STATUS_CONFIG = {
     icon: "/assets/cancel-red.svg",
     iconAlt: "Denied",
   },
+  payment: {
+    label: "PAYMENT PENDING",
+    text: " - PAYMENT PENDING",
+  },
 };
 
 export default function Visits() {
   const [selectedVisit, setSelectedVisit] = useState(VISITS[0]);
+  const [activeTab, setActiveTab] = useState("privacy"); 
 
   const selectedConfig = STATUS_CONFIG[selectedVisit.status];
 
@@ -123,7 +130,7 @@ export default function Visits() {
                         alt={config.iconAlt}
                       />
                     </span>
-                    <span className={config.textClass}>{config.label}</span>
+                    
                   </div>
                 </div>
               );
@@ -146,12 +153,32 @@ export default function Visits() {
                 <span className={selectedConfig.textClass}>
                   {selectedConfig.label}
                 </span>
+               
               </div>
+
+
+                   <div
+                className={`${styles.statusChip} ${selectedConfig.chipClass}`}
+              >
+                <span className={styles.statusIconWrap}>
+                  <img
+                    className={styles.statusIcon}
+                    src={selectedConfig.icon}
+                    alt={selectedConfig.iconAlt}
+                  />
+                </span>
+                <span className={selectedConfig.textClass}>
+                 PAYMENT PENDING
+                </span>
+               
+              </div>
+
+
             </div>
 
             <div className={styles.infoCard}>
               <div className={styles.infoSection}>
-                <div className={styles.infoTitle}>VISIT STATUS</div>
+                <div className={styles.infoTitle}>ORDER ITEMS</div>
                 <div className={styles.infoRow}>
                   <span className={styles.statusIconWrap}>
                     <img
@@ -161,65 +188,122 @@ export default function Visits() {
                     />
                   </span>
                   <p className={styles.infoText}>
-                    {selectedVisit.statusMessage}
+                   Sildenafil 50mg
+Medication
+Sildenafil Citrate 50mg oral tablet for erectile dysfunction treatment. Effective PDE5 inhibitor for improved blood flow.
+
+Vendor: Health Labs Inc. $29.99
                   </p>
                 </div>
+
+                    <div className={styles.infoRow}>
+                  <span className={styles.statusIconWrap}>
+                    <img
+                      className={styles.statusIcon}
+                      src={selectedConfig.icon}
+                      alt={selectedConfig.iconAlt}
+                    />
+                  </span>
+                  <p className={styles.infoText}>
+Doctor Visit
+Medication
+Doctor Visit - Required for medication prescription and revision
+
+Vendor: Wellness Pharmacy $100.00
+
+                  </p>
+                </div>
+
+                
               </div>
             </div>
-
-            <div className={styles.tabsRow}>
-              <div className={`${styles.tabChip} ${styles.tabActive}`}>
-                <span className={styles.tabTextActive}>OVERVIEW</span>
-              </div>
-              <div className={styles.tabChip}>
-                <span className={styles.tabText}>MEDICATIONS</span>
-              </div>
-              <div className={styles.tabChip}>
-                <span className={styles.tabText}>ASSESSMENTS</span>
-              </div>
-              <div className={styles.tabChip}>
-                <span className={styles.tabText}>REQUIREMENTS</span>
-              </div>
-            </div>
-
-            <div className={styles.detailsCard}>
               <div className={styles.infoTitle}>VISIT DETAILS</div>
+<div className={styles.tabsRow}>
+  <div
+    className={`${styles.tabChip} ${activeTab === "privacy" ? styles.tabActive : ""}`}
+    role="button"
+    tabIndex={0}
+    onClick={() => setActiveTab("privacy")}
+    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("privacy")}
+  >
+    <span className={activeTab === "privacy" ? styles.tabTextActive : styles.tabText}>
+      PRIVACY POLICY AGREEMENT
+    </span>
+  </div>
 
-              <div className={styles.twoCol}>
-                <div className={styles.detailTile}>
-                  <div className={styles.detailBlock}>
-                    <div className={styles.detailLabel}>DOCTOR</div>
-                    <div className={styles.detailStrong}>
-                      {selectedVisit.doctorName}
-                    </div>
-                    <div className={styles.cardDate}>
-                      {selectedVisit.specialization}
-                    </div>
-                  </div>
-                </div>
+  <div
+    className={`${styles.tabChip} ${activeTab === "medications" ? styles.tabActive : ""}`}
+    role="button"
+    tabIndex={0}
+    onClick={() => setActiveTab("medications")}
+    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("medications")}
+  >
+    <span className={activeTab === "medications" ? styles.tabTextActive : styles.tabText}>
+      MEDICATIONS
+    </span>
+  </div>
 
-                <div className={styles.detailTile}>
-                  <div className={styles.detailBlock}>
-                    <div className={styles.detailLabel}>CONSULTATION</div>
-                    <div className={styles.detailStrong}>
-                      {selectedVisit.consultationName}
-                    </div>
-                    <div className={styles.cardDate}>
-                      {selectedVisit.consultationPrice}
-                    </div>
-                  </div>
-                </div>
-              </div>
+  <div
+    className={`${styles.tabChip} ${activeTab === "assessments" ? styles.tabActive : ""}`}
+    role="button"
+    tabIndex={0}
+    onClick={() => setActiveTab("assessments")}
+    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("assessments")}
+  >
+    <span className={activeTab === "assessments" ? styles.tabTextActive : styles.tabText}>
+      ASSESSMENTS
+    </span>
+  </div>
 
-              <div className={styles.detailLong}>
-                <div className={styles.detailBlock}>
-                  <div className={styles.detailLabel}>VISIT REASON</div>
-                  <p className={styles.detailBody}>
-                    {selectedVisit.visitReason}
-                  </p>
-                </div>
-              </div>
-            </div>
+  <div
+    className={`${styles.tabChip} ${activeTab === "requirements" ? styles.tabActive : ""}`}
+    role="button"
+    tabIndex={0}
+    onClick={() => setActiveTab("requirements")}
+    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("requirements")}
+  >
+    <span className={activeTab === "requirements" ? styles.tabTextActive : styles.tabText}>
+      REQUIREMENTS
+    </span>
+  </div>
+</div>
+
+
+         {activeTab === "privacy" && <PrivacyPolicyAgreement />}
+
+{activeTab === "medications" && (
+  <div className={styles.detailsCard}>
+    <div className={styles.detailLong}>
+      <div className={styles.detailBlock}>
+        <div className={styles.detailLabel}>MEDICATIONS</div>
+        <p className={styles.detailBody}>Coming next…</p>
+      </div>
+    </div>
+  </div>
+)}
+
+{activeTab === "assessments" && (
+  <div className={styles.detailsCard}>
+    <div className={styles.detailLong}>
+      <div className={styles.detailBlock}>
+        <div className={styles.detailLabel}>ASSESSMENTS</div>
+        <p className={styles.detailBody}>Coming next…</p>
+      </div>
+    </div>
+  </div>
+)}
+
+{activeTab === "requirements" && (
+  <div className={styles.detailsCard}>
+    <div className={styles.detailLong}>
+      <div className={styles.detailBlock}>
+        <div className={styles.detailLabel}>REQUIREMENTS</div>
+        <p className={styles.detailBody}>Coming next…</p>
+      </div>
+    </div>
+  </div>
+)}
+
           </div>
         </div>
 
