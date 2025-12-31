@@ -286,14 +286,7 @@ Vendor: Wellness Pharmacy $100.00
           </div>
         </div>
 
-        {/* trailing icon */}
-        <div className={styles.trailingIcon}>
-          <img
-            className={styles.infiniteOutline}
-            src="/assets/infinite-outline.svg"
-            alt="Amulet infinite"
-          />
-        </div>
+      
       </div>
     </div>
   );

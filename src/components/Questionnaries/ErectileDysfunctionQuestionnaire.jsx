@@ -639,9 +639,7 @@ export default function ErectileDysfunctionQuestionnaire() {
     gap: "12px",
   }}
 >
-  <button type="button" className={styles.linkInline}>
-    Edit Answers
-  </button>
+ 
 
   <button type="button" className={styles.payNowBtn}>
     Submit

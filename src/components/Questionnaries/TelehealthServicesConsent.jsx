@@ -74,9 +74,7 @@ Please review and agree to our telehealth services informed consent.
                 gap: "12px",
               }}
             >
-              <button type="button" className={styles.linkInline}>
-                Cancel
-              </button>
+         
 
               <button type="button" className={styles.payNowBtn}>
                 Agree &amp; Continue
