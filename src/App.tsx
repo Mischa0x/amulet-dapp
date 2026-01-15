@@ -1,6 +1,8 @@
 // src/App.tsx
+import { Routes, Route } from 'react-router-dom';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Dashboard } from './components/Dashboard';
+import TokenPage from './pages/Token/TokenPage';
 
 function App() {
   return (
@@ -55,7 +57,10 @@ function App() {
       </header>
 
       <main className="main">
-        <Dashboard />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/token" element={<TokenPage />} />
+        </Routes>
       </main>
     </div>
   );
