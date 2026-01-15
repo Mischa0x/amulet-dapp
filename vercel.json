@@ -1,8 +1,19 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/"
+      "source": "/amulet/(.*)",
+      "destination": "/amulet/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/amulet/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
     }
   ]
 }
