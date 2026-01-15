@@ -266,6 +266,36 @@ export default function AgentSidebar({
                 </div>
               </div>
             </div>
+
+            <div
+              className={styles.buttonCardGold}
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                onNavigate?.("/token");
+                closeDrawerIfMobile();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  onNavigate?.("/token");
+                  closeDrawerIfMobile();
+                }
+              }}
+              aria-label="Get Tokens"
+              title="Get Tokens"
+            >
+              <img
+                className={styles.icon24}
+                src="/assets/infinite-ouline-blue.svg"
+                alt=""
+              />
+              <div className={styles.frame}>
+                <div className={styles.tokenTitle}>Get Tokens</div>
+                <div className={styles.tokenSubtitle}>
+                  For Compute Credits
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className={styles.sidebarFooter}>
