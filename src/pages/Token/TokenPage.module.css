@@ -1,451 +1,224 @@
-/* Token Page - Redesigned with purple gradient and glassmorphism */
+/* Token Page - Clean design inspired by Debank & Claude Console */
 
-.pageWrapper {
-  position: relative;
-  min-height: 100vh;
+.page {
+  min-height: 100%;
   width: 100%;
-  overflow-x: hidden;
+  padding: 40px 24px;
 }
 
-/* Soft purple/lavender gradient background - theme aware */
-.gradientBg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    var(--brand-ghostbackground-bg1) 0%,
-    var(--brand-ghostbackground-c1) 25%,
-    var(--brand-ghostbackground-c2) 50%,
-    var(--brand-ghostbackground-c3) 75%,
-    var(--brand-ghostbackground-c4) 100%
-  );
-  z-index: -1;
-}
-
-.content {
-  position: relative;
-  max-width: 900px;
+.container {
+  max-width: 800px;
   margin: 0 auto;
-  padding: 32px 24px;
-  z-index: 1;
 }
 
-/* Header */
-.header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.title {
-  font-family: var(--heading-h1-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--brand-black);
-  margin: 0 0 8px 0;
-}
-
-.subtitle {
-  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 16px;
-  color: var(--brand-black);
-  opacity: 0.7;
-  margin: 0;
-}
-
-/* Stats Grid */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-@media (max-width: 768px) {
-  .statsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Stat Card - Glassmorphism */
-.statCard {
-  background: var(--brand-neon-cards-surface-light-blue);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 24px;
-  border: 1px solid var(--brand-blue-lighter);
-  box-shadow: 0 8px 32px rgba(100, 80, 140, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.statCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(100, 80, 140, 0.15);
-}
-
-.statIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--brand-white);
+/* Stats Row - Debank style */
+.statsRow {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(100, 80, 140, 0.1);
+  gap: 48px;
+  padding: 32px 0;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--mapped-border-and-dividers-primary, rgba(0,0,0,0.08));
 }
 
-.statIcon img,
-.statIcon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.statInfo {
+.statItem {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 8px;
 }
 
 .statLabel {
   font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--brand-black);
-  opacity: 0.6;
+  opacity: 0.5;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .statValue {
-  font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 36px;
+  font-family: var(--heading-h1-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 32px;
   font-weight: 700;
-  color: #b8860b;
-  line-height: 1;
+  color: var(--brand-black);
+  letter-spacing: -0.5px;
 }
 
-.statValueGreen {
-  font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 36px;
-  font-weight: 700;
-  color: #22c55e;
-  line-height: 1;
+.divider {
+  width: 1px;
+  height: 48px;
+  background: var(--mapped-border-and-dividers-primary, rgba(0,0,0,0.08));
 }
 
-.statValuePurple {
-  font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 36px;
-  font-weight: 700;
-  color: #8b5cf6;
-  line-height: 1;
+/* Cards Grid - Claude Console style */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
-/* Progress bars */
-.statProgress {
-  height: 6px;
-  background: rgba(200, 190, 210, 0.3);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.statProgressBar {
-  height: 100%;
-  background: linear-gradient(90deg, #d4af37, #b8860b);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-}
-
-.statProgressBarGreen {
-  height: 100%;
-  background: linear-gradient(90deg, #4ade80, #22c55e);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-}
-
-.statProgressBarPurple {
-  height: 100%;
-  background: linear-gradient(90deg, #a78bfa, #8b5cf6);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-}
-
-/* Faucet Card */
-.faucetCard {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-  border-radius: 20px;
-  padding: 28px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
-}
-
-@media (max-width: 640px) {
-  .faucetCard {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-.faucetContent {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-@media (max-width: 640px) {
-  .faucetContent {
-    flex-direction: column;
-  }
-}
-
-.faucetIcon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.faucetText {
+.card {
+  background: var(--brand-white);
+  border: 1px solid var(--mapped-border-and-dividers-primary, rgba(0,0,0,0.08));
+  border-radius: 12px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 12px;
 }
 
-.faucetTitle {
-  font-family: var(--heading-h3-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
-  margin: 0;
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.faucetDesc {
-  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0;
-}
-
-.faucetButton {
-  background: white;
-  color: #6366f1;
+.cardTitle {
   font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
   font-size: 14px;
   font-weight: 600;
-  padding: 14px 28px;
-  border-radius: 12px;
+  color: var(--brand-black);
+}
+
+.cardDesc {
+  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--brand-black);
+  opacity: 0.6;
+  margin: 0;
+}
+
+.cardDescSmall {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 11px;
+  color: var(--brand-black);
+  opacity: 0.4;
+  margin: 0;
+}
+
+/* Claim Button */
+.claimButton {
+  margin-top: auto;
+  padding: 10px 16px;
   border: none;
+  border-radius: 8px;
+  background: var(--brand-blue-default, #1D7AFC);
+  color: #fff;
+  font-family: var(--body-sm-bold-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
+  transition: opacity 0.15s ease;
 }
 
-.faucetButton:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+.claimButton:hover:not(:disabled) {
+  opacity: 0.9;
 }
 
-.faucetButton:disabled {
-  opacity: 0.7;
+.claimButton:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Info Grid */
-.infoGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-@media (max-width: 640px) {
-  .infoGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Info Card - Glassmorphism */
-.infoCard {
-  background: var(--brand-neon-cards-surface-light-blue);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 16px;
-  padding: 24px;
-  border: 1px solid var(--brand-blue-lighter);
-  box-shadow: 0 4px 20px rgba(100, 80, 140, 0.08);
-}
-
-.infoHeader {
+/* Conversion Row */
+.conversionRow {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
 }
 
-.infoIconSmall {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--brand-white);
+.conversionItem {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(100, 80, 140, 0.1);
+  flex-direction: column;
+  gap: 2px;
 }
 
-.infoTitle {
-  font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 15px;
-  font-weight: 600;
+.conversionLabel {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 11px;
   color: var(--brand-black);
-  margin: 0;
-}
-
-.infoText {
-  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--brand-black);
-  opacity: 0.8;
-  margin: 0;
-}
-
-/* Conversion Display */
-.conversionDisplay {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 0 8px;
+  opacity: 0.4;
 }
 
 .conversionValue {
-  font-family: var(--heading-h3-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 20px;
-  font-weight: 700;
-  color: #b8860b;
+  font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand-black);
 }
 
-.conversionEquals {
-  font-size: 20px;
+.conversionArrow {
+  font-size: 16px;
+  color: var(--brand-black);
+  opacity: 0.3;
+  margin-top: 10px;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--mapped-border-and-dividers-primary, rgba(0,0,0,0.08));
+}
+
+.footerText {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 13px;
   color: var(--brand-black);
   opacity: 0.5;
 }
 
-.conversionCredits {
-  font-family: var(--heading-h3-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 20px;
-  font-weight: 700;
-  color: #22c55e;
+.footerLink {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 13px;
+  color: var(--brand-blue-default, #1D7AFC);
+  text-decoration: none;
+  transition: opacity 0.15s ease;
 }
 
-/* SEI Link Section */
-.seiLink {
-  background: var(--brand-neon-cards-surface-light-blue);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  border: 1px solid var(--brand-blue-lighter);
-}
-
-@media (max-width: 480px) {
-  .seiLink {
-    flex-direction: column;
-    gap: 12px;
-  }
-}
-
-.seiText {
-  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 14px;
-  color: var(--brand-black);
+.footerLink:hover {
   opacity: 0.7;
 }
 
-.seiButton {
-  font-family: var(--body-sm-bold-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 13px;
-  font-weight: 600;
-  color: #6366f1;
-  text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  background: rgba(99, 102, 241, 0.1);
-  transition: background 0.2s ease;
-}
-
-.seiButton:hover {
-  background: rgba(99, 102, 241, 0.2);
-}
-
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
-  .content {
+  .page {
     padding: 24px 16px;
   }
 
-  .title {
+  .statsRow {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .divider {
+    width: 80px;
+    height: 1px;
+  }
+
+  .statValue {
     font-size: 28px;
   }
 
-  .statValue,
-  .statValueGreen,
-  .statValuePurple {
-    font-size: 28px;
-  }
-
-  .faucetCard {
-    padding: 24px;
-  }
-
-  .faucetTitle {
-    font-size: 18px;
+  .cardsGrid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 480px) {
-  .header {
-    margin-bottom: 28px;
-  }
-
-  .title {
+  .statValue {
     font-size: 24px;
   }
 
-  .subtitle {
-    font-size: 14px;
-  }
-
-  .statCard {
-    padding: 20px;
-  }
-
-  .statValue,
-  .statValueGreen,
-  .statValuePurple {
-    font-size: 24px;
-  }
-
-  .conversionValue,
-  .conversionEquals,
-  .conversionCredits {
-    font-size: 16px;
+  .statsRow {
+    padding: 24px 0;
   }
 }
