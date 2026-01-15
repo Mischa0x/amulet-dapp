@@ -1,6 +1,6 @@
 // AgentHeader.jsx
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useCartCount } from "../../store/CartContext";
 import styles from "./AgentHeader.module.css";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -71,10 +71,6 @@ export default function AgentHeader({
         </button>
 
         <section className={styles.headerSection}>
-          <Link to="/" className={styles.brand} aria-label="Go to chat home">
-            AMULET.AI
-          </Link>
-
           <div className={styles.rightSide}>
             <button
               type="button"
