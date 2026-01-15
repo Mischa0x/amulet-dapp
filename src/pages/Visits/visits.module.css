@@ -49,7 +49,7 @@
 .leftCol {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 
     /* Layout */
   position: relative;
@@ -237,39 +237,70 @@ background: radial-gradient(circle at top left,
   line-height: var(--body-sm-line-height);
 }
 
+/* View Details Button */
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--brand-blue-default);
+  background: transparent;
+  color: var(--brand-blue-default);
+  font-family: var(--body-sm-bold-font-family);
+  font-weight: var(--body-sm-bold-font-weight);
+  font-size: var(--body-sm-bold-font-size);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.btnGhost:hover {
+  background: var(--brand-blue-default);
+  color: var(--brand-white-always);
+}
+
 /* Tabs */
 .tabsRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: var(--brand-grey-lighter-2);
   border: 1px solid var(--brand-grey-light);
   border-radius: 13px;
-  padding: 6px 10px;
+  padding: 10px 12px;
 }
 .tabChip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 8px;
+  padding: 8px 12px;
   border-radius: var(--alias-border-radius-lg);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.tabChip:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.tabActive {
+  background: var(--brand-blue-default);
+}
+.tabActive:hover {
+  background: var(--brand-blue-dark);
 }
 .tabText {
   font-family: var(--body-sm-bold-font-family);
   font-weight: var(--body-sm-bold-font-weight);
-
-  font-size: var(--body-sm-bold-font-size);
+  font-size: 11px;
   line-height: var(--body-sm-bold-line-height);
-  color:var(--brand-black);
+  color: var(--brand-black);
 }
 
 .tabTextActive {
   font-family: var(--body-sm-bold-font-family);
   font-weight: var(--body-sm-bold-font-weight);
-  color: var(--brand-white);
-  font-size: var(--body-sm-bold-font-size);
+  font-size: 11px;
   line-height: var(--body-sm-bold-line-height);
-    color:var(--brand-white-always);
+  color: var(--brand-white-always);
 }
 
 /* Details */

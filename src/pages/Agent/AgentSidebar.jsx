@@ -286,7 +286,7 @@ export default function AgentSidebar({
             >
               <img
                 className={styles.icon24}
-                src="/assets/infinite-ouline-blue.svg"
+                src="/assets/infinite-outline-gold.svg"
                 alt=""
               />
               <div className={styles.frame}>

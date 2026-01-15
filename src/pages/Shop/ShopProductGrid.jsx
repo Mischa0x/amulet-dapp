@@ -87,7 +87,15 @@ export default function ShopProductGrid({
                 </div>
               )}
 
-              <div className={styles.mediaRect} />
+              <div className={styles.mediaRect}>
+                {p.skill && (
+                  <img
+                    className={styles.skillIcon}
+                    src={skillToIcon(p.skill)}
+                    alt={p.skill}
+                  />
+                )}
+              </div>
 
               <div className={styles.body}>
                 <h3
@@ -101,14 +109,6 @@ export default function ShopProductGrid({
                   <p className={styles.desc}>{p.description}</p>
                 )}
               </div>
-
-              {p.skill && (
-                <img
-                  className={styles.skillIcon}
-                  src={skillToIcon(p.skill)}
-                  alt={p.skill}
-                />
-              )}
             </div>
           </Link>
 

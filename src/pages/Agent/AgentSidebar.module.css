@@ -174,7 +174,7 @@
 
 .cardGroup {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .buttonCardTeal,
@@ -243,7 +243,7 @@
   color: var(--brand-green-darker);
 }
 .textWrapper3 {
-  font: 400 11px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
   color: var(--brand-green-dark);
   white-space: nowrap;
 }
@@ -252,7 +252,7 @@
   color: var(--brand-purple-darker);
 }
 .longevityEnhaced {
-  font: 400 11px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
   color: var(--brand-purple-dark);
   white-space: nowrap;
 }
@@ -261,7 +261,7 @@
   color: var(--brand-blue-darker);
 }
 .longevityEnhaced2 {
-  font: 400 11px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
   color: var(--brand-blue-dark);
   white-space: nowrap;
 }
@@ -274,7 +274,7 @@
   color: #8B6914;
 }
 .tokenSubtitle {
-  font: 400 11px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
   color: #B8860B;
   white-space: nowrap;
 }

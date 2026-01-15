@@ -5,20 +5,20 @@ a{
 }
 .grid {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 20px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: stretch;
   justify-items: center;
 }
 
 @media (max-width: 1400px) {
-  .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-}
-@media (max-width: 1000px) {
   .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 @media (max-width: 640px) {
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 }
 .emptyState{
   color: var(--brand-black);
@@ -63,24 +63,29 @@ background: radial-gradient(circle at top left,
 
 /* Media rectangle (scaled to card) */
 .mediaRect {
+  position: relative;
   width: 100%;
   aspect-ratio: 311 / 278;            /* keeps original shape, scales fluidly */
   border-radius: 10px;
   border: 2px solid var(--brand-blue-lighter);
   justify-self: center;
-      background: var(--brand-white);
+  background: var(--brand-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ===== BADGE ===== */
 .badge {
   position: absolute;
-  top: 3%;
-  left: 4%;
+  top: 18px;
+  left: 18px;
+  z-index: 2;
 
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 6px;
   border: 1px solid;
 }
@@ -189,20 +194,17 @@ background: radial-gradient(circle at top left,
 
 /* Skill category icon – centered in media area */
 .skillIcon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
   pointer-events: none;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .card:hover .skillIcon {
   opacity: 1;
+  transform: scale(1.1);
 }
 
 /* ===== FOOTER / CTA ===== */
@@ -254,8 +256,8 @@ background: radial-gradient(circle at top left,
 @media (max-width: 640px) {
 
 .skillIcon {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
 }
 .title{
   font-size: 11px;
@@ -272,7 +274,9 @@ background: radial-gradient(circle at top left,
   height: 260px;
 }
 .badge{
-  top: clamp(5px, 2.2vw, 20px);
+  top: 12px;
+  left: 12px;
+  padding: 2px 6px;
 }
 .badgeText{
   font-size: 7px;
