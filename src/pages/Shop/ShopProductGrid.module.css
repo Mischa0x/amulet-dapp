@@ -27,17 +27,14 @@ a{
 .card {
   position: relative;
   width: 100%;
-  min-height: 280px;
-  padding: clamp(0px, 1vw, 12px) clamp(8px, 1vw, 12px);
+  height: 320px;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--brand-blue-lighter);
 
-
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  grid-template-rows: auto auto 1fr auto;  /* badge, media, body, footer */
-  row-gap: 16px;
+  overflow: hidden;
 
 
       /* Layout */
@@ -140,9 +137,12 @@ background: radial-gradient(circle at top left,
 
 /* ===== BODY ===== */
 .body {
-  display: grid;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 
 .title {
@@ -150,11 +150,15 @@ background: radial-gradient(circle at top left,
   font-family: var(--heading-h4-font-family);
   font-weight: var(--heading-h4-font-weight);
   color: var(--brand-black);
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: var(--heading-h4-letter-spacing);
-  line-height: 18px;
+  line-height: 17px;
   font-style: var(--heading-h4-font-style);
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .desc {
@@ -163,10 +167,14 @@ background: radial-gradient(circle at top left,
   font-family: var(--body-md-font-family);
   font-weight: var(--body-md-font-weight);
   color: var(--brand-black);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: var(--body-md-letter-spacing);
-  line-height: 16px;
+  line-height: 15px;
   font-style: var(--body-md-font-style);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Decorative pill image – centered and scalable */
@@ -183,33 +191,24 @@ background: radial-gradient(circle at top left,
 
 /* ===== FOOTER / CTA ===== */
 .footer {
-  position: relative;
   width: 100%;
-  height: 40px;
-  justify-self: center;
+  height: 36px;
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .separator {
-  position: absolute;
-  top: -1px;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--mapped-border-and-dividers-primary);
+  display: none;
 }
 
 .cta {
-  position: absolute;
-  top: 6px;
-  left: 0;
   width: 100%;
   height: 32px;
   border: 0;
-  border-radius: var(--alias-border-width-lg);
+  border-radius: 6px;
   background-color: var(--brand-blue-default);
   color: var(--brand-white-always);
-  display: grid;
-  grid-auto-flow: column;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 10px 0 12px;
@@ -242,16 +241,18 @@ background: radial-gradient(circle at top left,
   top: 9%;
 }
 .title{
-  font-size: 12px;
-  line-height: 16px;
-  margin-top: 0.4rem;
+  font-size: 11px;
+  line-height: 14px;
+  margin-top: 0.3rem;
+  -webkit-line-clamp: 2;
 }
 .desc{
-  font-size: 10px;
-  line-height: 14px;
+  font-size: 9px;
+  line-height: 12px;
+  -webkit-line-clamp: 2;
 }
 .card{
-  min-height: 220px;
+  height: 260px;
 }
 .badge{
   top: clamp(5px, 2.2vw, 20px);
