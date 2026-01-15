@@ -122,3 +122,12 @@ A decentralized application (DApp) for longevity science built with React, TypeS
 - Theme-aware backgrounds: `var(--brand-white)`, `var(--brand-neon-cards-surface-light-blue)`
 - Theme-aware borders: `var(--mapped-border-and-dividers-primary)`
 - Ghost background gradient: `var(--brand-ghostbackground-bg1)` through `c5`
+- Icon color inversion (dark mode): `filter: var(--icon-filter)` with `brightness(0) invert(1)`
+
+## Session History (2026-01-15) - Header & Dark Mode Icons
+1. Removed "AMULET.AI" brand text from AgentHeader.jsx
+2. Added dark mode icon support for shop product icons:
+   - Added `--icon-filter: none` and `--icon-filter-inverted: brightness(0) invert(1)` to styleguide.css
+   - Added icon filter variables to VAR_SWAP in ThemeToggle.jsx
+   - Applied `filter: var(--icon-filter)` to `.skillIcon` in ShopProductGrid.module.css
+   - Icons now appear white/inverted in dark mode
