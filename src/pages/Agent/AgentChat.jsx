@@ -1,6 +1,7 @@
 // pages/Agent/AgentChat.jsx
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 import { listProducts } from "../../services/ProductsService";
 import styles from "./AgentChat.module.css";
 
@@ -175,7 +176,9 @@ export default function AgentChat() {
                       </div>
                     ) : (
                       <>
-                        <p className={styles.bodyCopy}>{m.content}</p>
+                        <div className={styles.markdownContent}>
+                          <ReactMarkdown>{m.content}</ReactMarkdown>
+                        </div>
 
                         {/* Product recommendations */}
                         {m.productIds && m.productIds.length > 0 && (
