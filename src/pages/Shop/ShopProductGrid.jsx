@@ -12,10 +12,25 @@ const skillToBadgeClass = (skill) => {
   if (s === "CLARITY") return styles.badgeClarity;
   if (s === "ALTERNATIVE") return styles.badgeAlternative;
   if (s === "METABOLICS") return styles.badgeMetabolics;
-  // opcional: LONGEVITY / STRUCTURE si tienes esas clases:
-  // if (s === "LONGEVITY") return styles.badgeLongevity;
-  // if (s === "STRUCTURE") return styles.badgeStructure;
+  if (s === "LONGEVITY") return styles.badgeLongevity;
+  if (s === "STRUCTURE") return styles.badgeStructure;
   return "";
+};
+
+const skillToIcon = (skill) => {
+  const s = (skill || "").toLowerCase();
+  const icons = {
+    restoration: "/assets/skill-restoration.svg",
+    vitality: "/assets/skill-vitality.svg",
+    regen: "/assets/skill-regen.svg",
+    hormonal: "/assets/skill-hormonal.svg",
+    clarity: "/assets/skill-clarity.svg",
+    alternative: "/assets/skill-alternative.svg",
+    metabolics: "/assets/skill-metabolics.svg",
+    longevity: "/assets/skill-longevity.svg",
+    structure: "/assets/skill-structure.svg",
+  };
+  return icons[s] || "/assets/skill-longevity.svg";
 };
 
 export default function ShopProductGrid({
@@ -87,8 +102,12 @@ export default function ShopProductGrid({
                 )}
               </div>
 
-              {p.image && (
-                <img className={styles.pillImg} src={p.image} alt="" />
+              {p.skill && (
+                <img
+                  className={styles.skillIcon}
+                  src={skillToIcon(p.skill)}
+                  alt={p.skill}
+                />
               )}
             </div>
           </Link>

@@ -7,7 +7,6 @@
     "description": "Effective oral medication for erectile dysfunction. Fast-acting with shorter half-life than tadalafil.",
     "status": "Top seller",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -18,7 +17,6 @@
     "description": "Long-acting ED treatment, often preferred for its ~36-hour window.",
     "status": "Top seller",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "REGEN"
   },
   {
@@ -29,7 +27,6 @@
     "description": "Blocks DHT to slow or reverse male pattern hair loss.",
     "status": "Controversial",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "VITALITY"
   },
   {
@@ -40,7 +37,6 @@
     "description": "Topical treatment that stimulates hair follicles and promotes growth.",
     "status": "Widely used",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "VITALITY"
   },
   {
@@ -51,7 +47,6 @@
     "description": "GLP-1 receptor agonist originally for diabetes, now widely used for weight loss.",
     "status": "Hottest category",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "METABOLICS"
   },
   {
@@ -62,7 +57,6 @@
     "description": "Dual GLP-1/GIP receptor agonist for diabetes and weight loss.",
     "status": "High demand",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "METABOLICS"
   },
   {
@@ -73,7 +67,6 @@
     "description": "Includes sertraline, fluoxetine, escitalopram, and venlafaxine — widely prescribed antidepressants.",
     "status": "Widely used",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "LONGEVITY"
   },
   {
@@ -84,7 +77,6 @@
     "description": "Antidepressant also used for smoking cessation; fewer sexual side effects than SSRIs.",
     "status": "Popular choice",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -95,7 +87,6 @@
     "description": "Beta-blocker sometimes prescribed for performance anxiety.",
     "status": "Off-label",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "STRUCTURE"
   },
   {
@@ -106,7 +97,6 @@
     "description": "Combination pills widely used for birth control and menstrual regulation.",
     "status": "Standard",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "HORMONAL"
   },
   {
@@ -117,7 +107,6 @@
     "description": "Emergency birth control pill to prevent pregnancy after unprotected sex.",
     "status": "Time-sensitive",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "HORMONAL"
   },
   {
@@ -128,7 +117,6 @@
     "description": "Used for PCOS and acne due to anti-androgen effects.",
     "status": "Specialist use",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "HORMONAL"
   },
   {
@@ -139,7 +127,6 @@
     "description": "Low-dose antidepressant often prescribed for insomnia.",
     "status": "Widely used",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -150,7 +137,6 @@
     "description": "Over-the-counter supplement to regulate circadian rhythm.",
     "status": "Common supplement",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -161,7 +147,6 @@
     "description": "Tricyclic antidepressant in microdoses for insomnia relief.",
     "status": "Prescription only",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -172,7 +157,6 @@
     "description": "Wakefulness-promoting drug sometimes used off-label for focus.",
     "status": "Restricted use",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "CLARITY"
   },
   {
@@ -183,7 +167,6 @@
     "description": "Prescribed for hypogonadism in men; also misused for performance and longevity.",
     "status": "Controversial",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "HORMONAL"
   },
   {
@@ -194,7 +177,6 @@
     "description": "Used in women’s HRT, especially around menopause.",
     "status": "Specialist use",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "HORMONAL"
   },
   {
@@ -205,7 +187,6 @@
     "description": "Common ADHD medication, tightly regulated due to abuse potential.",
     "status": "Controlled",
     "price": 199.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "CLARITY"
   },
   {
@@ -216,7 +197,6 @@
     "description": "ADHD treatment; shorter half-life than Adderall.",
     "status": "Controlled",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "CLARITY"
   },
   {
@@ -227,7 +207,6 @@
     "description": "Long-acting ADHD medication with lower abuse risk.",
     "status": "Controlled",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "CLARITY"
   },
   {
@@ -238,7 +217,6 @@
     "description": "Rapid-acting benzodiazepine for anxiety; high abuse risk.",
     "status": "Avoided",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -249,7 +227,6 @@
     "description": "Used for acute anxiety and panic attacks; addictive potential.",
     "status": "Avoided",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -260,7 +237,6 @@
     "description": "Prescribed for seizures and anxiety; high dependence risk.",
     "status": "Avoided",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "RESTORATION"
   },
   {
@@ -271,7 +247,6 @@
     "description": "Used in controlled therapeutic settings for depression and anxiety.",
     "status": "Controversial",
     "price": 19.99,
-    "image": "/assets/futuristicPill.png",
     "skill": "ALTERNATIVE"
   }
 ]

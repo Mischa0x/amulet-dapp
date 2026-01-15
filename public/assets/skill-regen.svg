@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <path d="M32 8v10M32 46v10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 18a14 14 0 0 1 14 14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 46a14 14 0 0 1-14-14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+  <path d="M42 14l-10 4 4-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22 50l10-4-4 10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

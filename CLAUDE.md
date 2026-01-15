@@ -63,6 +63,13 @@ A decentralized application (DApp) for longevity science built with React, TypeS
 - Bullet points: 12px margin, 1.7 line-height for readability
 - All colors use CSS variables that swap with theme
 
+### 5. Token/Compute Credits Page
+- `/token` route with compute credits ideation
+- Shows AMULET token balance and available credits
+- Credit tiers: Explorer, Pioneer, Visionary, Immortal
+- Staking bonus multipliers (1.1x to 2x)
+- Usage guide for AI interactions
+
 ## Session History (2026-01-15)
 1. Cloned wagmiSei repo to /home/mischa/amulet-dapp
 2. Created GitHub repo: Mischa0x/amulet-dapp
@@ -72,3 +79,4 @@ A decentralized application (DApp) for longevity science built with React, TypeS
 6. Integrated Claude AI for Dr. Alex assistant
 7. Added ReactMarkdown for formatted responses
 8. Fixed theme-aware text colors
+9. Created /token page for compute credits ideation

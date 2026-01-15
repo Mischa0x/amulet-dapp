@@ -12,7 +12,8 @@ import './App.css';
 import OrderHistory from './pages/OrderHistory/OrderHistory';
 import Visits from './pages/Visits/Visits';
 import Dashboard from './components/Dashboard';
-import WalletGuard from './components/WalletGuard';   
+import WalletGuard from './components/WalletGuard';
+import TokenPage from './pages/Token/TokenPage';   
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/orderhistory" element={<OrderHistory />} />
                 <Route path="/visits" element={<Visits />} />
+                <Route path="/token" element={<TokenPage />} />
               </Route>
               <Route path="/dashboard" element={<Dashboard />} />
 

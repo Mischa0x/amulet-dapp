@@ -134,6 +134,16 @@ background: radial-gradient(circle at top left,
   border-color: var(--brand-blue-default);
   color: var(--brand-blue-dark);
 }
+.badgeLongevity{
+  background-color: var(--brand-neon-cards-surface-light-green);
+  border-color: var(--brand-green-default);
+  color: var(--brand-green-dark);
+}
+.badgeStructure{
+  background-color: var(--brand-grey-lighter-2);
+  border-color: var(--brand-grey-default);
+  color: var(--brand-grey-dark);
+}
 
 /* ===== BODY ===== */
 .body {
@@ -177,16 +187,22 @@ background: radial-gradient(circle at top left,
   overflow: hidden;
 }
 
-/* Decorative pill image – centered and scalable */
-.pillImg {
+/* Skill category icon – centered in media area */
+.skillIcon {
   position: absolute;
-  top: 14%;                 /* proportional instead of fixed px */
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  width: 20%;               /* scales with card width */
-  height: auto;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
   object-fit: contain;
   pointer-events: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.card:hover .skillIcon {
+  opacity: 1;
 }
 
 /* ===== FOOTER / CTA ===== */
@@ -237,8 +253,9 @@ background: radial-gradient(circle at top left,
 
 @media (max-width: 640px) {
 
-.pillImg {
-  top: 9%;
+.skillIcon {
+  width: 36px;
+  height: 36px;
 }
 .title{
   font-size: 11px;
