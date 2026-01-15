@@ -28,6 +28,15 @@ function LandingPage() {
     navigate('/agent', { state: { initialMessage: text } });
   };
 
+  // Navigate to protected routes (requires wallet connection)
+  const goTo = (path) => {
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    navigate(path);
+  };
+
   const onKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -116,7 +125,13 @@ function LandingPage() {
               </div>
 
             <div className={styles.actionsContainer}>
-              <div className={`${styles.actionCard} ${styles.orderHistory}`}>
+              <div
+                className={`${styles.actionCard} ${styles.orderHistory}`}
+                onClick={() => goTo('/orderhistory')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && goTo('/orderhistory')}
+              >
                 <img
                   alt="Order history"
                   className={styles.actionIcon}
@@ -126,7 +141,13 @@ function LandingPage() {
                 <div className={styles.orderHistorySubtitle}>Check your orders</div>
               </div>
 
-              <div className={`${styles.actionCard} ${styles.shopSupplements}`}>
+              <div
+                className={`${styles.actionCard} ${styles.shopSupplements}`}
+                onClick={() => goTo('/shop')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && goTo('/shop')}
+              >
                 <img
                   alt="Shop supplements"
                   className={styles.actionIcon}
@@ -138,7 +159,13 @@ function LandingPage() {
                 </div>
               </div>
 
-              <div className={`${styles.actionCard} ${styles.viewVisits}`}>
+              <div
+                className={`${styles.actionCard} ${styles.viewVisits}`}
+                onClick={() => goTo('/visits')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && goTo('/visits')}
+              >
                 <img
                   alt="View visits"
                   className={styles.actionIcon}
