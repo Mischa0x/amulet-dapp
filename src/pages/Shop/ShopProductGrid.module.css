@@ -200,6 +200,7 @@ background: radial-gradient(circle at top left,
   pointer-events: none;
   opacity: 0.65;
   transition: opacity 0.2s ease, transform 0.2s ease;
+  filter: var(--icon-filter);
 }
 
 .card:hover .skillIcon {

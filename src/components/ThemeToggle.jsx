@@ -95,6 +95,10 @@ const VAR_SWAP = {
     "--brand-ghostbackground-interactive-inverted",
   "--brand-ghostbackground-interactive-inverted":
     "--brand-ghostbackground-interactive",
+
+  /* Icon filter for dark mode */
+  "--icon-filter": "--icon-filter-inverted",
+  "--icon-filter-inverted": "--icon-filter",
 };
 
 

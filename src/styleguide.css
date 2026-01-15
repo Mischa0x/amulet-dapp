@@ -149,8 +149,12 @@
   --brand-ghostbackground-c2-inverted: #549dfc;
   --brand-ghostbackground-c3-inverted: #343d8f;  
   --brand-ghostbackground-c4-inverted: #21507e;  
-  --brand-ghostbackground-c5-inverted: #174068ae;  
+  --brand-ghostbackground-c5-inverted: #174068ae;
   --brand-ghostbackground-interactive-inverted: #192438;
+
+  /* Icon filters for dark mode */
+  --icon-filter: none;
+  --icon-filter-inverted: brightness(0) invert(1);
   
   --brand-scale-100: 4px;
   --brand-scale-200: 8px;
