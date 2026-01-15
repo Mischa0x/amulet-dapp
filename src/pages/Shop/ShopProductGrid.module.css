@@ -5,20 +5,20 @@ a{
 }
 .grid {
   display: grid;
-  gap: 30px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: stretch;
   justify-items: center;
 }
 
 @media (max-width: 1400px) {
-  .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 }
 @media (max-width: 1000px) {
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr));}
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 .emptyState{
   color: var(--brand-black);
@@ -26,10 +26,10 @@ a{
 /* ===== CARD ===== */
 .card {
   position: relative;
-  width: 90%;
-  min-height: 550px;                  /* keeps overall feel from your design */
-  padding: clamp(0px, 2vw, 30px) clamp(14px, 1.6vw, 18px);
-  border-radius: 10px;
+  width: 100%;
+  min-height: 280px;
+  padding: clamp(0px, 1vw, 12px) clamp(8px, 1vw, 12px);
+  border-radius: 8px;
   border: 1px solid var(--brand-blue-lighter);
 
 
@@ -77,25 +77,25 @@ background: radial-gradient(circle at top left,
 /* ===== BADGE ===== */
 .badge {
   position: absolute;
-  top: 2.5%;
-  left: 3%;
+  top: 3%;
+  left: 4%;
 
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: 8px;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
   border: 1px solid;
 }
 
-.badgeIcon { width: 12px; height: 12px; }
+.badgeIcon { width: 10px; height: 10px; }
 
 .badgeText {
   font-family: var(--body-sm-bold-font-family);
   font-weight: var(--body-sm-bold-font-weight);
   font-style: var(--body-sm-bold-font-style);
-  font-size: var(--body-sm-bold-font-size);
-  line-height: var(--body-sm-bold-line-height);
+  font-size: 9px;
+  line-height: 12px;
   letter-spacing: var(--body-sm-bold-letter-spacing);
   white-space: nowrap;
 }
@@ -150,12 +150,11 @@ background: radial-gradient(circle at top left,
   font-family: var(--heading-h4-font-family);
   font-weight: var(--heading-h4-font-weight);
   color: var(--brand-black);
-  font-size: var(--heading-h4-font-size);
+  font-size: 14px;
   letter-spacing: var(--heading-h4-letter-spacing);
-  line-height: var(--heading-h4-line-height);
+  line-height: 18px;
   font-style: var(--heading-h4-font-style);
-    margin-top: 1rem;
-
+  margin-top: 0.5rem;
 }
 
 .desc {
@@ -164,9 +163,9 @@ background: radial-gradient(circle at top left,
   font-family: var(--body-md-font-family);
   font-weight: var(--body-md-font-weight);
   color: var(--brand-black);
-  font-size: var(--body-md-font-size);
+  font-size: 12px;
   letter-spacing: var(--body-md-letter-spacing);
-  line-height: var(--body-md-line-height);
+  line-height: 16px;
   font-style: var(--body-md-font-style);
 }
 
@@ -186,7 +185,7 @@ background: radial-gradient(circle at top left,
 .footer {
   position: relative;
   width: 100%;
-  height: 60px;
+  height: 40px;
   justify-self: center;
 }
 
@@ -201,10 +200,10 @@ background: radial-gradient(circle at top left,
 
 .cta {
   position: absolute;
-  top: 12px;
+  top: 6px;
   left: 0;
   width: 100%;
-  height: 48px;
+  height: 32px;
   border: 0;
   border-radius: var(--alias-border-width-lg);
   background-color: var(--brand-blue-default);
@@ -213,25 +212,25 @@ background: radial-gradient(circle at top left,
   grid-auto-flow: column;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px 0 24px;
+  padding: 0 10px 0 12px;
   cursor: pointer;
 }
 
 .ctaLabel {
   font-family: var(--body-md-bold-font-family);
   font-weight: var(--body-md-bold-font-weight);
-  font-size: var(--body-md-bold-font-size);
+  font-size: 11px;
   letter-spacing: var(--body-md-bold-letter-spacing);
-  line-height: var(--body-md-bold-line-height);
+  line-height: 14px;
   font-style: var(--body-md-bold-font-style);
 }
 
 .ctaPrice {
   font-family: var(--body-md-bold-font-family);
   font-weight: var(--body-md-bold-font-weight);
-  font-size: var(--body-md-bold-font-size);
+  font-size: 11px;
   letter-spacing: var(--body-md-bold-letter-spacing);
-  line-height: var(--body-md-bold-line-height);
+  line-height: 14px;
   font-style: var(--body-md-bold-font-style);
 }
 
@@ -240,28 +239,26 @@ background: radial-gradient(circle at top left,
 @media (max-width: 640px) {
 
 .pillImg {
-
-  top: 9%;                
-
+  top: 9%;
 }
 .title{
-  font-size: 20px;
-  line-height: 28px;
-  margin-top: 0.6rem;
+  font-size: 12px;
+  line-height: 16px;
+  margin-top: 0.4rem;
 }
 .desc{
-    font-size: 14px;
-  line-height: 18px;
+  font-size: 10px;
+  line-height: 14px;
 }
 .card{
-  min-height: 400px;
+  min-height: 220px;
 }
 .badge{
-      top: clamp(5px, 2.2vw, 29px);
+  top: clamp(5px, 2.2vw, 20px);
 }
 .badgeText{
-    font-size: 8px;
-    line-height: 12px;
+  font-size: 7px;
+  line-height: 10px;
 }
 .ctaLabel{
   display:none;
