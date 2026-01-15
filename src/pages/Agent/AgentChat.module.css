@@ -387,3 +387,54 @@ display: none;
     font-size: 13px;
   }
 }
+
+/* Loading animation */
+.loadingDots {
+  display: flex;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.loadingDots span {
+  font-size: 12px;
+  color: var(--brand-blue-dark);
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.loadingDots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loadingDots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Welcome message */
+.welcomeMessage {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--brand-grey-dark);
+}
+
+.welcomeMessage h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--brand-blue-dark);
+}
+
+.welcomeMessage p {
+  font-size: 16px;
+  opacity: 0.8;
+}
