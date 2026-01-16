@@ -131,3 +131,102 @@ A decentralized application (DApp) for longevity science built with React, TypeS
    - Added icon filter variables to VAR_SWAP in ThemeToggle.jsx
    - Applied `filter: var(--icon-filter)` to `.skillIcon` in ShopProductGrid.module.css
    - Icons now appear white/inverted in dark mode
+
+## Session History (2026-01-16) - Compute Credits Tokenomics Design
+
+**Status:** Design complete, awaiting confirmation before implementation
+
+### Research Completed
+- ChatGPT API pricing (GPT-5: $1.25/$10 per 1M tokens)
+- Claude API pricing (Opus 4.5: $5/$25 per 1M tokens)
+- Perplexity API pricing (Sonar Pro: $3/$15 per 1M tokens + request fees)
+
+### System Design Decisions
+1. **Query tiers:** Basic (1 credit), Standard (3 credits), Deep Research (25 credits)
+2. **Pricing:** 1 credit = $0.05 fiat, 1 AMULET = 2 credits (50% discount)
+3. **AMULET handling:** Staked (locked while credits active)
+4. **Credit expiration:** 12 months from purchase/stake
+5. **Free tier:** 40 credits per wallet (30-day expiry)
+6. **Mid-query depletion:** Grace completion (max -25 credits)
+7. **Credit tracking:** Vercel KV (off-chain)
+8. **Fiat payments:** Stripe integration
+
+### Architecture
+- On-chain: AmuletStaking.sol contract for staking AMULET
+- Off-chain: Vercel KV for credit usage, free tier claims, purchases
+- APIs: /api/credits, /api/stripe/checkout, /api/stripe/webhook
+- Frontend: TokenPage.jsx overhaul with staking + Stripe
+
+### Full Design Document
+See: `COMPUTE_CREDITS_DESIGN.md`
+
+### Questions Pending User Confirmation
+1. Stripe account ready or use test keys?
+2. Vercel KV already enabled or need setup instructions?
+3. Include Hardhat/Foundry for contract deployment?
+
+### To Resume
+```
+Resume implementing the compute credits system from COMPUTE_CREDITS_DESIGN.md
+```
+
+## Session History (2026-01-16) - Infrastructure Setup
+
+### Completed
+1. ✅ Stripe account created (test mode)
+2. ✅ Vercel KV database created (`amulet-credits`, Upstash Redis, prefix: `KV`)
+3. ✅ Vercel KV connected to amulet-dapp project
+
+### Pending Setup (User to Complete)
+```bash
+# 1. Pull env vars locally
+cd /home/mischa/amulet-dapp
+npx vercel env pull .env.local
+
+# 2. Install Hardhat
+npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox
+
+# 3. Initialize Hardhat (select JavaScript project)
+npx hardhat init
+
+# 4. Install OpenZeppelin
+npm install @openzeppelin/contracts
+
+# 5. Get Sei Testnet funds
+# Visit: https://atlantic-2.app.sei.io/faucet
+
+# 6. Add Stripe env vars to Vercel
+# STRIPE_SECRET_KEY=sk_test_...
+# STRIPE_WEBHOOK_SECRET=whsec_...
+# VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
+```
+
+### To Resume
+```
+Resume implementing the compute credits system - I've completed the setup steps
+```
+
+## Session History (2026-01-16) - Shop & Product Page UI Fixes
+
+### Shop Page Fixes
+1. **Card alignment** - Added `.cardLink` and `.cardContent` flexbox styles to ensure "Add to Cart" buttons align at bottom of all cards
+2. **Missing category tabs** - Added ALTERNATIVE, CLARITY, HORMONAL tabs to ShopFilters.jsx
+3. **Alphabetical tab order** - Reordered tabs: ALL, ALTERNATIVE, CLARITY, HORMONAL, LONGEVITY, METABOLICS, REGEN, RESTORATION, STRUCTURE, VITALITY
+4. **Verified category icons** - All icons correctly mapped (metabolics=droplet, vitality=lightning, etc.)
+
+### Product Page Fixes
+1. **Compact layout** - Replaced large hero image (`FuturisticPillProductPage.png`) with small category icon (140x140px)
+2. **Single viewport** - All content now fits on one screen without scrolling:
+   - Icon + skill badge (left)
+   - Title, description, metrics, specs, purchase button (right)
+3. **Streamlined design** - Removed redundant sections, simplified metrics display
+
+### Files Modified
+- `src/pages/Shop/ShopFilters.jsx` - Added missing tabs, alphabetical order
+- `src/pages/Shop/ShopProductGrid.module.css` - Card alignment flexbox
+- `src/pages/ProductPage/ProductPage.jsx` - Compact icon-based layout
+- `src/pages/ProductPage/ProductPage.module.css` - Simplified styles
+
+### Commits
+- `88b4ede` - fix(shop): Align cards and add missing category tabs
+- `57dd3f9` - fix(product): Compact product page layout to fit viewport
