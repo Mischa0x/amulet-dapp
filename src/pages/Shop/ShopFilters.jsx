@@ -4,12 +4,15 @@ import styles from "./ShopFilters.module.css";
 
 const SKILLS = [
   "ALL",
-  "RESTORATION",
-  "VITALITY",
-  "METABOLICS",
+  "ALTERNATIVE",
+  "CLARITY",
+  "HORMONAL",
   "LONGEVITY",
+  "METABOLICS",
   "REGEN",
+  "RESTORATION",
   "STRUCTURE",
+  "VITALITY",
 ];
 
 export default function ShopFilters({

@@ -36,29 +36,38 @@ a{
   flex-direction: column;
   overflow: hidden;
 
+  /* Soft "glass" fill */
+  background: radial-gradient(circle at top left,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.02) 40%,
+    rgba(255, 255, 255, 0) 100%);
 
-      /* Layout */
-  position: relative;
-
-
-
-  /* Soft “glass” fill (fill-opacity="0.2") */
-background: radial-gradient(circle at top left,
-  rgba(255, 255, 255, 0.04) 0%,
-  rgba(255, 255, 255, 0.02) 40%,
-  rgba(255, 255, 255, 0) 100%);
-
-  /* Optional: frosted effect if there's content behind */
+  /* Frosted effect */
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 
-  /* Drop shadow similar to the filter */
-  box-shadow:
-    0 2px 2px rgba(165, 166, 166, 0.096);
+  /* Drop shadow */
+  box-shadow: 0 2px 2px rgba(165, 166, 166, 0.096);
 
-  /* Smooth hover if you want */
+  /* Smooth hover */
   transition: box-shadow 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
 
+/* Card link wrapper - takes remaining space above footer */
+.cardLink {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Card content container */
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
 }
 
 /* Media rectangle (scaled to card) */
