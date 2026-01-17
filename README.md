@@ -1,5 +1,47 @@
 # AMULET-DAPP
 
+A decentralized AI health platform built with React, TypeScript, and Web3 technologies on Sei blockchain.
+
+**Live:** https://amulet-dapp.vercel.app
+
+## Quick Links
+
+| Documentation | Description |
+|--------------|-------------|
+| [Architecture](docs/ARCHITECTURE.md) | System design, tech stack, data flow |
+| [Credit System](docs/CREDITS.md) | Compute credits, tiers, APIs |
+| [Stripe Integration](docs/STRIPE.md) | Payment flow, webhooks |
+| [AMULET Token](docs/TOKEN.md) | Token utility, staking, contracts |
+
+## Tech Stack
+
+- **Frontend:** React 19 + TypeScript + Vite
+- **Web3:** Wagmi v2 + RainbowKit v2 + Viem
+- **Backend:** Vercel Serverless Functions
+- **Database:** Vercel KV (Redis)
+- **AI:** Anthropic Claude API
+- **Payments:** Stripe Checkout
+- **Blockchain:** Sei Testnet (EVM)
+
+## Key Systems
+
+### Compute Credits
+AI interactions are metered via compute credits:
+- **Basic Query:** 1 credit (simple questions)
+- **Standard Analysis:** 3 credits (comparisons, advice)
+- **Deep Research:** 25 credits (comprehensive analysis)
+
+Credits can be obtained via:
+- Free claim (40 credits every 30 days)
+- Stripe purchase ($0.05/credit)
+- AMULET staking (2x value - planned)
+
+### AMULET Token
+- Contract: `0xe8564273D6346Db0Ff54d3a6CCb1Dd12993A042c` (Sei Testnet)
+- Utility: Stake for discounted credits, governance (future)
+
+---
+
 # Project Overview
 
 A decentralized application (DApp) built with React, TypeScript, and Web3 technologies, connecting to the Sei Testnet blockchain. The platform centers around longevity science, offering users advanced tools and services to enhance their health and wellness journey.
