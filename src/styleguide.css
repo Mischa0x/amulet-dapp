@@ -155,6 +155,10 @@
   /* Icon filters for dark mode */
   --icon-filter: none;
   --icon-filter-inverted: brightness(0) invert(1);
+
+  /* Border colors */
+  --mapped-border-and-dividers-primary: rgba(0, 0, 0, 0.08);
+  --mapped-border-and-dividers-primary-dark: rgba(255, 255, 255, 0.12);
   
   --brand-scale-100: 4px;
   --brand-scale-200: 8px;

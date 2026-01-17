@@ -99,6 +99,10 @@ const VAR_SWAP = {
   /* Icon filter for dark mode */
   "--icon-filter": "--icon-filter-inverted",
   "--icon-filter-inverted": "--icon-filter",
+
+  /* Border colors */
+  "--mapped-border-and-dividers-primary": "--mapped-border-and-dividers-primary-dark",
+  "--mapped-border-and-dividers-primary-dark": "--mapped-border-and-dividers-primary",
 };
 
 
