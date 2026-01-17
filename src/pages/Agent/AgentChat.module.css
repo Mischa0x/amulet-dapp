@@ -584,7 +584,7 @@ display: none;
 }
 
 .buyCreditsButton {
-  background: var(--brand-blue-dark);
+  background: var(--brand-blue-default, #1D7AFC);
   color: white;
   border: none;
   padding: 8px 16px;
@@ -631,7 +631,7 @@ display: none;
 }
 
 .creditCost {
-  color: var(--brand-blue-dark);
+  color: var(--brand-blue-default, #1D7AFC);
   font-weight: 500;
 }
 
