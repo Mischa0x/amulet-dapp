@@ -641,3 +641,39 @@ display: none;
   color: var(--brand-black);
   opacity: 0.6;
 }
+
+/* Mobile Credit System Styles */
+@media (max-width: 768px) {
+  .creditBar {
+    padding: 6px 12px;
+    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .creditError {
+    margin: 12px;
+    padding: 12px;
+  }
+
+  .creditError p {
+    font-size: 13px;
+  }
+
+  .buyCreditsButton,
+  .dismissButton {
+    padding: 8px 12px;
+    font-size: 12px;
+    width: 100%;
+    margin: 4px 0;
+  }
+
+  .buyCreditsButton {
+    margin-right: 0;
+  }
+
+  .creditUsage {
+    flex-wrap: wrap;
+    font-size: 10px;
+  }
+}

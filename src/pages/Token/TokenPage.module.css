@@ -488,4 +488,69 @@
   .packageCredits {
     font-size: 20px;
   }
+
+  /* Card and pricing mobile tweaks */
+  .card {
+    padding: 16px;
+  }
+
+  .cardTitle {
+    font-size: 13px;
+  }
+
+  .cardDesc {
+    font-size: 12px;
+  }
+
+  .pricingItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .pricingLeft {
+    width: 100%;
+  }
+
+  .pricingDesc {
+    font-size: 10px;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .pricingCost {
+    align-self: flex-end;
+    margin-top: -20px;
+  }
+
+  .claimButton,
+  .stakeButton,
+  .buyButton {
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+
+  .input {
+    font-size: 14px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
+
+  .packageCard {
+    padding: 20px 16px;
+  }
+
+  .packageName {
+    font-size: 14px;
+  }
+
+  .packagePrice {
+    font-size: 16px;
+  }
+
+  .packageRate {
+    font-size: 11px;
+  }
 }
