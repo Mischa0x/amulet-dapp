@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import { useAccount } from "wagmi";
 import { listProducts } from "../../services/ProductsService";
 import styles from "./AgentChat.module.css";
 
@@ -10,17 +11,41 @@ export default function AgentChat() {
   const [products, setProducts] = useState([]);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [creditBalance, setCreditBalance] = useState(null);
+  const [lastCreditUsage, setLastCreditUsage] = useState(null);
+  const [creditError, setCreditError] = useState(null);
 
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { address, isConnected } = useAccount();
 
   // Load all products once
   useEffect(() => {
     const allProducts = listProducts();
     setProducts(allProducts);
   }, []);
+
+  // Fetch credit balance when wallet connects
+  useEffect(() => {
+    if (address) {
+      fetchCreditBalance();
+    } else {
+      setCreditBalance(null);
+    }
+  }, [address]);
+
+  const fetchCreditBalance = async () => {
+    if (!address) return;
+    try {
+      const res = await fetch(`/api/credits?address=${address}`);
+      const data = await res.json();
+      setCreditBalance(data.balance || 0);
+    } catch (err) {
+      console.error('Failed to fetch credits:', err);
+    }
+  };
 
   // Handle initial message from landing page
   useEffect(() => {
@@ -95,6 +120,10 @@ export default function AgentChat() {
     }
 
     try {
+      // Clear any previous credit error
+      setCreditError(null);
+      setLastCreditUsage(null);
+
       // Build conversation history for context
       const conversationHistory = [...messages, userMessage].map((m) => ({
         role: m.role,
@@ -104,8 +133,20 @@ export default function AgentChat() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: conversationHistory }),
+        body: JSON.stringify({
+          messages: conversationHistory,
+          address: address // Pass wallet address for credit tracking
+        }),
       });
+
+      // Handle insufficient credits
+      if (response.status === 402) {
+        const errorData = await response.json();
+        setCreditError(errorData);
+        // Remove the loading assistant message
+        setMessages((prev) => prev.filter((m) => m.id !== assistantMessage.id));
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
@@ -116,11 +157,17 @@ export default function AgentChat() {
       const productIds = extractProductIds(aiContent);
       const cleanContent = cleanResponseText(aiContent);
 
+      // Update credit info if returned
+      if (data.credits) {
+        setLastCreditUsage(data.credits);
+        setCreditBalance(data.credits.newBalance);
+      }
+
       // Update the assistant message with the response
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMessage.id
-            ? { ...m, content: cleanContent, isLoading: false, productIds }
+            ? { ...m, content: cleanContent, isLoading: false, productIds, creditUsage: data.credits }
             : m
         )
       );
@@ -151,12 +198,53 @@ export default function AgentChat() {
   return (
     <>
       <div className={styles.chatColumn}>
+        {/* Credit Balance Display */}
+        {isConnected && creditBalance !== null && (
+          <div className={styles.creditBar}>
+            <span className={styles.creditLabel}>Credits:</span>
+            <span className={styles.creditValue}>{creditBalance}</span>
+            {creditBalance < 10 && (
+              <button
+                className={styles.buyCreditsLink}
+                onClick={() => navigate('/token')}
+              >
+                Get More
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Insufficient Credits Error */}
+        {creditError && (
+          <div className={styles.creditError}>
+            <p><strong>Insufficient Credits</strong></p>
+            <p>{creditError.message}</p>
+            <button
+              className={styles.buyCreditsButton}
+              onClick={() => navigate('/token')}
+            >
+              Buy Credits
+            </button>
+            <button
+              className={styles.dismissButton}
+              onClick={() => setCreditError(null)}
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
         <div className={styles.messagesList}>
           <div className={styles.messagesInner}>
             {messages.length === 0 && (
               <div className={styles.welcomeMessage}>
                 <h2>Welcome to Amulet AI</h2>
                 <p>I'm Dr. Alex, your longevity physician. How can I help you today?</p>
+                {!isConnected && (
+                  <p className={styles.connectPrompt}>
+                    Connect your wallet to track credit usage.
+                  </p>
+                )}
               </div>
             )}
 
@@ -179,6 +267,14 @@ export default function AgentChat() {
                         <div className={styles.markdownContent}>
                           <ReactMarkdown>{m.content}</ReactMarkdown>
                         </div>
+
+                        {/* Credit usage indicator */}
+                        {m.creditUsage && (
+                          <div className={styles.creditUsage}>
+                            <span className={styles.creditTier}>{m.creditUsage.tierName}</span>
+                            <span className={styles.creditCost}>-{m.creditUsage.creditsUsed} credits</span>
+                          </div>
+                        )}
 
                         {/* Product recommendations */}
                         {m.productIds && m.productIds.length > 0 && (

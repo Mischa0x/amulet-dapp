@@ -528,3 +528,116 @@ display: none;
   border: none;
   border-top: 1px solid var(--brand-grey-lighter-2);
 }
+
+/* Credit System Styles */
+.creditBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--brand-neon-cards-surface-light-blue);
+  border-bottom: 1px solid var(--mapped-border-and-dividers-primary);
+  font-size: 13px;
+}
+
+.creditLabel {
+  color: var(--brand-black);
+  opacity: 0.6;
+}
+
+.creditValue {
+  color: var(--brand-black);
+  font-weight: 600;
+}
+
+.buyCreditsLink {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--brand-blue-dark);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.buyCreditsLink:hover {
+  opacity: 0.8;
+}
+
+.creditError {
+  margin: 16px;
+  padding: 16px;
+  background: rgba(255, 100, 100, 0.1);
+  border: 1px solid rgba(255, 100, 100, 0.3);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.creditError p {
+  margin: 0 0 8px 0;
+  color: var(--brand-black);
+}
+
+.creditError p:first-child {
+  color: #d32f2f;
+}
+
+.buyCreditsButton {
+  background: var(--brand-blue-dark);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.buyCreditsButton:hover {
+  opacity: 0.9;
+}
+
+.dismissButton {
+  background: transparent;
+  color: var(--brand-black);
+  border: 1px solid var(--mapped-border-and-dividers-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.dismissButton:hover {
+  opacity: 1;
+}
+
+.creditUsage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--mapped-border-and-dividers-primary);
+  font-size: 11px;
+}
+
+.creditTier {
+  color: var(--brand-black);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.creditCost {
+  color: var(--brand-blue-dark);
+  font-weight: 500;
+}
+
+.connectPrompt {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--brand-black);
+  opacity: 0.6;
+}

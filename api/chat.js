@@ -1,5 +1,8 @@
-// Vercel Serverless Function for Claude AI Chat
+// Vercel Serverless Function for Claude AI Chat with Credit System
 // POST /api/chat
+
+import { kv } from '@vercel/kv';
+import { classifyQuery, formatTierName } from './lib/queryClassifier.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -53,6 +56,9 @@ Important guidelines:
 - Focus on longevity and preventive health when relevant
 - Never diagnose definitively - offer possibilities and recommendations`;
 
+// Grace credits for mid-query depletion (max negative balance allowed)
+const GRACE_CREDITS = 25;
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -73,12 +79,76 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages } = req.body;
+    const { messages, address } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Messages array required' });
     }
 
+    // Get the latest user message for classification
+    const latestUserMessage = messages.filter(m => m.role === 'user').pop();
+    if (!latestUserMessage) {
+      return res.status(400).json({ error: 'No user message found' });
+    }
+
+    // Classify the query to determine credit cost
+    const classification = classifyQuery(latestUserMessage.content, messages.slice(0, -1));
+    const creditCost = classification.credits;
+
+    // If wallet address provided, check and deduct credits
+    let creditInfo = null;
+    if (address) {
+      const normalizedAddress = address.toLowerCase();
+      const balanceKey = `credits:${normalizedAddress}:balance`;
+      const usedKey = `credits:${normalizedAddress}:used`;
+
+      // Get current balance
+      let balance = await kv.get(balanceKey) || 0;
+
+      // Check if user has enough credits (with grace period)
+      if (balance < creditCost && balance < -GRACE_CREDITS) {
+        return res.status(402).json({
+          error: 'Insufficient credits',
+          required: creditCost,
+          balance: balance,
+          tier: classification.tier,
+          tierName: formatTierName(classification.tier),
+          message: `This ${formatTierName(classification.tier)} requires ${creditCost} credits. You have ${balance} credits.`
+        });
+      }
+
+      // Deduct credits
+      const newBalance = balance - creditCost;
+      await kv.set(balanceKey, newBalance);
+
+      // Track total used
+      const totalUsed = await kv.get(usedKey) || 0;
+      await kv.set(usedKey, totalUsed + creditCost);
+
+      // Track query history
+      const historyKey = `credits:${normalizedAddress}:history`;
+      const historyEntry = {
+        timestamp: Date.now(),
+        tier: classification.tier,
+        credits: creditCost,
+        reason: classification.reason,
+        queryPreview: latestUserMessage.content.substring(0, 100)
+      };
+      await kv.lpush(historyKey, JSON.stringify(historyEntry));
+      // Keep only last 100 entries
+      await kv.ltrim(historyKey, 0, 99);
+
+      creditInfo = {
+        tier: classification.tier,
+        tierName: formatTierName(classification.tier),
+        creditsUsed: creditCost,
+        previousBalance: balance,
+        newBalance: newBalance,
+        reason: classification.reason
+      };
+    }
+
+    // Call Claude API
     const response = await fetch(ANTHROPIC_API_URL, {
       method: 'POST',
       headers: {
@@ -100,6 +170,16 @@ export default async function handler(req, res) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Anthropic API error:', response.status, errorText);
+
+      // If API fails after we deducted credits, refund them
+      if (address && creditInfo) {
+        const normalizedAddress = address.toLowerCase();
+        const balanceKey = `credits:${normalizedAddress}:balance`;
+        const usedKey = `credits:${normalizedAddress}:used`;
+        await kv.incrby(balanceKey, creditCost);
+        await kv.decrby(usedKey, creditCost);
+      }
+
       return res.status(response.status).json({ error: 'AI service error', details: errorText });
     }
 
@@ -108,6 +188,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       content: data.content[0].text,
       usage: data.usage,
+      credits: creditInfo
     });
 
   } catch (error) {
