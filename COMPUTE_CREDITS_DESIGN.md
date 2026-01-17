@@ -92,13 +92,15 @@ Where:
 
 ## Stripe Credit Packages
 
-| Package | Credits | Fiat Price | AMULET Stake | Validity |
-|---------|---------|------------|--------------|----------|
-| **Free Tier** | 40 | $0 | 0 | 30 days |
-| **Starter** | 100 | $5.00 | 50 AMULET | 12 months |
-| **Builder** | 500 | $25.00 | 250 AMULET | 12 months |
-| **Pro** | 2,000 | $100.00 | 1,000 AMULET | 12 months |
-| **Enterprise** | 10,000 | $500.00 | 5,000 AMULET | 12 months |
+Volume discounts apply to larger packages:
+
+| Package | Credits | Fiat Price | Per Credit | Discount | AMULET Stake | Validity |
+|---------|---------|------------|------------|----------|--------------|----------|
+| **Free Tier** | 40 | $0 | — | — | 0 | 30 days |
+| **Starter** | 100 | $5.00 | $0.050 | — | 50 AMULET | 12 months |
+| **Builder** | 500 | $22.50 | $0.045 | 10% | 225 AMULET | 12 months |
+| **Pro** | 2,000 | $80.00 | $0.040 | 20% | 800 AMULET | 12 months |
+| **Enterprise** | 10,000 | $350.00 | $0.035 | 30% | 3,500 AMULET | 12 months |
 
 ---
 

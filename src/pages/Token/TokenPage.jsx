@@ -55,12 +55,12 @@ const STAKING_ABI = [
   },
 ];
 
-// Credit packages
+// Credit packages with volume discounts
 const PACKAGES = [
-  { id: 'starter', name: 'Starter', credits: 100, price: 5, popular: false },
-  { id: 'builder', name: 'Builder', credits: 500, price: 25, popular: true },
-  { id: 'pro', name: 'Pro', credits: 2000, price: 100, popular: false },
-  { id: 'enterprise', name: 'Enterprise', credits: 10000, price: 500, popular: false },
+  { id: 'starter', name: 'Starter', credits: 100, price: 5, discount: null, popular: false },
+  { id: 'builder', name: 'Builder', credits: 500, price: 22.5, discount: 10, popular: true },
+  { id: 'pro', name: 'Pro', credits: 2000, price: 80, discount: 20, popular: false },
+  { id: 'enterprise', name: 'Enterprise', credits: 10000, price: 350, discount: 30, popular: false },
 ];
 
 function TokenPage() {
@@ -373,7 +373,8 @@ function TokenPage() {
                 <div className={styles.packageCredits}>{pkg.credits.toLocaleString()} credits</div>
                 <div className={styles.packagePrice}>${pkg.price}</div>
                 <div className={styles.packageRate}>
-                  ${(pkg.price / pkg.credits * 100).toFixed(1)}¢ per credit
+                  ${(pkg.price / pkg.credits).toFixed(3)} per credit
+                  {pkg.discount && <span className={styles.discountBadge}>{pkg.discount}% off</span>}
                 </div>
                 <button
                   className={styles.buyButton}
