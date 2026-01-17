@@ -99,11 +99,18 @@ export default async function handler(req, res) {
     let creditInfo = null;
     if (address) {
       const normalizedAddress = address.toLowerCase();
-      const balanceKey = `credits:${normalizedAddress}:balance`;
-      const usedKey = `credits:${normalizedAddress}:used`;
+      const creditKey = `credits:${normalizedAddress}`;
 
-      // Get current balance
-      let balance = await kv.get(balanceKey) || 0;
+      // Get current credit data (same format as /api/credits endpoints)
+      const creditData = await kv.get(creditKey) || {
+        balance: 0,
+        freeClaimedAt: null,
+        stakedCredits: 0,
+        purchasedCredits: 0,
+        totalUsed: 0,
+      };
+
+      const balance = creditData.balance || 0;
 
       // Check if user has enough credits (with grace period)
       if (balance < creditCost && balance < -GRACE_CREDITS) {
@@ -117,15 +124,18 @@ export default async function handler(req, res) {
         });
       }
 
-      // Deduct credits
+      // Deduct credits and update total used
       const newBalance = balance - creditCost;
-      await kv.set(balanceKey, newBalance);
+      const newTotalUsed = (creditData.totalUsed || 0) + creditCost;
 
-      // Track total used
-      const totalUsed = await kv.get(usedKey) || 0;
-      await kv.set(usedKey, totalUsed + creditCost);
+      // Save updated credit data
+      await kv.set(creditKey, {
+        ...creditData,
+        balance: newBalance,
+        totalUsed: newTotalUsed,
+      });
 
-      // Track query history
+      // Track query history (separate list)
       const historyKey = `credits:${normalizedAddress}:history`;
       const historyEntry = {
         timestamp: Date.now(),
@@ -174,10 +184,15 @@ export default async function handler(req, res) {
       // If API fails after we deducted credits, refund them
       if (address && creditInfo) {
         const normalizedAddress = address.toLowerCase();
-        const balanceKey = `credits:${normalizedAddress}:balance`;
-        const usedKey = `credits:${normalizedAddress}:used`;
-        await kv.incrby(balanceKey, creditCost);
-        await kv.decrby(usedKey, creditCost);
+        const creditKey = `credits:${normalizedAddress}`;
+        const currentData = await kv.get(creditKey);
+        if (currentData) {
+          await kv.set(creditKey, {
+            ...currentData,
+            balance: (currentData.balance || 0) + creditCost,
+            totalUsed: Math.max(0, (currentData.totalUsed || 0) - creditCost),
+          });
+        }
       }
 
       return res.status(response.status).json({ error: 'AI service error', details: errorText });
