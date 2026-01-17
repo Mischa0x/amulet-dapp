@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { useAccount } from "wagmi";
 import { listProducts } from "../../services/ProductsService";
+import { useCredits } from "../../contexts/CreditsContext";
 import styles from "./AgentChat.module.css";
 
 export default function AgentChat() {
@@ -11,7 +12,6 @@ export default function AgentChat() {
   const [products, setProducts] = useState([]);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [creditBalance, setCreditBalance] = useState(null);
   const [lastCreditUsage, setLastCreditUsage] = useState(null);
   const [creditError, setCreditError] = useState(null);
 
@@ -20,32 +20,13 @@ export default function AgentChat() {
   const navigate = useNavigate();
   const location = useLocation();
   const { address, isConnected } = useAccount();
+  const { creditData, loading: creditLoading, updateCredits, refetchCredits } = useCredits();
 
   // Load all products once
   useEffect(() => {
     const allProducts = listProducts();
     setProducts(allProducts);
   }, []);
-
-  // Fetch credit balance when wallet connects
-  useEffect(() => {
-    if (address) {
-      fetchCreditBalance();
-    } else {
-      setCreditBalance(null);
-    }
-  }, [address]);
-
-  const fetchCreditBalance = async () => {
-    if (!address) return;
-    try {
-      const res = await fetch(`/api/credits?address=${address}`);
-      const data = await res.json();
-      setCreditBalance(data.balance || 0);
-    } catch (err) {
-      console.error('Failed to fetch credits:', err);
-    }
-  };
 
   // Handle initial message from landing page
   useEffect(() => {
@@ -160,7 +141,7 @@ export default function AgentChat() {
       // Update credit info if returned
       if (data.credits) {
         setLastCreditUsage(data.credits);
-        setCreditBalance(data.credits.newBalance);
+        updateCredits(data.credits);
       }
 
       // Update the assistant message with the response
@@ -199,11 +180,11 @@ export default function AgentChat() {
     <>
       <div className={styles.chatColumn}>
         {/* Credit Balance Display */}
-        {isConnected && creditBalance !== null && (
+        {isConnected && !creditLoading && (
           <div className={styles.creditBar}>
             <span className={styles.creditLabel}>Credits:</span>
-            <span className={styles.creditValue}>{creditBalance}</span>
-            {creditBalance < 10 && (
+            <span className={styles.creditValue}>{creditData?.balance ?? 0}</span>
+            {(creditData?.balance ?? 0) < 10 && (
               <button
                 className={styles.buyCreditsLink}
                 onClick={() => navigate('/token')}

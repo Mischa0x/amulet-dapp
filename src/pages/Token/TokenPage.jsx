@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { useSearchParams } from 'react-router-dom';
+import { useCredits } from '../../contexts/CreditsContext';
 import styles from './TokenPage.module.css';
 
 // AMULET Token contract on Ethereum Mainnet (update after deployment)
@@ -65,8 +66,7 @@ const PACKAGES = [
 function TokenPage() {
   const { address, isConnected } = useAccount();
   const [searchParams] = useSearchParams();
-  const [creditData, setCreditData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { creditData, loading, refetchCredits, setCreditData } = useCredits();
   const [claimingFree, setClaimingFree] = useState(false);
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [stakeAmount, setStakeAmount] = useState('');
@@ -110,27 +110,12 @@ function TokenPage() {
     ? parseFloat(formatUnits(amuletBalance, 18)).toFixed(2)
     : '0.00';
 
-  // Fetch credit balance from API
+  // Refetch credits on payment success
   useEffect(() => {
-    if (!address) {
-      setLoading(false);
-      return;
+    if (paymentSuccess) {
+      refetchCredits();
     }
-
-    const fetchCredits = async () => {
-      try {
-        const res = await fetch(`/api/credits?address=${address}`);
-        const data = await res.json();
-        setCreditData(data);
-      } catch (err) {
-        console.error('Failed to fetch credits:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCredits();
-  }, [address, paymentSuccess]);
+  }, [paymentSuccess, refetchCredits]);
 
   // Handle approve success -> stake
   useEffect(() => {
@@ -165,10 +150,8 @@ function TokenPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address }),
       });
-      // Refresh credit data
-      const res = await fetch(`/api/credits?address=${address}`);
-      const data = await res.json();
-      setCreditData(data);
+      // Refresh credit data via context
+      refetchCredits();
     } catch (err) {
       console.error('Failed to sync stake:', err);
     }
@@ -352,16 +335,25 @@ function TokenPage() {
             </div>
             <div className={styles.pricingList}>
               <div className={styles.pricingItem}>
-                <span>Basic Query</span>
-                <span>1 credit</span>
+                <div className={styles.pricingLeft}>
+                  <span className={styles.pricingTier}>Basic Query</span>
+                  <span className={styles.pricingDesc}>Simple questions, quick answers</span>
+                </div>
+                <span className={styles.pricingCost}>1 credit</span>
               </div>
               <div className={styles.pricingItem}>
-                <span>Standard Analysis</span>
-                <span>3 credits</span>
+                <div className={styles.pricingLeft}>
+                  <span className={styles.pricingTier}>Standard Analysis</span>
+                  <span className={styles.pricingDesc}>Comparisons, personalized advice</span>
+                </div>
+                <span className={styles.pricingCost}>3 credits</span>
               </div>
               <div className={styles.pricingItem}>
-                <span>Deep Research</span>
-                <span>25 credits</span>
+                <div className={styles.pricingLeft}>
+                  <span className={styles.pricingTier}>Deep Research</span>
+                  <span className={styles.pricingDesc}>Comprehensive, evidence-based analysis</span>
+                </div>
+                <span className={styles.pricingCost}>25 credits</span>
               </div>
             </div>
           </div>

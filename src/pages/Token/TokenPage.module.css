@@ -286,13 +286,14 @@
 .pricingList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   margin-top: auto;
 }
 
 .pricingItem {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
   font-size: 13px;
   color: var(--brand-black);
@@ -302,6 +303,29 @@
 
 .pricingItem:last-child {
   border-bottom: none;
+}
+
+.pricingLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pricingTier {
+  font-weight: 500;
+  color: var(--brand-black);
+}
+
+.pricingDesc {
+  font-size: 11px;
+  color: var(--brand-black);
+  opacity: 0.5;
+}
+
+.pricingCost {
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--brand-blue-default, #1D7AFC);
 }
 
 /* Purchase Section */
@@ -373,9 +397,10 @@
 
 .packageCredits {
   font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--brand-black);
+  white-space: nowrap;
 }
 
 .packagePrice {

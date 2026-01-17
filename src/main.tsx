@@ -6,13 +6,16 @@ import App from "./App.jsx";
 import './index.css';
 import './styleguide.css';
 import Web3Provider from "./providers/Web3Provider";
+import { CreditsProvider } from "./contexts/CreditsContext";
 
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
       <Web3Provider>
-        <App />
+        <CreditsProvider>
+          <App />
+        </CreditsProvider>
       </Web3Provider>
     </BrowserRouter>
   </React.StrictMode>
