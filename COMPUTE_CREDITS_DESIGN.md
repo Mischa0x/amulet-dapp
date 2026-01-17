@@ -97,10 +97,10 @@ Volume discounts apply to larger packages:
 | Package | Credits | Fiat Price | Per Credit | Discount | AMULET Stake | Validity |
 |---------|---------|------------|------------|----------|--------------|----------|
 | **Free Tier** | 40 | $0 | — | — | 0 | 30 days |
-| **Starter** | 100 | $5.00 | $0.050 | — | 50 AMULET | 12 months |
-| **Builder** | 500 | $22.50 | $0.045 | 10% | 225 AMULET | 12 months |
-| **Pro** | 2,000 | $80.00 | $0.040 | 20% | 800 AMULET | 12 months |
-| **Enterprise** | 10,000 | $350.00 | $0.035 | 30% | 3,500 AMULET | 12 months |
+| **Mortal** | 100 | $5.00 | $0.050 | — | 50 AMULET | 12 months |
+| **Awakened** | 500 | $22.50 | $0.045 | 10% | 225 AMULET | 12 months |
+| **Transcendent** | 2,000 | $80.00 | $0.040 | 20% | 800 AMULET | 12 months |
+| **Immortal** | 10,000 | $350.00 | $0.035 | 30% | 3,500 AMULET | 12 months |
 
 ---
 

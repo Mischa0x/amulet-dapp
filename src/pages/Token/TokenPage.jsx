@@ -57,10 +57,10 @@ const STAKING_ABI = [
 
 // Credit packages with volume discounts
 const PACKAGES = [
-  { id: 'starter', name: 'Starter', credits: 100, price: 5, discount: null, popular: false },
-  { id: 'builder', name: 'Builder', credits: 500, price: 22.5, discount: 10, popular: true },
-  { id: 'pro', name: 'Pro', credits: 2000, price: 80, discount: 20, popular: false },
-  { id: 'enterprise', name: 'Enterprise', credits: 10000, price: 350, discount: 30, popular: false },
+  { id: 'mortal', name: 'Mortal', credits: 100, price: 5, discount: null, popular: false },
+  { id: 'awakened', name: 'Awakened', credits: 500, price: 22.5, discount: 10, popular: true },
+  { id: 'transcendent', name: 'Transcendent', credits: 2000, price: 80, discount: 20, popular: false },
+  { id: 'immortal', name: 'Immortal', credits: 10000, price: 350, discount: 30, popular: false },
 ];
 
 function TokenPage() {
