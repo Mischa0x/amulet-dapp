@@ -230,3 +230,53 @@ Resume implementing the compute credits system - I've completed the setup steps
 ### Commits
 - `88b4ede` - fix(shop): Align cards and add missing category tabs
 - `57dd3f9` - fix(product): Compact product page layout to fit viewport
+
+## Session History (2026-01-17) - Credit System Implementation
+
+### Credit System Architecture
+Implemented off-chain credit tracking using Vercel KV with three tiers:
+- **Basic Query**: 1 credit (simple questions)
+- **Standard Analysis**: 3 credits (comparisons, personalized advice)
+- **Deep Research**: 25 credits (comprehensive research)
+
+### Files Created
+- `api/lib/queryClassifier.js` - Keyword-based query classification
+- `src/contexts/CreditsContext.jsx` - Shared React context for credits
+
+### Files Modified
+- `api/chat.js` - Credit deduction integrated with Claude API calls
+- `src/pages/Token/TokenPage.jsx` - Added tier definitions with descriptions
+- `src/pages/Token/TokenPage.module.css` - Fixed 10k credits card text wrapping
+- `src/pages/Agent/AgentChat.jsx` - Credit balance display and real-time updates
+- `src/pages/Agent/AgentChat.module.css` - Credit UI styles
+- `src/main.tsx` - Added CreditsProvider
+
+### Critical Bug Fix: KV Key Format Mismatch
+**Problem**: `chat.js` used `credits:address:balance` (separate keys) while `claim.js` and `index.js` used `credits:address` (single object). Credits were stored in one location but read from another.
+
+**Solution**: Updated `chat.js` to use consistent object format:
+```javascript
+const creditKey = `credits:${normalizedAddress}`;
+const creditData = await kv.get(creditKey) || { balance: 0, ... };
+```
+
+### Backend Compatibility
+Verified no conflicts with `mszsorondo/amulet.ai` new_frontend branch:
+- Backend: `/api/chat/integrated_chat`, `/api/checkout/create-session`
+- Frontend: `/api/chat`, `/api/credits`, `/api/stripe/checkout`
+
+### Commits
+- `b8a3191` - feat(credits): Add query classification and credit tracking system
+- `5673410` - fix(credits): Add shared context and UI improvements
+- `6ae2552` - fix(credits): Use consistent KV key format in chat API
+
+### Testing
+```bash
+# Check balance
+curl "https://amulet-dapp.vercel.app/api/credits?address=YOUR_ADDRESS"
+
+# Test query with credit deduction
+curl -X POST "https://amulet-dapp.vercel.app/api/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"test"}],"address":"YOUR_ADDRESS"}'
+```
