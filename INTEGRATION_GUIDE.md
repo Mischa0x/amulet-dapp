@@ -320,9 +320,10 @@ Located in `api/lib/queryClassifier.js`:
 ]
 ```
 
-### Grace Period
-- Users can go up to -25 credits before being blocked
-- Allows deep research queries to complete mid-conversation
+### Credit Rules (Updated 2026-01-18)
+- **No negative balances allowed** - queries blocked when `balance < creditCost`
+- Balance never goes below 0
+- Users must purchase more credits or claim free tier to continue
 
 ### Dependencies
 - `@vercel/kv` package
@@ -403,6 +404,150 @@ const handlePurchase = async (packageId) => {
 ### Dependencies
 - `stripe` npm package
 - Stripe account (test or live)
+
+---
+
+## 5.5 Rewards Tracking System (NEW)
+
+### Overview
+Gamified leaderboard tracking user compute credit usage. Tracks queries, calculates ranks, and displays social proof metrics.
+
+### Files to Copy
+
+```
+api/rewards/
+├── middleware.js          # Core tracking logic (recordQueryForRewards)
+├── leaderboard.js         # GET /api/rewards/leaderboard
+├── personal.js            # GET /api/rewards/personal
+└── social-proof.js        # GET /api/rewards/social-proof
+
+src/pages/Rewards/
+├── RewardsPage.jsx        # Main rewards dashboard
+└── RewardsPage.module.css
+
+src/components/rewards/
+├── PersonalSummaryCard.jsx/.css    # User stats card
+├── LeaderboardTable.jsx/.css       # Top 50 leaderboard
+├── EpochTabs.jsx/.css              # Time period selector
+├── SocialProofStrip.jsx/.css       # Platform totals
+├── RewardsInfoAccordion.jsx/.css   # How it works info
+└── ProgressRing.jsx/.css           # Progress indicator
+
+src/lib/rewards/
+├── api.ts                 # Frontend API client with mock fallback
+└── mockData.ts            # Demo data for empty states
+```
+
+### Route
+
+```jsx
+<Route path="/rewards" element={<RewardsPage />} />
+```
+
+### API Endpoints
+
+#### GET `/api/rewards/leaderboard?epoch={24h|7d|30d|all}`
+Returns top 50 wallets by compute usage.
+
+**Response:**
+```json
+[
+  {
+    "wallet": "0x1234...",
+    "rank": 1,
+    "totalComputeUsed": 547,
+    "queriesRun": 312,
+    "activeDays": 14,
+    "currentStreak": 7
+  }
+]
+```
+
+#### GET `/api/rewards/personal?epoch={epoch}&wallet={address}`
+Returns user's personal stats and rank.
+
+**Response:**
+```json
+{
+  "rank": 12,
+  "totalComputeUsed": 89,
+  "queriesRun": 47,
+  "activeDays": 5,
+  "currentStreak": 3,
+  "longestStreak": 5,
+  "percentile": 85
+}
+```
+
+#### GET `/api/rewards/social-proof?epoch={epoch}`
+Returns platform-wide aggregates.
+
+**Response:**
+```json
+{
+  "activeWallets": 234,
+  "totalComputeUsed": 12547,
+  "totalQueries": 8234
+}
+```
+
+### Integration with Chat API
+
+The middleware is called automatically in `api/chat.js` after successful credit deduction:
+
+```javascript
+// In chat.js (already integrated)
+import { recordQueryForRewards } from './rewards/middleware.js';
+
+// After deducting credits:
+recordQueryForRewards(address, creditCost, classification.tier).catch(err => {
+  console.error('Rewards tracking failed:', err);
+});
+```
+
+**Key:** The rewards tracking is non-blocking - it won't slow down chat responses or cause errors if it fails.
+
+### KV Data Model
+
+```javascript
+// Per-wallet daily aggregates (90-day TTL)
+rewards:{wallet}:daily:{YYYY-MM-DD}
+{
+  computeUsed: 15,
+  queriesRun: 8,
+  queryTiers: { basic: 5, standard: 2, deep_research: 1 }
+}
+
+// Per-wallet all-time stats
+rewards:{wallet}:alltime
+{
+  computeUsed: 547,
+  queriesRun: 312,
+  firstQueryAt: timestamp,
+  lastQueryAt: timestamp
+}
+
+// Active wallets per day (set)
+rewards:active:{YYYY-MM-DD}
+
+// Cached leaderboard (5-min TTL)
+rewards:leaderboard:{epoch}
+
+// Platform totals (5-min TTL)
+rewards:global:{epoch}
+```
+
+### Mock Data Fallback
+
+The frontend (`src/lib/rewards/api.ts`) automatically uses mock data when:
+- API returns empty results
+- No real users have queried yet
+
+Once real usage occurs, mock data is replaced with live data.
+
+### Dependencies
+- `@vercel/kv` package (shared with credits system)
+- No additional database setup required
 
 ---
 
@@ -746,9 +891,18 @@ VITE_APP_URL=https://your-domain.com
 | Credits API | `/api/credits/*` | None |
 | Stripe API | `/api/stripe/*` | None (different from `/api/checkout`) |
 | Chat API | `/api/chat` | None (different from `/api/chat/integrated_chat`) |
+| **Rewards API** | `/api/rewards/*` | None |
 | Token Page | `/token` | None |
+| **Rewards Page** | `/rewards` | None |
 | Visits | `/visits` | None |
 | Order History | `/orderhistory` | None |
 | Shop | `/shop`, `/product/:id` | None |
 
 All additions are **purely additive** with no modifications to existing code.
+
+### Key Architectural Decisions
+
+1. **Self-contained storage** - All credits/rewards data in Vercel KV, not touching main database
+2. **Non-blocking middleware** - Rewards tracking won't break chat if it fails
+3. **Consume, don't modify** - Frontend can call main backend APIs, but doesn't change them
+4. **Graceful fallbacks** - Mock data shown when APIs return empty results
