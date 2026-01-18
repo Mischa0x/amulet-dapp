@@ -354,6 +354,21 @@ Replaced all logos with `blue_logo_transparent_square.png`:
 - `21e5429` - feat: Replace all logos with blue_logo_transparent_square.png
 - `01248cf` - fix: Size logo properly in top left corner
 - `681658d` - fix: Increase logo size to 48px on all pages
+- `b6dcbfd` - feat: Add Blog link to landing page top right
+- `33a2da2` - fix: Make Blog link more visible with button style
+- `a021803` - feat: Add Blog link to sidebar Quick Actions
+- `878e37d` - fix: Add pointer cursor to landing page action cards
+- `182471b` - fix: Add stronger pop-out hover effect and inline cursor to action cards
+
+### Blog Navigation
+Added blog links in two locations:
+1. **Landing page top right** - Pill-shaped "Blog" button next to Connect Wallet
+2. **Sidebar Quick Actions** - Blue "Blog" card with book icon (`/assets/blog-icon.svg`)
+
+### UI Improvements
+- Action cards on landing page now have pointer cursor and pop-out hover effect
+- Cards lift 8px and scale 1.02x on hover with enhanced shadow
+- Inline `style={{ cursor: 'pointer' }}` added as fallback
 
 ### To Resume
 ```
