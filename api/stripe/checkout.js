@@ -62,6 +62,13 @@ export default async function handler(req, res) {
   const normalizedAddress = address.toLowerCase();
 
   try {
+    // Determine the app URL from environment or request headers
+    const appUrl = process.env.VITE_APP_URL
+      || process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`
+      || (req.headers.origin)
+      || (req.headers.referer && new URL(req.headers.referer).origin)
+      || 'https://amulet-dapp.vercel.app';
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -78,8 +85,8 @@ export default async function handler(req, res) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.VITE_APP_URL || 'http://localhost:5173'}/token?success=true&credits=${pkg.credits}`,
-      cancel_url: `${process.env.VITE_APP_URL || 'http://localhost:5173'}/token?canceled=true`,
+      success_url: `${appUrl}/token?success=true&credits=${pkg.credits}`,
+      cancel_url: `${appUrl}/token?canceled=true`,
       metadata: {
         walletAddress: normalizedAddress,
         packageId,
