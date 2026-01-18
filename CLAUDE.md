@@ -786,3 +786,112 @@ The green checkmark badge at top-right of the 100% progress ring was being clipp
 ```
 Hard refresh the browser (Cmd+Shift+R) to verify UI fixes on /shop and /rewards pages
 ```
+
+## Session History (2026-01-18) - Rewards Page & Sidebar UI Polish
+
+### Issues Fixed
+
+#### 1. Progress Ring Completion Design
+Multiple iterations to fix the checkmark badge being cut off:
+- **Attempt 1:** Move badge position inward (still clipped)
+- **Attempt 2:** Position badge at top-center (glow still clipped)
+- **Final Solution:** Remove floating badge entirely, show checkmark + "Complete" text INSIDE the ring center when progress >= 100%
+
+**Files Modified:**
+- `src/components/rewards/ProgressRing.jsx` - Conditional render: checkmark inside vs percentage
+- `src/components/rewards/ProgressRing.module.css` - Removed badge styles, added `.checkmarkInner` and `.completeLabel`
+- Removed `drop-shadow` filter that was causing glow cutoff
+
+#### 2. Theme Toggle Visibility
+The theme toggle icon wasn't visible in light mode due to hardcoded colors.
+
+**Fixes Applied:**
+- Changed MoonSVG and SunSVG to use `currentColor` instead of hardcoded fills
+- Added `color: var(--brand-black)` to button style (dark in light mode, light in dark mode)
+- Increased icon size from 14px to 18px
+- Added hover state with light blue background
+
+**File Modified:** `src/components/ThemeToggle.jsx`
+
+#### 3. Sidebar Quick Action Cards - All Unique Colors
+Changed card colors so each has a distinct color:
+
+| Card | Color | CSS Variable |
+|------|-------|--------------|
+| Shop Supplements | Green | `--brand-neon-cards-surface-light-green` |
+| Order History | Purple | `--brand-neon-cards-surface-light-purple` |
+| View Visits | Blue | `--brand-neon-cards-surface-light-blue` |
+| Get Tokens | Yellow/Amber | `--brand-neon-cards-surface-light-yellow` |
+| Rewards | Pink | `--brand-neon-cards-surface-light-pink` |
+| Blog | Teal | `--brand-neon-cards-surface-light-teal` |
+
+#### 4. Theme-Aware Card Colors
+Get Tokens, Rewards, and Blog cards now properly change color in dark mode.
+
+**New CSS Variables Added to `styleguide.css`:**
+```css
+/* Yellow/Amber */
+--brand-neon-cards-surface-light-yellow: #fef9e7;
+--brand-neon-cards-surface-light-yellow-transparency: rgba(78, 60, 28, 1);
+--brand-yellow-light: #fcd34d;
+
+/* Pink/Rose */
+--brand-neon-cards-surface-light-pink: #fdf2f8;
+--brand-neon-cards-surface-light-pink-transparency: rgba(80, 40, 60, 1);
+--brand-pink-light: #f472b6;
+--brand-pink-dark: #db2777;
+--brand-pink-darker: #9d174d;
+
+/* Teal */
+--brand-neon-cards-surface-light-teal: #e6fffa;
+--brand-neon-cards-surface-light-teal-transparency: rgba(28, 66, 66, 1);
+--brand-teal-light: #5eead4;
+--brand-teal-dark: #0d9488;
+```
+
+**Theme Swaps Added to `ThemeToggle.jsx`:**
+- Yellow surface ↔ yellow transparency
+- Pink surface ↔ pink transparency
+- Teal surface ↔ teal transparency
+- Light/dark color variants for each
+
+#### 5. Sidebar Icons Updated
+- **Rewards:** Trophy icon (pink `#db2777`)
+- **Get Tokens:** Coin/token icon (amber `#a16207`)
+- **Blog:** Book icon (teal `#0d9488`)
+
+#### 6. Mobile Sidebar Layout
+Fixed mobile layout for 6 cards at 16.66% width each.
+
+### Files Modified
+- `src/components/ThemeToggle.jsx`
+- `src/components/rewards/ProgressRing.jsx`
+- `src/components/rewards/ProgressRing.module.css`
+- `src/components/rewards/PersonalSummaryCard.module.css`
+- `src/pages/Agent/AgentSidebar.jsx`
+- `src/pages/Agent/AgentSidebar.module.css`
+- `src/styleguide.css`
+- `public/assets/rewards-icon.svg`
+- `public/assets/token-icon.svg` (new)
+- `public/assets/blog-icon.svg`
+
+### Commits
+| Commit | Description |
+|--------|-------------|
+| `6096eba` | fix: Progress ring badge cutoff and theme toggle visibility |
+| `417bec6` | fix: UI improvements for rewards badge, sidebar icons, and blog card |
+| `a8bb169` | fix: Progress ring badge, sidebar card colors, and theme support |
+| `216ed7e` | fix: Redesign progress ring and separate card colors |
+| `49c079e` | fix: Remove progress ring glow and change Rewards to pink |
+| `d20a612` | fix: Use token/coin icon for Get Tokens card |
+
+### Key Design Decisions
+1. **Progress ring completion** - Checkmark inside ring is cleaner than floating badge
+2. **Card color assignment** - Each card has unique color for visual distinction
+3. **Theme-aware colors** - All new colors have proper dark mode variants
+4. **Icon colors** - Match their respective card colors
+
+### To Resume
+```
+Continue with any additional Amulet DApp features
+```
