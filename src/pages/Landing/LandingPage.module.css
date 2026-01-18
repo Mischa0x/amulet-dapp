@@ -323,16 +323,19 @@ border: 1px solid rgba(255, 255, 255, 0.35);
   font-family: var(--body-md-bold-font-family, "Satoshi-Bold");
   font-size: 14px;
   font-weight: 600;
-  color: var(--brand-black);
+  color: var(--brand-blue-dark);
   text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: background 0.2s ease, opacity 0.2s ease;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--brand-white);
+  border: 1px solid var(--mapped-border-and-dividers-primary);
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .blogLink:hover {
-  background: rgba(0, 0, 0, 0.05);
-  opacity: 0.8;
+  background: var(--brand-neon-cards-surface-light-blue);
+  transform: translateY(-1px);
 }
 
 .bottomLeft {
