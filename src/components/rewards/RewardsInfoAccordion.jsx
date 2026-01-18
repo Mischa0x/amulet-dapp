@@ -45,19 +45,6 @@ export default function RewardsInfoAccordion() {
             </p>
           </div>
 
-          <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>Future Rewards</h4>
-            <p className={styles.text}>
-              Future AMULET token distributions may prioritize wallets based on:
-            </p>
-            <ul className={styles.list}>
-              <li>Total compute credits used</li>
-              <li>Consistency and activity streaks</li>
-              <li>Leaderboard position over time</li>
-              <li>Early adoption and engagement</li>
-            </ul>
-          </div>
-
           <div className={styles.notice}>
             <span className={styles.noticeIcon}>ℹ️</span>
             <span className={styles.noticeText}>

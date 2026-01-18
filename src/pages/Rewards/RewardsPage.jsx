@@ -105,6 +105,9 @@ export default function RewardsPage() {
           isLoading={isLoading}
         />
 
+        {/* How Rewards Work */}
+        <RewardsInfoAccordion />
+
         {/* (B) Epoch Tabs - Sticky */}
         <EpochTabs
           value={epoch}
@@ -120,10 +123,7 @@ export default function RewardsPage() {
           isLoading={isLoading}
         />
 
-        {/* (D) How Rewards Work */}
-        <RewardsInfoAccordion />
-
-        {/* (E) Social Proof Strip */}
+        {/* (D) Social Proof Strip */}
         <SocialProofStrip
           stats={socialProof}
           epoch={epoch}

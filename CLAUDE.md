@@ -435,3 +435,130 @@ Created comprehensive `INTEGRATION_GUIDE.md` (754 lines) for handoff to mszsoron
 ```
 Continue working on Amulet DApp features or prepare PR for mszsorondo/amulet.ai
 ```
+
+## Session History (2026-01-18) - Rewards Dashboard Implementation
+
+### Feature Overview
+Built a **Rewards Dashboard** at `/rewards` that gamifies DrPepe.ai compute credit usage via a competitive leaderboard.
+
+**Design Inspiration:** Coinbase (clean financial UI) + Apple Fitness/Screen Time (big numbers, progress rings)
+
+### Features Implemented
+
+#### (A) Personal Summary Card
+- Large rank display (#1-50 or "Unranked")
+- Big number: Compute Used for epoch
+- Secondary metrics: Queries, Active Days, Streak (🔥)
+- SVG progress ring showing progress toward top-50 threshold
+- Percentile line: "You're ahead of ~X% of users"
+
+#### (B) Epoch Segmented Control
+- 24H / 7D / 30D / ALL-TIME tabs
+- Sticky positioning on scroll
+- Smooth indicator animation
+
+#### (C) Top 50 Leaderboard
+- Desktop: Full table layout
+- Mobile: Stacked card rows
+- Columns: Rank, Wallet/ENS, Compute, Queries, Active Days, Status Badge
+- Search filter by wallet/ENS
+- Connected wallet row highlighted with blue glow + "You" tag
+- Medal emojis for top 3 (🥇🥈🥉)
+- Status badges: Top 10%, Power User, Heavy Compute, Active, New
+
+#### (D) How Rewards Work (Collapsible)
+- Explains compute credits, leaderboard tracking, future rewards
+- Non-transferable position notice
+
+#### (E) Social Proof Strip
+- Active wallets, Total compute, Total queries
+- Updates per epoch selection
+
+### Data Architecture
+
+**Types** (`src/lib/rewards/types.ts`):
+```typescript
+type Epoch = "24h" | "7d" | "30d" | "all";
+type LeaderboardEntry = { wallet, ens?, totalComputeUsed, queriesRun, activeDays, streakDays, rank };
+type PersonalStats = { wallet, rank?, totalComputeUsed, queriesRun, activeDays, streakDays, top50ThresholdCompute, percentile };
+type SocialProofStats = { activeWallets, totalCompute, totalQueries };
+```
+
+**Mock Data** (`src/lib/rewards/mock.ts`):
+- Deterministic seeded random for stable rankings
+- Power law distribution (whales at top)
+- ENS names for some wallets
+- Epoch-based scaling
+
+**API Abstraction** (`src/lib/rewards/api.ts`):
+- `fetchLeaderboard(epoch)` - Returns top 50
+- `fetchPersonalStats(epoch, wallet)` - Returns user stats
+- `fetchSocialProof(epoch)` - Returns platform stats
+- Ready for real API swap (see inline comments)
+
+### Anti-Gaming Notes (documented in types.ts)
+1. **Streak weighting** - Require minimum compute per day
+2. **Query spam caps** - Rate limits, cooldowns, complexity variance
+3. **Burst detection** - Flag 10x spikes, sliding window analysis
+4. **Sybil resistance** - Wallet age, staking requirements, clustering detection
+
+### Files Created
+- `src/lib/rewards/types.ts` - TypeScript definitions + anti-gaming docs
+- `src/lib/rewards/mock.ts` - Deterministic mock data generator
+- `src/lib/rewards/api.ts` - API wrapper (swap point for real endpoints)
+- `src/components/rewards/ProgressRing.jsx` - SVG circular progress
+- `src/components/rewards/ProgressRing.module.css`
+- `src/components/rewards/EpochTabs.jsx` - Segmented control
+- `src/components/rewards/EpochTabs.module.css`
+- `src/components/rewards/PersonalSummaryCard.jsx` - User stats card
+- `src/components/rewards/PersonalSummaryCard.module.css`
+- `src/components/rewards/LeaderboardTable.jsx` - Top 50 table/cards
+- `src/components/rewards/LeaderboardTable.module.css`
+- `src/components/rewards/RewardsInfoAccordion.jsx` - Collapsible info
+- `src/components/rewards/RewardsInfoAccordion.module.css`
+- `src/components/rewards/SocialProofStrip.jsx` - Platform stats
+- `src/components/rewards/SocialProofStrip.module.css`
+- `src/components/rewards/index.js` - Barrel export
+- `src/pages/Rewards/RewardsPage.jsx` - Main page component
+- `src/pages/Rewards/RewardsPage.module.css`
+- `public/assets/rewards-icon.svg` - Sidebar icon
+
+### Files Modified
+- `src/App.jsx` - Added `/rewards` route
+- `src/pages/Agent/AgentSidebar.jsx` - Added Rewards quick action card
+- `src/pages/Agent/AgentSidebar.module.css` - Rewards card styles (amber/gold gradient)
+
+### Swapping Mock to Real API
+
+Update `src/lib/rewards/api.ts`:
+
+```typescript
+// Replace mock calls with real fetch:
+export async function fetchLeaderboard(epoch: Epoch): Promise<LeaderboardEntry[]> {
+  const res = await fetch(`/api/rewards/leaderboard?epoch=${epoch}`);
+  if (!res.ok) throw new Error('Failed to fetch leaderboard');
+  return res.json();
+}
+
+export async function fetchPersonalStats(epoch: Epoch, wallet: string): Promise<PersonalStats> {
+  const res = await fetch(`/api/rewards/personal?epoch=${epoch}&wallet=${wallet}`);
+  if (!res.ok) throw new Error('Failed to fetch personal stats');
+  return res.json();
+}
+
+export async function fetchSocialProof(epoch: Epoch): Promise<SocialProofStats> {
+  const res = await fetch(`/api/rewards/social-proof?epoch=${epoch}`);
+  if (!res.ok) throw new Error('Failed to fetch social proof');
+  return res.json();
+}
+```
+
+### Backend Endpoints Needed
+- `GET /api/rewards/leaderboard?epoch={24h|7d|30d|all}` → LeaderboardEntry[]
+- `GET /api/rewards/personal?epoch={epoch}&wallet={address}` → PersonalStats
+- `GET /api/rewards/social-proof?epoch={epoch}` → SocialProofStats
+
+### To Resume
+```
+Continue working on Amulet DApp or implement real rewards API endpoints
+```
