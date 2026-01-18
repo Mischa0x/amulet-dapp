@@ -280,3 +280,82 @@ curl -X POST "https://amulet-dapp.vercel.app/api/chat" \
   -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"test"}],"address":"YOUR_ADDRESS"}'
 ```
+
+## Session History (2026-01-18) - Blog System & Logo Update
+
+### Blog System Implementation
+Created a full blog system inspired by Hemi.xyz with markdown-based content management.
+
+#### Blog Features
+- **Routes**: `/blog` (index) and `/blog/:slug` (individual posts)
+- **Categories**: AI, Longevity, Treatments, Supplements, Tokens
+- **URL filtering**: `/blog?category=AI`
+- **Responsive grid**: 1→2→3 columns
+- **Sticky category pills** with horizontal scroll on mobile
+- **Subscribe block** for email capture
+- **Auto-linking** bare URLs in posts
+- **Blockquote support**
+
+#### Blog Workflow
+1. Write markdown files in `/content/blog/`
+2. Run `npm run blog:process` to generate `src/data/blogPosts.js`
+3. Posts auto-deploy via Vercel
+
+#### Markdown Format
+```markdown
+---
+title: Your Post Title
+publishedAt: 2026-01-20
+heroImage: /blog/your-image.jpg
+categories:
+  - AI
+  - Longevity
+readingTime: 8 min read
+author: Your Name
+---
+
+Your content here with **bold**, *italic*, and ## headings.
+URLs are auto-linked: https://example.com
+```
+
+#### Files Created
+- `content/blog/*.md` - Markdown blog posts
+- `scripts/process-blog-posts.js` - Markdown processor
+- `src/data/blogPosts.js` - Generated post data
+- `src/components/blog/` - BlogCard, CategoryPills, BlogGrid, SubscribeBlock
+- `src/pages/Blog/` - BlogPage, BlogPostPage
+- `public/blog/` - Hero images and placeholders
+
+#### First Blog Post
+- "Origins of DrPepe.ai: An Emergent Signal in Longevity Research"
+- Hero image: `/blog/DrPepe Heroimage.jpg`
+
+### Logo Update
+Replaced all logos with `blue_logo_transparent_square.png`:
+- Landing page top left (48x48px)
+- Sidebar logo (48x48px)
+- Mobile header (48x48px)
+- Auth pages
+
+#### Files Modified for Logo
+- `src/pages/Landing/LandingPage.jsx`
+- `src/pages/Landing/LandingPage.module.css`
+- `src/pages/Agent/AgentSidebar.jsx`
+- `src/pages/Agent/AgentSidebar.module.css`
+- `src/pages/Agent/AgentHeader.jsx`
+- `src/pages/Agent/AgentHeader.module.css`
+- `src/components/Header.jsx`
+- `src/pages/Auth/AuthPage.jsx`
+- `src/pages/Auth/AuthPageWeb3.jsx`
+
+### Commits
+- `5f8d936` - feat: Add blog system with markdown processing
+- `3a149d6` - fix: Remove quotation marks from blog titles
+- `21e5429` - feat: Replace all logos with blue_logo_transparent_square.png
+- `01248cf` - fix: Size logo properly in top left corner
+- `681658d` - fix: Increase logo size to 48px on all pages
+
+### To Resume
+```
+Continue working on the Amulet DApp blog or other features
+```
