@@ -57,9 +57,6 @@ Important guidelines:
 - Focus on longevity and preventive health when relevant
 - Never diagnose definitively - offer possibilities and recommendations`;
 
-// Grace credits for mid-query depletion (max negative balance allowed)
-const GRACE_CREDITS = 25;
-
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -113,20 +110,22 @@ export default async function handler(req, res) {
 
       const balance = creditData.balance || 0;
 
-      // Check if user has enough credits (with grace period)
-      if (balance < creditCost && balance < -GRACE_CREDITS) {
+      // Check if user has enough credits - no negative balances allowed
+      if (balance < creditCost) {
         return res.status(402).json({
           error: 'Insufficient credits',
           required: creditCost,
           balance: balance,
           tier: classification.tier,
           tierName: formatTierName(classification.tier),
-          message: `This ${formatTierName(classification.tier)} requires ${creditCost} credits. You have ${balance} credits.`
+          message: balance <= 0
+            ? `You have no credits remaining. Please purchase more credits to continue.`
+            : `This ${formatTierName(classification.tier)} requires ${creditCost} credits. You have ${balance} credits.`
         });
       }
 
-      // Deduct credits and update total used
-      const newBalance = balance - creditCost;
+      // Deduct credits (balance will never go below 0)
+      const newBalance = Math.max(0, balance - creditCost);
       const newTotalUsed = (creditData.totalUsed || 0) + creditCost;
 
       // Save updated credit data

@@ -40,6 +40,46 @@ Credits can be obtained via:
 - Contract: `0xe8564273D6346Db0Ff54d3a6CCb1Dd12993A042c` (Sei Testnet)
 - Utility: Stake for discounted credits, governance (future)
 
+### Rewards Tracking System
+
+The platform tracks user activity for a competitive leaderboard. This is implemented via middleware that records queries in Vercel KV.
+
+**How It Works:**
+1. User sends a chat message → `POST /api/chat`
+2. Chat API classifies query tier and deducts credits
+3. **If successful:** `recordQueryForRewards()` is called (non-blocking)
+4. Rewards data is aggregated for leaderboard display
+
+**Credit Rules:**
+- Users must have sufficient credits to make queries
+- **No negative balances allowed** - queries are blocked at 0 credits
+- Balance never goes below 0
+
+**API Endpoints:**
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/rewards/leaderboard?epoch={24h\|7d\|30d\|all}` | Top 50 wallets by compute |
+| `GET /api/rewards/personal?epoch={epoch}&wallet={addr}` | User's stats |
+| `GET /api/rewards/social-proof?epoch={epoch}` | Platform totals |
+
+**Storage Structure (Vercel KV):**
+```
+rewards:{wallet}:daily:{YYYY-MM-DD}  → Daily aggregates (90-day TTL)
+rewards:{wallet}:alltime             → All-time stats
+rewards:active:{YYYY-MM-DD}          → Set of active wallets per day
+rewards:leaderboard:{epoch}          → Cached leaderboard (5-min TTL)
+rewards:global:{epoch}               → Platform totals (5-min TTL)
+```
+
+**Anti-Gaming Measures (documented in code):**
+- Streak weighting: Require minimum 5 credits/day to count as active
+- Query spam caps: Rate limits via credit system
+- Burst detection: Flag 10x spikes vs 7-day average
+- Credit diversity: Track query tier distribution
+
+**Swapping Mock to Real Data:**
+The frontend (`src/lib/rewards/api.ts`) automatically falls back to mock data when API returns empty results. Once real users start using the platform, real data is used.
+
 ---
 
 # Project Overview

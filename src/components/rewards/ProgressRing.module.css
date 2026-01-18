@@ -1,8 +1,7 @@
 /**
- * ProgressRing - SVG circular progress indicator (Dark mode)
+ * ProgressRing - SVG circular progress indicator
  *
- * Electric blue progress arc on dark background
- * Green completion state with badge
+ * Uses CSS variables for light/dark mode compatibility
  */
 
 .container {
@@ -17,13 +16,13 @@
 }
 
 .track {
-  stroke: rgba(255, 255, 255, 0.1);
+  stroke: var(--mapped-border-and-dividers-primary);
 }
 
 .progress {
   transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1),
               stroke 0.3s ease;
-  filter: drop-shadow(0 0 6px currentColor);
+  filter: drop-shadow(0 0 4px currentColor);
 }
 
 .inner {
@@ -39,14 +38,15 @@
   font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--brand-black);
   letter-spacing: -0.5px;
 }
 
 .label {
   font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
   font-size: 9px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--brand-black);
+  opacity: 0.5;
   text-transform: uppercase;
   letter-spacing: 0.3px;
   max-width: 60px;

@@ -1,10 +1,7 @@
 /**
- * EpochTabs - Segmented control for time periods (Dark mode)
+ * EpochTabs - Segmented control for time periods
  *
- * Design: Coinbase-style time selector
- * - Dark pill background
- * - Sliding indicator on active tab
- * - Sticky on scroll
+ * Uses CSS variables for light/dark mode compatibility
  */
 
 .container {
@@ -12,17 +9,15 @@
   top: 0;
   z-index: 100;
   padding: 12px 0 20px;
-  background: linear-gradient(180deg, #0a0b0d 0%, rgba(10, 11, 13, 0.95) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--brand-white);
   margin-bottom: 16px;
 }
 
 .tabs {
   display: flex;
   position: relative;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--brand-neon-cards-surface-light-blue);
+  border: 1px solid var(--mapped-border-and-dividers-primary);
   border-radius: 10px;
   padding: 3px;
 }
@@ -33,28 +28,30 @@
   font-family: var(--body-sm-bold-font-family, 'Satoshi-Bold', sans-serif);
   font-size: 13px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--brand-black);
+  opacity: 0.45;
   background: transparent;
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
   position: relative;
   z-index: 2;
   white-space: nowrap;
 }
 
 .tab:hover:not(:disabled) {
-  color: rgba(255, 255, 255, 0.7);
+  opacity: 0.7;
 }
 
 .tab:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .tab.active {
-  color: #ffffff;
+  color: var(--brand-black);
+  opacity: 1;
 }
 
 .indicator {
@@ -62,10 +59,12 @@
   top: 3px;
   left: 3px;
   height: calc(100% - 6px);
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--brand-white);
+  border: 1px solid var(--mapped-border-and-dividers-primary);
   border-radius: 7px;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 /* Loading state */
