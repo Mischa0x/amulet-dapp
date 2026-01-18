@@ -75,6 +75,7 @@ a{
   position: relative;
   width: 100%;
   aspect-ratio: 311 / 278;            /* keeps original shape, scales fluidly */
+  max-height: 160px;                  /* constrain height so body text has room */
   border-radius: 10px;
   border: 2px solid var(--brand-blue-lighter);
   justify-self: center;
@@ -82,6 +83,7 @@ a{
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 /* ===== BADGE ===== */
@@ -283,6 +285,9 @@ a{
 }
 .card{
   height: 260px;
+}
+.mediaRect {
+  max-height: 120px;
 }
 .badge{
   top: 12px;
