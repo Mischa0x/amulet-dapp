@@ -74,19 +74,6 @@ export const blogPosts = [
     "readingTime": "12 min read",
     "author": "Dr. Michael Torres",
     "content": "<p>NAD+ (nicotinamide adenine dinucleotide) is a critical coenzyme found in every cell of your body. As we age, NAD+ levels naturally decline, which has been linked to various aspects of aging.</p>\n\n<h2>Understanding NMN</h2>\n\n<p>Nicotinamide mononucleotide (NMN) is a direct precursor to NAD+. Studies have shown it can effectively raise NAD+ levels in various tissues.</p>\n\n<h2>Understanding NR</h2>\n\n<p>Nicotinamide riboside (NR) is another NAD+ precursor that has been extensively studied. It converts to NMN before becoming NAD+.</p>\n\n<h2>Which Should You Choose?</h2>\n\n<p>The choice between NMN and NR depends on various factors including cost, availability, and individual response. Both have shown promise in research settings.</p>"
-  },
-  {
-    "title": "AMULET Token - Utility and Roadmap 2026",
-    "slug": "amulet-token-utility-roadmap-2026",
-    "publishedAt": "2026-01-10",
-    "heroImage": "/blog/placeholder-3.svg",
-    "excerpt": "The AMULET token serves as the native utility token of the Amulet AI platform, providing holders with discounted access to compute credits and governance rights.",
-    "categories": [
-      "Tokens"
-    ],
-    "readingTime": "6 min read",
-    "author": "Amulet Team",
-    "content": "<p>The AMULET token serves as the native utility token of the Amulet AI platform, providing holders with discounted access to compute credits and governance rights.</p>\n\n<h2>Token Utility</h2>\n\n<p>AMULET holders can stake their tokens to receive compute credits at 2x the fiat rate, effectively cutting AI interaction costs in half.</p>\n\n<h2>2026 Roadmap</h2>\n\n<p>This year we're focused on mainnet deployment, expanded staking options, and introducing governance features for token holders.</p>"
   }
 ];
 
