@@ -13,7 +13,9 @@ import OrderHistory from './pages/OrderHistory/OrderHistory';
 import Visits from './pages/Visits/Visits';
 import Dashboard from './components/Dashboard';
 import WalletGuard from './components/WalletGuard';
-import TokenPage from './pages/Token/TokenPage';   
+import TokenPage from './pages/Token/TokenPage';
+import BlogPage from './pages/Blog/BlogPage';
+import BlogPostPage from './pages/Blog/BlogPostPage';   
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
 
             {/* Protected routes → only visible when wallet is connected */}
 

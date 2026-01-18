@@ -1,0 +1,134 @@
+.container {
+  margin-top: 64px;
+  padding: 48px;
+  background: linear-gradient(
+    135deg,
+    var(--brand-neon-cards-surface-light-blue) 0%,
+    var(--brand-grey-lighter-2) 100%
+  );
+  border-radius: 24px;
+  border: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.08));
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.text {
+  margin-bottom: 24px;
+}
+
+.heading {
+  font-family: var(--heading-h3-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--brand-black);
+  margin: 0 0 8px 0;
+}
+
+.subtext {
+  font-family: var(--body-md-font-family);
+  font-size: 16px;
+  color: var(--brand-grey-dark);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputWrapper {
+  display: flex;
+  gap: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.input {
+  flex: 1;
+  padding: 14px 18px;
+  border: 1px solid var(--brand-grey-lighter);
+  border-radius: 12px;
+  font-family: var(--body-md-font-family);
+  font-size: 15px;
+  color: var(--brand-black);
+  background: var(--brand-white);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: var(--brand-grey-default);
+}
+
+.input:focus {
+  border-color: var(--brand-blue-default);
+  box-shadow: 0 0 0 3px rgba(29, 122, 252, 0.15);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button {
+  padding: 14px 28px;
+  background: var(--brand-blue-default);
+  color: var(--brand-white-always);
+  border: none;
+  border-radius: 12px;
+  font-family: var(--body-md-bold-font-family);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--brand-blue-dark);
+}
+
+.button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--brand-blue-default);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  font-family: var(--body-sm-font-family);
+  font-size: 14px;
+  color: var(--brand-green-dark);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 32px 20px;
+    margin-top: 48px;
+  }
+
+  .heading {
+    font-size: 24px;
+  }
+
+  .inputWrapper {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
