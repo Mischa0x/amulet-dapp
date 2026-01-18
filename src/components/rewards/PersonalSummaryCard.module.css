@@ -10,12 +10,14 @@
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 20px;
+  overflow: visible;
 }
 
 .content {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow: visible;
 }
 
 /* Main stat row - Compute Used (big number) */
@@ -24,6 +26,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
+  overflow: visible;
 }
 
 .mainStat {

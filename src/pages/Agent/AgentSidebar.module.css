@@ -528,8 +528,9 @@
   .buttonCardTeal2,
   .buttonCardTeal3,
   .buttonCardGold,
+  .buttonCardRewards,
   .buttonCardBlog {
-    width: 20%;
+    width: 16.66%;
     padding: 0.6rem;
     display: flex;
     flex-direction: column;
