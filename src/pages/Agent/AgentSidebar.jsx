@@ -290,7 +290,7 @@ export default function AgentSidebar({
             >
               <img
                 className={styles.icon24}
-                src="/assets/infinite-outline-gold.svg"
+                src="/assets/token-icon.svg"
                 alt=""
               />
               <div className={styles.frame}>
