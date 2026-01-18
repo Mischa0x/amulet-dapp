@@ -1,16 +1,11 @@
 /**
- * EpochTabs - Segmented control for time periods
+ * EpochTabs - Compact inline segmented control
  *
  * Uses CSS variables for light/dark mode compatibility
  */
 
 .container {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  padding: 12px 0 20px;
-  background: var(--brand-white);
-  margin-bottom: 16px;
+  display: inline-flex;
 }
 
 .tabs {
@@ -18,21 +13,20 @@
   position: relative;
   background: var(--brand-neon-cards-surface-light-blue);
   border: 1px solid var(--mapped-border-and-dividers-primary);
-  border-radius: 10px;
-  padding: 3px;
+  border-radius: 8px;
+  padding: 2px;
 }
 
 .tab {
-  flex: 1;
-  padding: 10px 8px;
-  font-family: var(--body-sm-bold-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 13px;
-  font-weight: 600;
+  padding: 6px 12px;
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 12px;
+  font-weight: 500;
   color: var(--brand-black);
   opacity: 0.45;
   background: transparent;
   border: none;
-  border-radius: 7px;
+  border-radius: 6px;
   cursor: pointer;
   transition: opacity 0.2s ease;
   position: relative;
@@ -56,15 +50,15 @@
 
 .indicator {
   position: absolute;
-  top: 3px;
-  left: 3px;
-  height: calc(100% - 6px);
+  top: 2px;
+  left: 2px;
+  height: calc(100% - 4px);
   background: var(--brand-white);
   border: 1px solid var(--mapped-border-and-dividers-primary);
-  border-radius: 7px;
+  border-radius: 6px;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 /* Loading state */
@@ -75,13 +69,8 @@
 
 /* Responsive */
 @media (max-width: 480px) {
-  .container {
-    padding: 8px 0 16px;
-    margin-bottom: 12px;
-  }
-
   .tab {
-    padding: 8px 6px;
-    font-size: 12px;
+    padding: 5px 8px;
+    font-size: 11px;
   }
 }

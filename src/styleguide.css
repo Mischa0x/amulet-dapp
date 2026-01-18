@@ -70,7 +70,7 @@
   --brand-blue-darker: rgb(28, 50, 78);
   --brand-blue-default: #1d7afc;
   --brand-blue-light: #549dfc;
-  --brand-blue-lighter: #e8e8e8;
+  --brand-blue-lighter: #d8e8f8;
   --brand-green-dark: #1d6e4f;
   --brand-green-darker: rgba(24, 86, 62, 1);
   --brand-green-default: #22a06b;
@@ -82,8 +82,8 @@
   --brand-grey-darker: #071f41;
   --brand-grey-default: #758195;
   --brand-grey-light: #8490a1;
-  --brand-grey-lighter: #e6e6e6;
-  --brand-grey-lighter-2: #f9fafc;
+  --brand-grey-lighter: #e0e0e0;
+  --brand-grey-lighter-2: #f5f7fa;
    --brand-grey-checkout-forms: #d4d4d487;
 
   --brand-checkoutpage-bg-blue: #2a3549;
@@ -91,16 +91,16 @@
 
 
 
-  --brand-neon-cards-surface-light-blue: #e9f5fe;
+  --brand-neon-cards-surface-light-blue: #d4e9fc;
   --brand-neon-cards-surface-dark-blue: #192438;
-  --brand-neon-cards-surface-light-blue-transparency: rgba(233, 245, 254, 0.153);
+  --brand-neon-cards-surface-light-blue-transparency: rgba(212, 233, 252, 0.2);
 
      --brand-neon-cards-surface-light-blue-transparency-cards: rgba(30, 63, 97, 1);
 
-  --brand-neon-cards-surface-light-green: #e8f9f2;
+  --brand-neon-cards-surface-light-green: #d0f4e4;
   --brand-neon-cards-surface-light-green-transparency: rgba(28, 55, 66, 1);
 
-  --brand-neon-cards-surface-light-purple: #f7edff;
+  --brand-neon-cards-surface-light-purple: #ecdcff;
   --brand-neon-cards-surface-light-purple-transparency: rgba(44, 44, 80);
 
   --brand-orange-default: #d97008;
@@ -120,26 +120,26 @@
   --brand-yellow-lighter: #fff7d7;
 
   /* Yellow/Amber card surfaces */
-  --brand-neon-cards-surface-light-yellow: #fef9e7;
+  --brand-neon-cards-surface-light-yellow: #fef0c3;
   --brand-neon-cards-surface-light-yellow-transparency: rgba(78, 60, 28, 1);
   --brand-yellow-light: #fcd34d;
 
   /* Orange card surfaces */
-  --brand-neon-cards-surface-light-orange: #fff4ed;
+  --brand-neon-cards-surface-light-orange: #fee4d6;
   --brand-neon-cards-surface-light-orange-transparency: rgba(92, 45, 20, 1);
   --brand-orange-light: #fb923c;
   --brand-orange-dark: #c2410c;
   --brand-orange-darker: #7c2d12;
 
   /* Pink/Rose card surfaces */
-  --brand-neon-cards-surface-light-pink: #fdf2f8;
+  --brand-neon-cards-surface-light-pink: #fce4f0;
   --brand-neon-cards-surface-light-pink-transparency: rgba(80, 40, 60, 1);
   --brand-pink-light: #f472b6;
   --brand-pink-dark: #db2777;
   --brand-pink-darker: #9d174d;
 
   /* Teal card surfaces */
-  --brand-neon-cards-surface-light-teal: #e6fffa;
+  --brand-neon-cards-surface-light-teal: #ccfbf1;
   --brand-neon-cards-surface-light-teal-transparency: rgba(28, 66, 66, 1);
   --brand-teal-light: #5eead4;
   --brand-teal-dark: #0d9488;

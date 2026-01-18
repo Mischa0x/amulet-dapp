@@ -12,10 +12,9 @@
 .headerSection{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   width: 100%;
-  /* border: 2px solid red;  // remove debug when done */
 }
 
 .icon24 { width: 48px; height: 48px; object-fit: contain; }

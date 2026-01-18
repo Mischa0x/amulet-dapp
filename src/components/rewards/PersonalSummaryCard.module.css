@@ -1,43 +1,36 @@
 /**
- * PersonalSummaryCard - Theme-aware stats card
+ * PersonalSummaryCard - Compact Stats Grid
  *
- * Uses CSS variables for light/dark mode compatibility
+ * BitVault-inspired 4-column grid layout
  */
 
-.card {
+/* Stats Grid - 4 columns on desktop, 2 on mobile */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Individual stat box */
+.statBox {
   background: var(--brand-white);
   border: 1px solid var(--mapped-border-and-dividers-primary);
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 20px;
-  overflow: visible;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow: visible;
-}
-
-/* Main stat row - Compute Used (big number) */
-.mainStatRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  overflow: visible;
-}
-
-.mainStat {
+  border-radius: 12px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.mainLabel {
+.statBox.highlight {
+  border-color: var(--brand-blue-light);
+  background: var(--brand-neon-cards-surface-light-blue);
+}
+
+.statLabel {
   font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--brand-black);
   opacity: 0.5;
@@ -45,166 +38,48 @@
   letter-spacing: 0.5px;
 }
 
-.mainValue {
+.statValue {
   font-family: var(--heading-h1-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 56px;
-  font-weight: 700;
-  color: var(--brand-black);
-  letter-spacing: -2px;
-  line-height: 1;
-}
-
-.mainUnit {
-  font-size: 24px;
-  font-weight: 400;
-  color: var(--brand-black);
-  opacity: 0.5;
-  margin-left: 4px;
-  letter-spacing: 0;
-}
-
-/* Ring Section */
-.ringSection {
-  flex-shrink: 0;
-}
-
-/* Rank display */
-.rankBlock {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 0;
-  border-top: 1px solid var(--mapped-border-and-dividers-primary);
-  border-bottom: 1px solid var(--mapped-border-and-dividers-primary);
-}
-
-.rankBadge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
-  border-radius: 12px;
-}
-
-.rankBadgeUnranked {
-  background: var(--brand-neon-cards-surface-light-blue);
-}
-
-.rankNumber {
-  font-family: var(--heading-h1-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 20px;
-  font-weight: 700;
-  color: #1a1a1a;
-}
-
-.rankNumberUnranked {
-  color: var(--brand-black);
-  opacity: 0.4;
-  font-size: 14px;
-}
-
-.medal {
-  font-size: 24px;
-}
-
-.rankInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.rankLabel {
-  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 13px;
-  color: var(--brand-black);
-  opacity: 0.5;
-}
-
-.rankValueText {
-  font-family: var(--body-lg-bold-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--brand-black);
-}
-
-.percentileText {
-  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 13px;
-  color: var(--brand-black);
-  opacity: 0.5;
-}
-
-.percentileValue {
-  color: #16a34a;
-  font-weight: 600;
-  opacity: 1;
-}
-
-/* Stats Grid - 2x2 layout */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.statTile {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 16px;
-  background: var(--brand-neon-cards-surface-light-blue);
-  border-radius: 14px;
-}
-
-.statTileLabel {
-  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--brand-black);
-  opacity: 0.45;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.statTileValue {
-  font-family: var(--body-lg-bold-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--brand-black);
   letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  line-height: 1.2;
 }
 
-.statTileStreak {
-  color: #f59e0b;
+.statSubValue {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 11px;
+  color: var(--brand-black);
+  opacity: 0.5;
 }
 
-.fireEmoji {
-  font-size: 20px;
+/* Empty State (for card fallback) */
+.card {
+  background: var(--brand-white);
+  border: 1px solid var(--mapped-border-and-dividers-primary);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
 }
 
-/* Empty State */
 .emptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 20px;
-  gap: 12px;
+  padding: 32px 16px;
+  gap: 10px;
 }
 
 .emptyIcon {
-  font-size: 48px;
+  font-size: 32px;
   opacity: 0.3;
 }
 
 .emptyText {
   font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 15px;
+  font-size: 14px;
   color: var(--brand-black);
   opacity: 0.4;
   text-align: center;
@@ -220,13 +95,7 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 8px;
-}
-
-.skeletonRing {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  border-radius: 6px;
 }
 
 @keyframes shimmer {
@@ -238,30 +107,18 @@
   }
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .card {
-    padding: 20px;
-    border-radius: 16px;
-  }
-
-  .mainValue {
-    font-size: 44px;
-  }
-
-  .mainUnit {
-    font-size: 20px;
-  }
-
-  .statTileValue {
-    font-size: 24px;
-  }
-
+/* Responsive - 2 columns on mobile */
+@media (max-width: 600px) {
   .statsGrid {
-    gap: 12px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 
-  .statTile {
-    padding: 14px;
+  .statBox {
+    padding: 12px 14px;
+  }
+
+  .statValue {
+    font-size: 20px;
   }
 }

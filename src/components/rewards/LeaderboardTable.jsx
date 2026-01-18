@@ -1,15 +1,14 @@
 /**
- * LeaderboardTable Component
+ * LeaderboardTable Component - Collapsible Design
  *
- * Displays the top 50 wallets with their stats.
- * Responsive design: table on desktop, cards on mobile.
+ * Shows top 5 wallets by default with expand button for full list.
+ * Inspired by BitVault referrals leaderboard.
  */
 
 import { useState, useMemo } from 'react';
 import { getUserBadge, getBadgeColor } from '../../lib/rewards/api';
 import styles from './LeaderboardTable.module.css';
 
-// Epoch days for badge calculation
 const EPOCH_DAYS = {
   '24h': 1,
   '7d': 7,
@@ -17,12 +16,15 @@ const EPOCH_DAYS = {
   'all': 90,
 };
 
+const INITIAL_ROWS = 5;
+
 export default function LeaderboardTable({
   entries,
   connectedWallet,
   epoch,
   isLoading = false,
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredEntries = useMemo(() => {
@@ -35,6 +37,8 @@ export default function LeaderboardTable({
     );
   }, [entries, searchQuery]);
 
+  const displayedEntries = isExpanded ? filteredEntries : filteredEntries.slice(0, INITIAL_ROWS);
+
   if (isLoading) {
     return <LeaderboardSkeleton />;
   }
@@ -43,44 +47,48 @@ export default function LeaderboardTable({
 
   return (
     <div className={styles.container}>
-      {/* Header with search */}
+      {/* Header */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Top 50 Leaderboard</h2>
-        <div className={styles.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search wallet or ENS..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-          {searchQuery && (
-            <button
-              className={styles.clearButton}
-              onClick={() => setSearchQuery('')}
-              aria-label="Clear search"
-            >
-              ×
-            </button>
-          )}
+        <div className={styles.headerLeft}>
+          <h2 className={styles.title}>Leaderboard</h2>
+          <span className={styles.subtitle}>Top 50</span>
         </div>
+        {isExpanded && (
+          <div className={styles.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+            {searchQuery && (
+              <button
+                className={styles.clearButton}
+                onClick={() => setSearchQuery('')}
+                aria-label="Clear search"
+              >
+                ×
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Desktop Table */}
+      {/* Table */}
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th className={styles.thRank}>Rank</th>
+              <th className={styles.thRank}>#</th>
               <th className={styles.thWallet}>Wallet</th>
               <th className={styles.thCompute}>Compute</th>
               <th className={styles.thQueries}>Queries</th>
-              <th className={styles.thActive}>Active Days</th>
               <th className={styles.thStatus}>Status</th>
             </tr>
           </thead>
           <tbody>
-            {filteredEntries.map((entry) => {
+            {displayedEntries.map((entry) => {
               const isUser = connectedWallet &&
                 entry.wallet.toLowerCase() === connectedWallet.toLowerCase();
               const badge = getUserBadge(
@@ -97,15 +105,13 @@ export default function LeaderboardTable({
                   className={`${styles.row} ${isUser ? styles.userRow : ''}`}
                 >
                   <td className={styles.tdRank}>
-                    <span className={styles.rankBadge}>
-                      {entry.rank <= 3 ? (
-                        <span className={styles.medal}>
-                          {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
-                        </span>
-                      ) : (
-                        entry.rank
-                      )}
-                    </span>
+                    {entry.rank <= 3 ? (
+                      <span className={styles.medal}>
+                        {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
+                      </span>
+                    ) : (
+                      <span className={styles.rankNum}>{entry.rank}</span>
+                    )}
                   </td>
                   <td className={styles.tdWallet}>
                     <div className={styles.walletCell}>
@@ -125,14 +131,6 @@ export default function LeaderboardTable({
                   <td className={styles.tdQueries}>
                     {entry.queriesRun.toLocaleString()}
                   </td>
-                  <td className={styles.tdActive}>
-                    {entry.activeDays}
-                    {entry.streakDays > 0 && (
-                      <span className={styles.streak}>
-                        🔥{entry.streakDays}
-                      </span>
-                    )}
-                  </td>
                   <td className={styles.tdStatus}>
                     <span className={`${styles.statusBadge} ${styles[badgeColor]}`}>
                       {badge}
@@ -147,7 +145,7 @@ export default function LeaderboardTable({
 
       {/* Mobile Cards */}
       <div className={styles.mobileCards}>
-        {filteredEntries.map((entry) => {
+        {displayedEntries.map((entry) => {
           const isUser = connectedWallet &&
             entry.wallet.toLowerCase() === connectedWallet.toLowerCase();
           const badge = getUserBadge(
@@ -200,22 +198,37 @@ export default function LeaderboardTable({
                   </span>
                   <span className={styles.mobileStatLabel}>Queries</span>
                 </div>
-                <div className={styles.mobileStat}>
-                  <span className={styles.mobileStatValue}>
-                    {entry.activeDays}
-                    {entry.streakDays > 0 && (
-                      <span className={styles.streakSmall}>🔥{entry.streakDays}</span>
-                    )}
-                  </span>
-                  <span className={styles.mobileStatLabel}>Active</span>
-                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      {filteredEntries.length === 0 && (
+      {/* Expand/Collapse Button */}
+      {filteredEntries.length > INITIAL_ROWS && (
+        <button
+          className={styles.expandButton}
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          {isExpanded ? (
+            <>
+              Collapse
+              <svg className={styles.expandIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 15l7-7 7 7" />
+              </svg>
+            </>
+          ) : (
+            <>
+              View Full Leaderboard ({filteredEntries.length})
+              <svg className={styles.expandIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 9l-7 7-7-7" />
+              </svg>
+            </>
+          )}
+        </button>
+      )}
+
+      {filteredEntries.length === 0 && searchQuery && (
         <div className={styles.noResults}>
           No wallets found matching "{searchQuery}"
         </div>
@@ -232,16 +245,14 @@ function LeaderboardSkeleton() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={`${styles.skeleton}`} style={{ width: 200, height: 28 }} />
-        <div className={`${styles.skeleton}`} style={{ width: 200, height: 40 }} />
+        <div className={`${styles.skeleton}`} style={{ width: 150, height: 24 }} />
       </div>
       <div className={styles.skeletonRows}>
-        {Array.from({ length: 10 }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className={styles.skeletonRow}>
-            <div className={`${styles.skeleton}`} style={{ width: 40, height: 24 }} />
-            <div className={`${styles.skeleton}`} style={{ flex: 1, height: 24 }} />
-            <div className={`${styles.skeleton}`} style={{ width: 80, height: 24 }} />
-            <div className={`${styles.skeleton}`} style={{ width: 60, height: 24 }} />
+            <div className={`${styles.skeleton}`} style={{ width: 30, height: 20 }} />
+            <div className={`${styles.skeleton}`} style={{ flex: 1, height: 20 }} />
+            <div className={`${styles.skeleton}`} style={{ width: 60, height: 20 }} />
           </div>
         ))}
       </div>

@@ -1,13 +1,8 @@
 /**
- * RewardsPage Component
+ * RewardsPage Component - Compact Dashboard
  *
- * Main rewards dashboard page displaying the competitive leaderboard
- * and personal usage statistics for DrPepe.ai compute credits.
- *
- * Design references:
- * - Coinbase: Dark financial dashboard, big numbers, segmented time controls
- * - Apple Screen Time: Large metrics, comparison percentages, stacked cards
- * - Fitness apps: Progress rings, rewards framing, share affordance
+ * Redesigned to be more compact like BitVault referrals page.
+ * All content fits on one screen with collapsible leaderboard.
  */
 
 import { useState, useEffect, useCallback, useTransition } from 'react';
@@ -16,7 +11,6 @@ import {
   EpochTabs,
   PersonalSummaryCard,
   LeaderboardTable,
-  RewardsInfoAccordion,
   SocialProofStrip,
 } from '../../components/rewards';
 import {
@@ -77,31 +71,22 @@ export default function RewardsPage() {
     });
   };
 
-  // Share handler (future: generate shareable image/link)
-  const handleShare = () => {
-    if (navigator.share && personalStats) {
-      navigator.share({
-        title: 'My Amulet Rewards',
-        text: `I'm ranked #${personalStats.rank || 'Unranked'} with ${personalStats.totalComputeUsed.toLocaleString()} compute credits on Amulet.ai!`,
-        url: window.location.href,
-      }).catch(() => {});
-    }
-  };
-
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        {/* Page Header */}
+        {/* Header Row */}
         <header className={styles.header}>
-          <h1 className={styles.title}>Rewards</h1>
-          <button className={styles.shareButton} onClick={handleShare}>
-            <svg className={styles.shareIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-              <polyline points="16 6 12 2 8 6" />
-              <line x1="12" y1="2" x2="12" y2="15" />
-            </svg>
-            Share
-          </button>
+          <div className={styles.headerLeft}>
+            <h1 className={styles.title}>Rewards</h1>
+            {!isConnected && (
+              <span className={styles.demoTag}>Demo</span>
+            )}
+          </div>
+          <EpochTabs
+            value={epoch}
+            onChange={handleEpochChange}
+            isLoading={isPending}
+          />
         </header>
 
         {/* Error State */}
@@ -117,21 +102,21 @@ export default function RewardsPage() {
           </div>
         )}
 
-        {/* (A) Personal Summary Card */}
+        {/* Stats Grid */}
         <PersonalSummaryCard
           stats={personalStats}
           epoch={epoch}
           isLoading={isLoading}
         />
 
-        {/* (B) Epoch Tabs - Sticky */}
-        <EpochTabs
-          value={epoch}
-          onChange={handleEpochChange}
-          isLoading={isPending}
+        {/* Social Proof */}
+        <SocialProofStrip
+          stats={socialProof}
+          epoch={epoch}
+          isLoading={isLoading}
         />
 
-        {/* (C) Top 50 Leaderboard */}
+        {/* Leaderboard */}
         <LeaderboardTable
           entries={leaderboard}
           connectedWallet={isConnected ? address : null}
@@ -139,25 +124,14 @@ export default function RewardsPage() {
           isLoading={isLoading}
         />
 
-        {/* (D) How Rewards Work */}
-        <RewardsInfoAccordion />
-
-        {/* (E) Social Proof Strip */}
-        <SocialProofStrip
-          stats={socialProof}
-          epoch={epoch}
-          isLoading={isLoading}
-        />
-
-        {/* Demo Mode Notice */}
-        {!isConnected && (
-          <div className={styles.demoNotice}>
-            <span className={styles.demoIcon}>👀</span>
-            <span className={styles.demoText}>
-              Viewing demo data. Connect your wallet to see your real stats.
-            </span>
+        {/* How It Works - Inline */}
+        <div className={styles.infoCard}>
+          <div className={styles.infoTitle}>How Rewards Work</div>
+          <div className={styles.infoText}>
+            Earn compute credits by using the AI assistant. Your rank is determined by total credits used.
+            Top performers get recognized on the leaderboard. Credits reset each epoch period.
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

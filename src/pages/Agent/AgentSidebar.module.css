@@ -244,43 +244,46 @@
 }
 .textWrapper2 {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-green-darker);
+  color: var(--brand-black);
 }
 .textWrapper3 {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-green-dark);
+  color: var(--brand-black);
+  opacity: 0.7;
   white-space: nowrap;
 }
 .shopSupplements {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-purple-darker);
+  color: var(--brand-black);
 }
 .longevityEnhaced {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-purple-dark);
+  color: var(--brand-black);
+  opacity: 0.7;
   white-space: nowrap;
 }
 .shopSupplements2 {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-blue-darker);
+  color: var(--brand-black);
 }
 .longevityEnhaced2 {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-blue-dark);
+  color: var(--brand-black);
+  opacity: 0.7;
   white-space: nowrap;
 }
 .shopSupplements3 {
   font: 700 12px/20px "Satoshi-Bold", Helvetica, Arial, sans-serif;
-  color: var(--brand-blue-darker);
+  color: var(--brand-black);
 }
 .tokenTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-yellow-dark);
+  color: var(--brand-black);
 }
 .tokenSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-yellow-dark);
-  opacity: 0.8;
+  color: var(--brand-black);
+  opacity: 0.7;
   white-space: nowrap;
 }
 
@@ -305,11 +308,12 @@
 }
 .rewardsTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-pink-darker);
+  color: var(--brand-black);
 }
 .rewardsSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-pink-dark);
+  color: var(--brand-black);
+  opacity: 0.7;
   white-space: nowrap;
 }
 
@@ -319,11 +323,12 @@
 }
 .blogTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-teal-darker);
+  color: var(--brand-black);
 }
 .blogSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-teal-dark);
+  color: var(--brand-black);
+  opacity: 0.7;
   white-space: nowrap;
 }
 
