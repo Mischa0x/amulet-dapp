@@ -302,6 +302,12 @@ border: 1px solid rgba(255, 255, 255, 0.35);
   left: 1.5rem;
 }
 
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
 .topRight {
   top: 1.5rem;
   right: 1.5rem;
@@ -438,8 +444,8 @@ border: 1px solid rgba(255, 255, 255, 0.35);
   }
 
   .logo {
-    font-size: 16px;
-    line-height: 20px;
+    width: 40px;
+    height: 40px;
   }
 
   .title {
