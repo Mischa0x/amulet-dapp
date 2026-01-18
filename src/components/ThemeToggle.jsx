@@ -43,6 +43,30 @@ const VAR_SWAP = {
   "--brand-neon-cards-surface-light-purple-transparency":
     "--brand-neon-cards-surface-light-purple",
 
+  /* Yellow surface ↔ yellow transparent */
+  "--brand-neon-cards-surface-light-yellow":
+    "--brand-neon-cards-surface-light-yellow-transparency",
+  "--brand-neon-cards-surface-light-yellow-transparency":
+    "--brand-neon-cards-surface-light-yellow",
+
+  /* Teal surface ↔ teal transparent */
+  "--brand-neon-cards-surface-light-teal":
+    "--brand-neon-cards-surface-light-teal-transparency",
+  "--brand-neon-cards-surface-light-teal-transparency":
+    "--brand-neon-cards-surface-light-teal",
+
+  /* Yellow light ↔ yellow dark */
+  "--brand-yellow-light": "--brand-yellow-dark",
+  "--brand-yellow-dark": "--brand-yellow-light",
+
+  /* Teal light ↔ teal dark */
+  "--brand-teal-light": "--brand-teal-dark",
+  "--brand-teal-dark": "--brand-teal-light",
+
+  /* Teal lighter ↔ teal darker */
+  "--brand-teal-lighter": "--brand-teal-darker",
+  "--brand-teal-darker": "--brand-teal-lighter",
+
   /* Purple darker ↔ purple lighter */
   "--brand-purple-darker": "--brand-purple-lighter",
   "--brand-purple-lighter": "--brand-purple-darker",

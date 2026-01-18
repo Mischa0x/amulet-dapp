@@ -208,8 +208,8 @@
   border-color: var(--brand-blue-light);
 }
 .buttonCardGold {
-  background-color: #FFF8E7;
-  border-color: #E6C35C;
+  background-color: var(--brand-neon-cards-surface-light-yellow);
+  border-color: var(--brand-yellow-light);
 }
 .frameWrapper {
   background-color: var(--brand-blue-lighter);
@@ -275,11 +275,12 @@
 }
 .tokenTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: #8B6914;
+  color: var(--brand-yellow-dark);
 }
 .tokenSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: #B8860B;
+  color: var(--brand-yellow-dark);
+  opacity: 0.8;
   white-space: nowrap;
 }
 
@@ -293,8 +294,8 @@
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   transform: scale(1);
-  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-  border-color: #F59E0B;
+  background-color: var(--brand-neon-cards-surface-light-yellow);
+  border-color: var(--brand-yellow-light);
 }
 .buttonCardRewards:hover {
   transform: scale(1.03);
@@ -304,25 +305,26 @@
 }
 .rewardsTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: #92400E;
+  color: var(--brand-yellow-dark);
 }
 .rewardsSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: #B45309;
+  color: var(--brand-yellow-dark);
+  opacity: 0.8;
   white-space: nowrap;
 }
 
 .buttonCardBlog {
-  background-color: var(--brand-neon-cards-surface-light-purple);
-  border-color: var(--brand-purple-light);
+  background-color: var(--brand-neon-cards-surface-light-teal);
+  border-color: var(--brand-teal-light);
 }
 .blogTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-purple-darker);
+  color: var(--brand-teal-darker);
 }
 .blogSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-purple-dark);
+  color: var(--brand-teal-dark);
   white-space: nowrap;
 }
 

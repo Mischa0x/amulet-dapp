@@ -63,11 +63,10 @@
   letter-spacing: 0;
 }
 
-/* Ring Section - padding for badge that extends beyond ring */
+/* Ring Section */
 .ringSection {
   flex-shrink: 0;
-  padding-top: 10px;
-  padding-right: 10px;
+  padding-top: 12px;
 }
 
 /* Rank display */
