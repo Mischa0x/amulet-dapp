@@ -84,7 +84,7 @@ a{
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  flex-shrink: 1;                     /* allow shrinking if needed */
 }
 
 /* ===== BADGE ===== */
@@ -169,7 +169,7 @@ a{
   gap: 6px;
   width: 100%;
   flex: 1;
-  min-height: 0;
+  min-height: 70px;
   overflow: hidden;
 }
 
@@ -288,7 +288,10 @@ a{
   height: 260px;
 }
 .mediaRect {
-  max-height: 120px;
+  max-height: 100px;
+}
+.body {
+  min-height: 55px;
 }
 .badge{
   top: 12px;
