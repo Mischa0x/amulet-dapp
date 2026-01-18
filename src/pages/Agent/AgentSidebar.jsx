@@ -181,6 +181,7 @@ export default function AgentSidebar({
               className={styles.buttonCardTeal}
               role="button"
               tabIndex={0}
+              style={{ cursor: 'pointer' }}
               onClick={() => {
                 onNavigate?.("shop");
                 closeDrawerIfMobile();
@@ -211,6 +212,7 @@ export default function AgentSidebar({
               className={styles.buttonCardTeal2}
               role="button"
               tabIndex={0}
+              style={{ cursor: 'pointer' }}
               onClick={() => {
                 onNavigate?.("/orderhistory");
                 closeDrawerIfMobile();
@@ -241,6 +243,7 @@ export default function AgentSidebar({
               className={styles.buttonCardTeal3}
               role="button"
               tabIndex={0}
+              style={{ cursor: 'pointer' }}
               onClick={() => {
                 onNavigate?.("/visits");
                 closeDrawerIfMobile();
@@ -271,6 +274,7 @@ export default function AgentSidebar({
               className={styles.buttonCardGold}
               role="button"
               tabIndex={0}
+              style={{ cursor: 'pointer' }}
               onClick={() => {
                 onNavigate?.("/token");
                 closeDrawerIfMobile();
@@ -301,6 +305,7 @@ export default function AgentSidebar({
               className={styles.buttonCardBlog}
               role="button"
               tabIndex={0}
+              style={{ cursor: 'pointer' }}
               onClick={() => {
                 onNavigate?.("/blog");
                 closeDrawerIfMobile();
