@@ -38,9 +38,13 @@ export default async function handler(req, res) {
       });
     }
 
+    // Ensure balance is never negative (fix for legacy data)
+    const balance = Math.max(0, creditData.balance || 0);
+
     return res.status(200).json({
       address: normalizedAddress,
       ...creditData,
+      balance, // Override with clamped value
     });
 
   } catch (error) {
