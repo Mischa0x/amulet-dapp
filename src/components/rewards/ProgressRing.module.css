@@ -57,22 +57,22 @@
 
 .badge {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 22px;
-  height: 22px;
+  top: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
   background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.5);
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.4);
   animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .checkmark {
   color: white;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: bold;
 }
 

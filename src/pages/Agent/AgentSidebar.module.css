@@ -313,16 +313,16 @@
 }
 
 .buttonCardBlog {
-  background-color: var(--brand-neon-cards-surface-light-blue);
-  border-color: var(--brand-blue-light);
+  background-color: var(--brand-neon-cards-surface-light-purple);
+  border-color: var(--brand-purple-light);
 }
 .blogTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-blue-darker);
+  color: var(--brand-purple-darker);
 }
 .blogSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-blue-dark);
+  color: var(--brand-purple-dark);
   white-space: nowrap;
 }
 
