@@ -33,7 +33,7 @@ export default function BlogPage() {
             </svg>
             Home
           </Link>
-          <h1 className={styles.title}>Blog</h1>
+          <h1 className={styles.title}>Amulet Blog</h1>
           <p className={styles.subtitle}>
             Research, product updates, and experiments across AI + longevity.
           </p>
