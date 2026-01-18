@@ -331,7 +331,8 @@
   }
 
   :global(body.sidebar-collapsed) :local(.logoIcon) {
-    width: 30px;
+    width: 48px;
+    height: 48px;
   }
 
   /* Keep the original flow/positions (full-width rows, same gap) */
