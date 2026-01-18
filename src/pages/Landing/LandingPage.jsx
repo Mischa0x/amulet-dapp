@@ -1,6 +1,6 @@
 // pages/Landing/LandingPage.jsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styles from './LandingPage.module.css';
 import GhostBackground from '../../components/GhostBackground/GhostBackground';
 import RotatingSubtitle from '../../components/RotatingSubtitle';
@@ -190,17 +190,22 @@ function LandingPage() {
         </span>
 
         <span className={`${styles.corner} ${styles.topRight}`}>
-          {/* Desktop-only ConnectButton in top-right corner */}
-          <div
-            className={`${styles.tabs} ${styles.desktopOnly}`}
-            role="tablist"
-            aria-label="Wallet"
-          >
-            <ConnectButton
-              accountStatus="full"
-              chainStatus="full"
-              showBalance={true}
-            />
+          <div className={styles.topRightNav}>
+            <Link to="/blog" className={styles.blogLink}>
+              Blog
+            </Link>
+            {/* Desktop-only ConnectButton in top-right corner */}
+            <div
+              className={`${styles.tabs} ${styles.desktopOnly}`}
+              role="tablist"
+              aria-label="Wallet"
+            >
+              <ConnectButton
+                accountStatus="full"
+                chainStatus="full"
+                showBalance={true}
+              />
+            </div>
           </div>
         </span>
 

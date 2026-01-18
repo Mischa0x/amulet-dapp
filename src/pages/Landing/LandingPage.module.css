@@ -313,6 +313,28 @@ border: 1px solid rgba(255, 255, 255, 0.35);
   right: 1.5rem;
 }
 
+.topRightNav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.blogLink {
+  font-family: var(--body-md-bold-font-family, "Satoshi-Bold");
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand-black);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.blogLink:hover {
+  background: rgba(0, 0, 0, 0.05);
+  opacity: 0.8;
+}
+
 .bottomLeft {
   bottom: 1.5rem;
   left: 1.5rem;
