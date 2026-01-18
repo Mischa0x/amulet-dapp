@@ -891,6 +891,90 @@ Fixed mobile layout for 6 cards at 16.66% width each.
 3. **Theme-aware colors** - All new colors have proper dark mode variants
 4. **Icon colors** - Match their respective card colors
 
+## Session History (2026-01-18) - Build Fixes & Stripe Integration
+
+### Issues Fixed
+
+#### 1. ThemeToggle VAR_SWAP Duplicate Keys
+Build was failing due to duplicate object keys in the VAR_SWAP object in ThemeToggle.jsx.
+
+**Duplicate Keys Found:**
+- `--brand-green-lighter` (appeared twice)
+- `--brand-purple-lighter` (appeared twice)
+- `--brand-blue-lighter` (appeared 3 times)
+- `--brand-black` (appeared twice)
+
+**Fixes Applied:**
+| Original Duplicate | Fix |
+|---|---|
+| `--brand-green-lighter` | Changed one mapping to use `--brand-green-light` |
+| `--brand-purple-lighter` | Changed one mapping to use `--brand-purple-light` |
+| `--brand-blue-lighter` | Changed one mapping to use `--brand-blue-lightest` |
+| `--brand-black` | Changed grey swap to use `--brand-grey-darker` |
+
+**File Modified:** `src/components/ThemeToggle.jsx`
+
+#### 2. Stripe Webhook Configuration
+User added `STRIPE_WEBHOOK_SECRET` to Vercel environment variables, enabling the webhook to properly credit purchases.
+
+**Verification Steps:**
+1. Purchase credits via `/token` page
+2. Stripe redirects back to app
+3. Webhook fires and credits balance in Vercel KV
+
+#### 3. Wallet Disconnecting After Stripe Redirect
+After Stripe checkout redirect, the wallet would disconnect due to full page reload.
+
+**Root Cause:** RainbowKit's `getDefaultConfig` was overriding storage settings.
+
+**Fix Applied:** Switched from `getDefaultConfig` to wagmi's `createConfig` for full control:
+```typescript
+import { http, createStorage, createConfig } from 'wagmi';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  metaMaskWallet,
+  coinbaseWallet,
+  walletConnectWallet,
+  rainbowWallet,
+} from '@rainbow-me/rainbowkit/wallets';
+
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Popular',
+      wallets: [metaMaskWallet, coinbaseWallet, walletConnectWallet, rainbowWallet],
+    },
+  ],
+  { appName: 'Amulet AI', projectId }
+);
+
+export const config = createConfig({
+  chains: [seiTestnet],
+  connectors,
+  transports: { [seiTestnet.id]: http('...') },
+  storage: createStorage({
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    key: 'amulet-wallet',
+  }),
+  syncConnectedChain: true,
+});
+```
+
+**File Modified:** `src/wagmi.ts`
+
+### Commits
+| Commit | Description |
+|--------|-------------|
+| `fb3fa65` | fix: Remove duplicate keys in ThemeToggle VAR_SWAP object |
+| `c098997` | fix: Improve wallet persistence across page redirects |
+
+### Environment Variables (Updated)
+```
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+VITE_STRIPE_PUBLISHABLE_KEY=pk_live_...
+```
+
 ### To Resume
 ```
 Continue with any additional Amulet DApp features
