@@ -208,11 +208,18 @@ border: 1px solid rgba(255, 255, 255, 0.35);
   flex-direction: column;
   padding: 14px 17px;
   position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-box-shadow: 0 4px 30px rgba(108, 108, 108, 0.1);
-backdrop-filter: blur(17.7px);
--webkit-backdrop-filter: blur(17.7px);
-border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 30px rgba(108, 108, 108, 0.1);
+  backdrop-filter: blur(17.7px);
+  -webkit-backdrop-filter: blur(17.7px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.actionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 35px rgba(108, 108, 108, 0.15);
 }
 
 
