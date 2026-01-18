@@ -55,9 +55,10 @@
   outline-offset: 2px;
 }
 .logoIcon {
-  width: 24px;
-  height: 24px;
+  width: 48px;
+  height: 48px;
   display: block;
+  object-fit: contain;
 }
 
 .scrollArea {
