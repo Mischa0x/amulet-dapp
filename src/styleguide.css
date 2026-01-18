@@ -131,6 +131,13 @@
   --brand-orange-dark: #c2410c;
   --brand-orange-darker: #7c2d12;
 
+  /* Pink/Rose card surfaces */
+  --brand-neon-cards-surface-light-pink: #fdf2f8;
+  --brand-neon-cards-surface-light-pink-transparency: rgba(80, 40, 60, 1);
+  --brand-pink-light: #f472b6;
+  --brand-pink-dark: #db2777;
+  --brand-pink-darker: #9d174d;
+
   /* Teal card surfaces */
   --brand-neon-cards-surface-light-teal: #e6fffa;
   --brand-neon-cards-surface-light-teal-transparency: rgba(28, 66, 66, 1);

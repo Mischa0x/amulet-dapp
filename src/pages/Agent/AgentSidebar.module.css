@@ -294,8 +294,8 @@
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   transform: scale(1);
-  background-color: var(--brand-neon-cards-surface-light-orange);
-  border-color: var(--brand-orange-light);
+  background-color: var(--brand-neon-cards-surface-light-pink);
+  border-color: var(--brand-pink-light);
 }
 .buttonCardRewards:hover {
   transform: scale(1.03);
@@ -305,11 +305,11 @@
 }
 .rewardsTitle {
   font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-orange-darker);
+  color: var(--brand-pink-darker);
 }
 .rewardsSubtitle {
   font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
-  color: var(--brand-orange-dark);
+  color: var(--brand-pink-dark);
   white-space: nowrap;
 }
 
