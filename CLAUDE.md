@@ -728,6 +728,21 @@ curl -X POST "https://amulet-dapp.vercel.app/api/chat" \
 # https://amulet-dapp.vercel.app/rewards
 ```
 
+#### 4. Credits API Fix
+Fixed `/api/credits/index.js` to clamp negative balances to 0:
+- Legacy users with negative balances now see `balance: 0`
+- Added `Math.max(0, creditData.balance || 0)` before returning
+
+**Commit:** `76b11cd` - fix(credits): Always return non-negative balance from API
+
+### Summary of Session Changes
+| Commit | Description |
+|--------|-------------|
+| `f873b17` | Dark mode redesign + rewards middleware |
+| `02172b5` | Theme-aware rewards page + no negative balances in chat |
+| `bfe27f2` | Update CLAUDE.md with session history |
+| `76b11cd` | Fix credits API to never return negative balance |
+
 ### To Resume
 ```
 Continue with any additional Amulet DApp features
