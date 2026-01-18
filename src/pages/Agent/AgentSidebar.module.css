@@ -280,6 +280,32 @@
   white-space: nowrap;
 }
 
+.buttonCardBlog {
+  background: var(--brand-neon-cards-surface-light-blue);
+  border: 1px solid var(--brand-blue-default);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.buttonCardBlog:hover {
+  box-shadow: 0 2px 8px rgba(29, 122, 252, 0.15);
+}
+.buttonCardBlog:active {
+  transform: scale(0.98);
+}
+.blogTitle {
+  font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  color: var(--brand-blue-darker);
+}
+.blogSubtitle {
+  font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  color: var(--brand-blue-dark);
+  white-space: nowrap;
+}
+
 .sidebarFooter {
   margin-top: 1rem;
   display: flex;
@@ -476,8 +502,9 @@
   .buttonCardTeal,
   .buttonCardTeal2,
   .buttonCardTeal3,
-  .buttonCardGold {
-    width: 25%;
+  .buttonCardGold,
+  .buttonCardBlog {
+    width: 20%;
     padding: 0.6rem;
     display: flex;
     flex-direction: column;

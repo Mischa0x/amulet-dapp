@@ -296,6 +296,36 @@ export default function AgentSidebar({
                 </div>
               </div>
             </div>
+
+            <div
+              className={styles.buttonCardBlog}
+              role="button"
+              tabIndex={0}
+              onClick={() => {
+                onNavigate?.("/blog");
+                closeDrawerIfMobile();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  onNavigate?.("/blog");
+                  closeDrawerIfMobile();
+                }
+              }}
+              aria-label="Read Blog"
+              title="Blog"
+            >
+              <img
+                className={styles.icon24}
+                src="/assets/blog-icon.svg"
+                alt=""
+              />
+              <div className={styles.frame}>
+                <div className={styles.blogTitle}>Blog</div>
+                <div className={styles.blogSubtitle}>
+                  Research & insights
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className={styles.sidebarFooter}>
