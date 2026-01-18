@@ -1,7 +1,13 @@
 // src/wagmi.ts
-import { http, createStorage } from 'wagmi';
+import { http, createStorage, createConfig } from 'wagmi';
 import type { Chain } from '@rainbow-me/rainbowkit';
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  metaMaskWallet,
+  coinbaseWallet,
+  walletConnectWallet,
+  rainbowWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 
 // 1) Define Sei Testnet as a RainbowKit/Wagmi chain
 export const seiTestnet: Chain = {
@@ -26,19 +32,39 @@ export const seiTestnet: Chain = {
   iconBackground: '#050816',
 } as const;
 
-// 2) Use RainbowKit's helper to create the wagmi config
-export const config = getDefaultConfig({
-  appName: 'Amulet AI',
-  projectId: import.meta.env.VITE_WALLETCONNECT_PROJECT_ID!,
+// 2) Set up wallet connectors for RainbowKit
+const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID!;
+
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Popular',
+      wallets: [
+        metaMaskWallet,
+        coinbaseWallet,
+        walletConnectWallet,
+        rainbowWallet,
+      ],
+    },
+  ],
+  {
+    appName: 'Amulet AI',
+    projectId,
+  }
+);
+
+// 3) Create wagmi config with explicit storage for persistence
+export const config = createConfig({
   chains: [seiTestnet],
+  connectors,
   transports: {
-    // 👇 IMPORTANT: make wagmi use the proxy explicitly
     [seiTestnet.id]: http('https://sei-rpc-proxy.vercel.app/api/rpc'),
   },
-  // Persist wallet connection across page refreshes
+  // Persist wallet connection across page refreshes and redirects
   storage: createStorage({
     storage: typeof window !== 'undefined' ? window.localStorage : undefined,
     key: 'amulet-wallet',
   }),
-  ssr: false,
+  // Automatically reconnect on page load
+  syncConnectedChain: true,
 });
