@@ -370,7 +370,68 @@ Added blog links in two locations:
 - Cards lift 8px and scale 1.02x on hover with enhanced shadow
 - Inline `style={{ cursor: 'pointer' }}` added as fallback
 
+## Session History (2026-01-18) - Credit Tiers & Integration Guide
+
+### Credit Tier Updates
+1. **Volume discounts added** to credit packages:
+   - Mortal: 100 credits = $5.00 ($0.050/credit) — no discount
+   - Awakened: 500 credits = $22.50 ($0.045/credit) — 10% off
+   - Transcendent: 2,000 credits = $80.00 ($0.040/credit) — 20% off
+   - Immortal: 10,000 credits = $350.00 ($0.035/credit) — 30% off
+
+2. **Tier names changed** from generic (Starter, Builder, Pro, Enterprise) to longevity-themed (Mortal → Awakened → Transcendent → Immortal)
+
+3. **Price display fixed** from `$5.0¢ per credit` to `$0.050 per credit`
+
+### Sidebar UI Fixes
+1. **Cursor pointer** added to all Quick Action cards (inline styles for reliability)
+2. **Blog card unified** with other cards - now shares base styles, hover effects, and responsive behavior
+3. **Mobile layout** - all 5 cards at 20% width each
+
+### Blog Post Cleanup
+- Removed AMULET token blog post
+- Regenerated `blogPosts.js` with 3 posts remaining
+
+### Developer Integration Guide
+Created comprehensive `INTEGRATION_GUIDE.md` (754 lines) for handoff to mszsorondo/amulet.ai:
+
+**Conflict Analysis:**
+- `/api/chat` vs `/api/chat/integrated_chat` — NO CONFLICT
+- `/api/stripe/*` vs `/api/checkout/*` — NO CONFLICT
+- All new endpoints are purely additive
+
+**Features Documented:**
+1. Blog System (static, no backend deps)
+2. Compute Credits Methodology
+3. Query Credit Tracking System
+4. Stripe Integration
+5. Visits Page (Beluga-ready with mock data)
+6. Order History (Beluga-ready with mock data)
+7. Shop Supplements (Beluga-ready)
+
+**Key Files:**
+- `INTEGRATION_GUIDE.md` - Full migration guide with checklist
+- `COMPUTE_CREDITS_DESIGN.md` - Tokenomics specification
+
+### Commits
+- `4caa525` - feat(credits): Add volume discounts to credit packages
+- `a179600` - feat(credits): Rename tiers to longevity theme
+- `61157ae` - chore(blog): Remove AMULET token blog post
+- `fc57c2b` - fix(sidebar): Add cursor pointer to quick action cards
+- `099ff34` - fix(sidebar): Add inline cursor pointer to all quick action cards
+- `2a13935` - fix(sidebar): Unify blog card styles with other quick action cards
+- `8b4dc06` - docs: Add comprehensive integration guide for developer handoff
+
+### Files Modified
+- `src/pages/Token/TokenPage.jsx` - Tier names, discounts, price format
+- `src/pages/Token/TokenPage.module.css` - Discount badge styles
+- `src/pages/Agent/AgentSidebar.jsx` - Inline cursor styles
+- `src/pages/Agent/AgentSidebar.module.css` - Blog card unified styles
+- `src/data/blogPosts.js` - Regenerated (3 posts)
+- `COMPUTE_CREDITS_DESIGN.md` - Updated pricing table
+- `INTEGRATION_GUIDE.md` - NEW: Full developer handoff guide
+
 ### To Resume
 ```
-Continue working on the Amulet DApp blog or other features
+Continue working on Amulet DApp features or prepare PR for mszsorondo/amulet.ai
 ```
