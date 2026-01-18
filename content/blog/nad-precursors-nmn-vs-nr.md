@@ -1,5 +1,5 @@
 ---
-title: "NAD+ Precursors: NMN vs NR Compared"
+title: NAD+ Precursors - NMN vs NR Compared
 publishedAt: 2026-01-12
 heroImage: /blog/placeholder-2.svg
 categories:

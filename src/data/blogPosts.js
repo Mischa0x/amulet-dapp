@@ -62,7 +62,7 @@ export const blogPosts = [
     "content": "<p>The intersection of artificial intelligence and longevity research represents one of the most promising frontiers in modern science. Machine learning models are now capable of analyzing vast datasets of biological information, identifying patterns that would take human researchers decades to discover.</p>\n\n<h2>The Data Revolution</h2>\n\n<p>With the advent of high-throughput sequencing and proteomics, we now have access to unprecedented amounts of biological data. AI systems can process this information at scale, identifying potential aging biomarkers and therapeutic targets.</p>\n\n<h2>Drug Discovery Acceleration</h2>\n\n<p>Traditional drug discovery takes 10-15 years on average. AI-powered platforms are reducing this timeline dramatically by predicting molecular interactions and identifying promising compounds before costly clinical trials.</p>\n\n<h2>What's Next</h2>\n\n<p>The future holds even more promise as these systems become more sophisticated. We're seeing the emergence of AI models specifically trained on aging data, capable of making predictions about intervention efficacy.</p>"
   },
   {
-    "title": "\"NAD+ Precursors: NMN vs NR Compared\"",
+    "title": "NAD+ Precursors - NMN vs NR Compared",
     "slug": "nad-precursors-nmn-vs-nr",
     "publishedAt": "2026-01-12",
     "heroImage": "/blog/placeholder-2.svg",
@@ -76,7 +76,7 @@ export const blogPosts = [
     "content": "<p>NAD+ (nicotinamide adenine dinucleotide) is a critical coenzyme found in every cell of your body. As we age, NAD+ levels naturally decline, which has been linked to various aspects of aging.</p>\n\n<h2>Understanding NMN</h2>\n\n<p>Nicotinamide mononucleotide (NMN) is a direct precursor to NAD+. Studies have shown it can effectively raise NAD+ levels in various tissues.</p>\n\n<h2>Understanding NR</h2>\n\n<p>Nicotinamide riboside (NR) is another NAD+ precursor that has been extensively studied. It converts to NMN before becoming NAD+.</p>\n\n<h2>Which Should You Choose?</h2>\n\n<p>The choice between NMN and NR depends on various factors including cost, availability, and individual response. Both have shown promise in research settings.</p>"
   },
   {
-    "title": "\"AMULET Token: Utility and Roadmap 2026\"",
+    "title": "AMULET Token - Utility and Roadmap 2026",
     "slug": "amulet-token-utility-roadmap-2026",
     "publishedAt": "2026-01-10",
     "heroImage": "/blog/placeholder-3.svg",

@@ -1,5 +1,5 @@
 ---
-title: "AMULET Token: Utility and Roadmap 2026"
+title: AMULET Token - Utility and Roadmap 2026
 publishedAt: 2026-01-10
 heroImage: /blog/placeholder-3.svg
 categories:
