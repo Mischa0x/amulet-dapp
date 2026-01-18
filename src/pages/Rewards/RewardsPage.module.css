@@ -1,0 +1,137 @@
+/* RewardsPage - Main rewards dashboard */
+
+.page {
+  min-height: 100%;
+  width: 100%;
+  padding: 40px 24px;
+  background: var(--brand-white);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.title {
+  font-family: var(--heading-h1-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--brand-black);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.5px;
+}
+
+.subtitle {
+  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 16px;
+  color: var(--brand-black);
+  opacity: 0.5;
+  margin: 0;
+}
+
+/* Error Banner */
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 14px 20px;
+  background: var(--brand-red-lighter, #ffedea);
+  border: 1px solid rgba(227, 73, 53, 0.2);
+  border-radius: 10px;
+  color: var(--brand-red-default, #e34935);
+  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.retryButton {
+  padding: 6px 14px;
+  font-family: var(--body-sm-bold-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  background: var(--brand-red-default, #e34935);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.retryButton:hover {
+  opacity: 0.9;
+}
+
+/* Demo Notice */
+.demoNotice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: var(--brand-yellow-lighter, #fff7d7);
+  border: 1px solid rgba(250, 204, 21, 0.3);
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.demoIcon {
+  font-size: 18px;
+}
+
+.demoText {
+  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 13px;
+  color: var(--brand-yellow-dark, #805f10);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: 24px 16px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .header {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 20px 12px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .errorBanner {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .demoNotice {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}

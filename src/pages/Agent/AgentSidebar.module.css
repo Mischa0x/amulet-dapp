@@ -283,6 +283,35 @@
   white-space: nowrap;
 }
 
+.buttonCardRewards {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-radius: var(--alias-border-radius-md);
+  border: 1px solid;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transform: scale(1);
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-color: #F59E0B;
+}
+.buttonCardRewards:hover {
+  transform: scale(1.03);
+}
+.buttonCardRewards:active {
+  transform: scale(0.98);
+}
+.rewardsTitle {
+  font: 400 14px/20px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  color: #92400E;
+}
+.rewardsSubtitle {
+  font: 400 11px/16px "Satoshi-Regular", Helvetica, Arial, sans-serif;
+  color: #B45309;
+  white-space: nowrap;
+}
+
 .buttonCardBlog {
   background-color: var(--brand-neon-cards-surface-light-blue);
   border-color: var(--brand-blue-light);
@@ -352,6 +381,8 @@
     :local(.bottomDock .buttonCardTeal3),
   :global(body.sidebar-collapsed)
     :local(.bottomDock .buttonCardGold),
+  :global(body.sidebar-collapsed)
+    :local(.bottomDock .buttonCardRewards),
   :global(body.sidebar-collapsed)
     :local(.bottomDock .buttonCardBlog) {
     width: 100%;

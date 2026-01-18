@@ -1,0 +1,94 @@
+/* ProgressRing - SVG circular progress indicator */
+
+.container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ring {
+  transform: rotate(0deg);
+}
+
+.track {
+  stroke: var(--brand-grey-lighter, #e6e6e6);
+  opacity: 0.3;
+}
+
+.progress {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.3s ease;
+}
+
+.inner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.percentage {
+  font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--brand-black);
+  letter-spacing: -0.5px;
+}
+
+.label {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 10px;
+  color: var(--brand-black);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  max-width: 70px;
+  line-height: 1.2;
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: var(--brand-green-default, #22a06b);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(34, 160, 107, 0.4);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.checkmark {
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .percentage {
+    font-size: 20px;
+  }
+
+  .label {
+    font-size: 9px;
+    max-width: 60px;
+  }
+}

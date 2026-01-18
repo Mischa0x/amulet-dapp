@@ -1,0 +1,82 @@
+/* EpochTabs - Segmented control for time periods */
+
+.container {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 0;
+  background: var(--brand-white);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  margin-bottom: 24px;
+}
+
+.tabs {
+  display: flex;
+  position: relative;
+  background: var(--brand-grey-lighter-2, #f9fafc);
+  border-radius: 12px;
+  padding: 4px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  font-family: var(--body-sm-bold-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-black);
+  opacity: 0.5;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.tab:hover:not(:disabled) {
+  opacity: 0.7;
+}
+
+.tab:disabled {
+  cursor: not-allowed;
+}
+
+.tab.active {
+  color: var(--brand-black);
+  opacity: 1;
+}
+
+.indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  background: var(--brand-white);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 12px 0;
+    margin-bottom: 16px;
+  }
+
+  .tabs {
+    max-width: 100%;
+  }
+
+  .tab {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

@@ -14,6 +14,7 @@ import Visits from './pages/Visits/Visits';
 import Dashboard from './components/Dashboard';
 import WalletGuard from './components/WalletGuard';
 import TokenPage from './pages/Token/TokenPage';
+import RewardsPage from './pages/Rewards/RewardsPage';
 import BlogPage from './pages/Blog/BlogPage';
 import BlogPostPage from './pages/Blog/BlogPostPage';   
 
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/orderhistory" element={<OrderHistory />} />
                 <Route path="/visits" element={<Visits />} />
                 <Route path="/token" element={<TokenPage />} />
+                <Route path="/rewards" element={<RewardsPage />} />
               </Route>
               <Route path="/dashboard" element={<Dashboard />} />
 

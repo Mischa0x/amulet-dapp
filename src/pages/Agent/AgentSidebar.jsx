@@ -302,6 +302,37 @@ export default function AgentSidebar({
             </div>
 
             <div
+              className={styles.buttonCardRewards}
+              role="button"
+              tabIndex={0}
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                onNavigate?.("/rewards");
+                closeDrawerIfMobile();
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  onNavigate?.("/rewards");
+                  closeDrawerIfMobile();
+                }
+              }}
+              aria-label="View Rewards"
+              title="Rewards"
+            >
+              <img
+                className={styles.icon24}
+                src="/assets/rewards-icon.svg"
+                alt=""
+              />
+              <div className={styles.frame}>
+                <div className={styles.rewardsTitle}>Rewards</div>
+                <div className={styles.rewardsSubtitle}>
+                  Leaderboard & stats
+                </div>
+              </div>
+            </div>
+
+            <div
               className={styles.buttonCardBlog}
               role="button"
               tabIndex={0}
