@@ -33,9 +33,9 @@ const VAR_SWAP = {
   "--brand-green-darker": "--brand-green-lighter",
   "--brand-green-lighter": "--brand-green-darker",
 
-  /* Green dark ↔ green lighter (Your original mapping) */
-  "--brand-green-dark": "--brand-green-lighter",
-  "--brand-green-lighter": "--brand-green-dark",
+  /* Green dark ↔ green light */
+  "--brand-green-dark": "--brand-green-light",
+  "--brand-green-light": "--brand-green-dark",
 
   /* Purple surface ↔ purple transparent */
   "--brand-neon-cards-surface-light-purple":
@@ -91,21 +91,21 @@ const VAR_SWAP = {
   "--brand-purple-darker": "--brand-purple-lighter",
   "--brand-purple-lighter": "--brand-purple-darker",
 
-  /* Purple dark ↔ purple lighter */
-  "--brand-purple-dark": "--brand-purple-lighter",
-  "--brand-purple-lighter": "--brand-purple-dark",
+  /* Purple dark ↔ purple light */
+  "--brand-purple-dark": "--brand-purple-light",
+  "--brand-purple-light": "--brand-purple-dark",
 
-  /* Blue darker ↔ blue lighter */
-  "--brand-blue-darker": "--brand-blue-lighter",
-  "--brand-blue-lighter": "--brand-blue-darker",
+  /* Blue darker ↔ blue lightest */
+  "--brand-blue-darker": "--brand-blue-lightest",
+  "--brand-blue-lightest": "--brand-blue-darker",
 
-  /* Blue dark ↔ blue lighter */
-  "--brand-blue-dark": "--brand-blue-lighter",
-  "--brand-blue-lighter": "--brand-blue-dark",
+  /* Blue dark ↔ blue light */
+  "--brand-blue-dark": "--brand-blue-light",
+  "--brand-blue-light": "--brand-blue-dark",
 
-  /* Grey lighter ↔ black (your mapping) */
-  "--brand-grey-lighter-2": "--brand-black",
-  "--brand-black": "--brand-grey-lighter-2",
+  /* Grey lighter ↔ grey darker */
+  "--brand-grey-lighter-2": "--brand-grey-darker",
+  "--brand-grey-darker": "--brand-grey-lighter-2",
 
   /* Checkout page grey ↔ blue */
   "--brand-checkoutpage-bg-grey": "--brand-checkoutpage-bg-blue",
