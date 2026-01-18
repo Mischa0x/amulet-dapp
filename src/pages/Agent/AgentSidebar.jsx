@@ -96,7 +96,7 @@ export default function AgentSidebar({
             title="Toggle sidebar"
           >
             <img
-              src="/assets/infinite-ouline-blue.svg"
+              src="/assets/blue_logo_transparent_square.png"
               alt=""
               className={styles.logoIcon}
             />

@@ -183,7 +183,7 @@ function LandingPage() {
       <div className={styles.cornerWords}>
         <span className={`${styles.corner} ${styles.topLeft}`}>
           <img
-            src="./assets/infinite-ouline-blue.svg"
+            src="/assets/blue_logo_transparent_square.png"
             alt="Amulet Logo"
             className={styles.logo}
           />

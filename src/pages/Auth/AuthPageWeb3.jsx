@@ -6,7 +6,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 import styles from "./AuthPage.module.css";
 //import GhostBackground from "../../components/GhostBackground/GhostBackground";
-import logo from "../Auth/infinite-ouline-blue.svg";
+import logo from "/assets/blue_logo_transparent_square.png";
 
 export default function AuthPageWeb3() {
   const { isConnected } = useAccount();

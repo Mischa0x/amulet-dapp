@@ -62,7 +62,7 @@ function HeaderLanding() {
         <div style={badgeStyle}>
           <img
             alt="Infinity badge"
-            src="/assets/infinite-ouline-blue.svg"
+            src="/assets/blue_logo_transparent_square.png"
           />
           <div style={badgeTextStyle}>LONGEVITY AGENT</div>
         </div>

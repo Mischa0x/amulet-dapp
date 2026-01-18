@@ -64,7 +64,7 @@ export default function AgentHeader({
           aria-label="Open sidebar"
         >
           <img
-            src="/assets/infinite-ouline-blue.svg"
+            src="/assets/blue_logo_transparent_square.png"
             alt=""
             className={styles.icon24}
           />

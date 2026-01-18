@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./AuthPage.module.css";
 //import GhostBackground from "../../components/GhostBackground/GhostBackground"; // 👈 igual que en Landing
-import logo from "../Auth/infinite-ouline-blue.svg"
+import logo from "/assets/blue_logo_transparent_square.png"
 
 
 export default function AuthPage() {
