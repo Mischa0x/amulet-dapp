@@ -3,31 +3,31 @@ import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// Credit packages
+// Credit packages (matching frontend TokenPage.jsx)
 const PACKAGES = {
-  starter: {
+  mortal: {
     credits: 100,
     price: 500, // $5.00 in cents
-    name: 'Starter Pack',
+    name: 'Mortal Pack',
     description: '100 Compute Credits',
   },
-  builder: {
+  awakened: {
     credits: 500,
-    price: 2500, // $25.00
-    name: 'Builder Pack',
-    description: '500 Compute Credits',
+    price: 2250, // $22.50 (10% discount)
+    name: 'Awakened Pack',
+    description: '500 Compute Credits (10% off)',
   },
-  pro: {
+  transcendent: {
     credits: 2000,
-    price: 10000, // $100.00
-    name: 'Pro Pack',
-    description: '2,000 Compute Credits',
+    price: 8000, // $80.00 (20% discount)
+    name: 'Transcendent Pack',
+    description: '2,000 Compute Credits (20% off)',
   },
-  enterprise: {
+  immortal: {
     credits: 10000,
-    price: 50000, // $500.00
-    name: 'Enterprise Pack',
-    description: '10,000 Compute Credits',
+    price: 35000, // $350.00 (30% discount)
+    name: 'Immortal Pack',
+    description: '10,000 Compute Credits (30% off)',
   },
 };
 
