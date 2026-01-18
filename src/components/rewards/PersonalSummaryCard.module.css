@@ -66,7 +66,6 @@
 /* Ring Section */
 .ringSection {
   flex-shrink: 0;
-  padding-top: 12px;
 }
 
 /* Rank display */

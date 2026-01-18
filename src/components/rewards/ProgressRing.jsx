@@ -74,15 +74,18 @@ export default function ProgressRing({
       </svg>
 
       <div className={styles.inner}>
-        <span className={styles.percentage}>{percentage}%</span>
-        {showLabel && <span className={styles.label}>{label}</span>}
+        {progress >= 1 ? (
+          <>
+            <span className={styles.checkmarkInner}>✓</span>
+            <span className={styles.completeLabel}>Complete</span>
+          </>
+        ) : (
+          <>
+            <span className={styles.percentage}>{percentage}%</span>
+            {showLabel && <span className={styles.label}>{label}</span>}
+          </>
+        )}
       </div>
-
-      {progress >= 1 && (
-        <div className={styles.badge}>
-          <span className={styles.checkmark}>✓</span>
-        </div>
-      )}
     </div>
   );
 }

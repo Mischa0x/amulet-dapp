@@ -59,6 +59,19 @@ const VAR_SWAP = {
   "--brand-yellow-light": "--brand-yellow-dark",
   "--brand-yellow-dark": "--brand-yellow-light",
 
+  /* Orange surface ↔ orange transparent */
+  "--brand-neon-cards-surface-light-orange":
+    "--brand-neon-cards-surface-light-orange-transparency",
+  "--brand-neon-cards-surface-light-orange-transparency":
+    "--brand-neon-cards-surface-light-orange",
+
+  /* Orange light ↔ orange dark */
+  "--brand-orange-light": "--brand-orange-dark",
+  "--brand-orange-dark": "--brand-orange-light",
+
+  /* Orange darker ↔ itself (stays same in both modes) */
+  "--brand-orange-darker": "--brand-orange-darker",
+
   /* Teal light ↔ teal dark */
   "--brand-teal-light": "--brand-teal-dark",
   "--brand-teal-dark": "--brand-teal-light",

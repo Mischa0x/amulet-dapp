@@ -124,6 +124,13 @@
   --brand-neon-cards-surface-light-yellow-transparency: rgba(78, 60, 28, 1);
   --brand-yellow-light: #fcd34d;
 
+  /* Orange card surfaces */
+  --brand-neon-cards-surface-light-orange: #fff4ed;
+  --brand-neon-cards-surface-light-orange-transparency: rgba(92, 45, 20, 1);
+  --brand-orange-light: #fb923c;
+  --brand-orange-dark: #c2410c;
+  --brand-orange-darker: #7c2d12;
+
   /* Teal card surfaces */
   --brand-neon-cards-surface-light-teal: #e6fffa;
   --brand-neon-cards-surface-light-teal-transparency: rgba(28, 66, 66, 1);
