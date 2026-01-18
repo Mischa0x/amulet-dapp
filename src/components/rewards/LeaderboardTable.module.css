@@ -1,11 +1,23 @@
-/* LeaderboardTable - Top 50 wallets display */
+/**
+ * LeaderboardTable - Top 50 wallets display (Dark mode)
+ *
+ * Design: Apple Screen Time list + Coinbase tables
+ * - Dark glassmorphism container
+ * - Subtle row dividers
+ * - Blue glow for user row
+ * - Mobile card layout
+ */
 
 .container {
-  background: var(--brand-white);
-  border: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.08));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
   overflow: hidden;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 /* Header */
@@ -13,21 +25,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.06));
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .title {
   font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--brand-black);
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
   margin: 0;
 }
 
 .searchWrapper {
   position: relative;
-  width: 200px;
+  width: 180px;
 }
 
 .searchInput {
@@ -35,21 +47,21 @@
   padding: 8px 32px 8px 12px;
   font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
   font-size: 13px;
-  border: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  background: var(--brand-grey-lighter-2, #f9fafc);
-  color: var(--brand-black);
-  transition: border-color 0.15s ease;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: var(--brand-blue-default, #1D7AFC);
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .searchInput::placeholder {
-  color: var(--brand-black);
-  opacity: 0.4;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .clearButton {
@@ -57,23 +69,23 @@
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: none;
-  background: var(--brand-grey-lighter, #e6e6e6);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   cursor: pointer;
-  font-size: 14px;
-  color: var(--brand-black);
-  opacity: 0.6;
+  font-size: 12px;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
+  transition: background 0.15s ease;
 }
 
 .clearButton:hover {
-  opacity: 1;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Table - Desktop */
@@ -90,34 +102,33 @@
   font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
   font-size: 11px;
   font-weight: 500;
-  color: var(--brand-black);
-  opacity: 0.5;
+  color: rgba(255, 255, 255, 0.45);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-align: left;
   padding: 12px 16px;
-  background: var(--brand-grey-lighter-2, #f9fafc);
-  border-bottom: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.06));
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .thRank {
-  width: 70px;
+  width: 60px;
   text-align: center !important;
 }
 
 .thWallet {
-  min-width: 180px;
+  min-width: 160px;
 }
 
 .thCompute,
 .thQueries,
 .thActive {
-  width: 100px;
+  width: 90px;
   text-align: right !important;
 }
 
 .thStatus {
-  width: 110px;
+  width: 100px;
   text-align: center !important;
 }
 
@@ -127,24 +138,24 @@
 }
 
 .row:hover {
-  background: var(--brand-grey-lighter-2, #f9fafc);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .row td {
-  padding: 14px 16px;
+  padding: 12px 16px;
   font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
   font-size: 14px;
-  color: var(--brand-black);
-  border-bottom: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.04));
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .userRow {
-  background: rgba(29, 122, 252, 0.06);
-  box-shadow: inset 0 0 0 1px rgba(29, 122, 252, 0.2);
+  background: rgba(59, 130, 246, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3);
 }
 
 .userRow:hover {
-  background: rgba(29, 122, 252, 0.1);
+  background: rgba(59, 130, 246, 0.15);
 }
 
 /* Cells */
@@ -155,11 +166,11 @@
 .rankBadge {
   font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
   font-weight: 600;
-  color: var(--brand-black);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .medal {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .walletCell {
@@ -171,13 +182,13 @@
 .ens {
   font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
   font-weight: 600;
-  color: var(--brand-black);
+  color: #ffffff;
 }
 
 .address {
-  font-family: 'Menlo', 'Monaco', monospace;
+  font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
   font-size: 13px;
-  opacity: 0.8;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .youTag {
@@ -187,7 +198,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 2px 6px;
-  background: var(--brand-blue-default, #1D7AFC);
+  background: #3b82f6;
   color: white;
   border-radius: 4px;
 }
@@ -197,6 +208,7 @@
   text-align: right;
   font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
   font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .tdActive {
@@ -207,7 +219,7 @@
 .streak {
   font-size: 12px;
   margin-left: 6px;
-  opacity: 0.9;
+  color: #f59e0b;
 }
 
 .tdStatus {
@@ -218,36 +230,41 @@
 .statusBadge {
   display: inline-block;
   font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 12px;
+  padding: 4px 8px;
+  border-radius: 10px;
   white-space: nowrap;
 }
 
 .statusBadge.gold {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  color: #92400e;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .statusBadge.purple {
-  background: var(--brand-purple-lighter, #f2f0fe);
-  color: var(--brand-purple-dark, #5e4eaf);
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .statusBadge.blue {
-  background: var(--brand-neon-cards-surface-light-blue, #e9f5fe);
-  color: var(--brand-blue-dark, #0056c9);
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .statusBadge.green {
-  background: var(--brand-green-lighter, #dffcf1);
-  color: var(--brand-green-dark, #1d6e4f);
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
 }
 
 .statusBadge.grey {
-  background: var(--brand-grey-lighter, #e6e6e6);
-  color: var(--brand-grey-dark, #465670);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Mobile Cards - Hidden by default */
@@ -256,8 +273,8 @@
 }
 
 .mobileCard {
-  padding: 16px;
-  border-bottom: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.06));
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .mobileCard:last-child {
@@ -265,18 +282,18 @@
 }
 
 .userCard {
-  background: rgba(29, 122, 252, 0.06);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .mobileCardHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .mobileRank {
-  width: 36px;
+  width: 32px;
   text-align: center;
 }
 
@@ -284,8 +301,7 @@
   font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
   font-size: 14px;
   font-weight: 600;
-  color: var(--brand-black);
-  opacity: 0.7;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .mobileWallet {
@@ -293,13 +309,21 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+}
+
+.mobileWallet .ens,
+.mobileWallet .address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mobileCardStats {
   display: flex;
   justify-content: space-around;
-  padding-top: 12px;
-  border-top: 1px solid var(--mapped-border-and-dividers-primary, rgba(0, 0, 0, 0.04));
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .mobileStat {
@@ -311,9 +335,9 @@
 
 .mobileStatValue {
   font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--brand-black);
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -321,13 +345,15 @@
 
 .mobileStatLabel {
   font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
-  font-size: 11px;
-  color: var(--brand-black);
-  opacity: 0.5;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .streakSmall {
   font-size: 12px;
+  color: #f59e0b;
 }
 
 /* No Results */
@@ -336,17 +362,16 @@
   text-align: center;
   font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
   font-size: 14px;
-  color: var(--brand-black);
-  opacity: 0.5;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* Skeleton */
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--brand-grey-lighter, #e6e6e6) 25%,
-    var(--brand-grey-lighter-2, #f9fafc) 50%,
-    var(--brand-grey-lighter, #e6e6e6) 75%
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
@@ -354,7 +379,7 @@
 }
 
 .skeletonRows {
-  padding: 16px 24px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -362,7 +387,7 @@
 
 .skeletonRow {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -381,7 +406,7 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    padding: 16px;
+    padding: 14px 16px;
   }
 
   .searchWrapper {
@@ -399,11 +424,11 @@
 
 @media (max-width: 480px) {
   .title {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .mobileCard {
-    padding: 14px;
+    padding: 12px 14px;
   }
 
   .mobileStatValue {

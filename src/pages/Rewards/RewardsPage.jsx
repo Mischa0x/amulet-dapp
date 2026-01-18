@@ -4,7 +4,10 @@
  * Main rewards dashboard page displaying the competitive leaderboard
  * and personal usage statistics for DrPepe.ai compute credits.
  *
- * Design: Coinbase (clean financial UI) + Apple Fitness (big numbers, progress rings)
+ * Design references:
+ * - Coinbase: Dark financial dashboard, big numbers, segmented time controls
+ * - Apple Screen Time: Large metrics, comparison percentages, stacked cards
+ * - Fitness apps: Progress rings, rewards framing, share affordance
  */
 
 import { useState, useEffect, useCallback, useTransition } from 'react';
@@ -74,15 +77,31 @@ export default function RewardsPage() {
     });
   };
 
+  // Share handler (future: generate shareable image/link)
+  const handleShare = () => {
+    if (navigator.share && personalStats) {
+      navigator.share({
+        title: 'My Amulet Rewards',
+        text: `I'm ranked #${personalStats.rank || 'Unranked'} with ${personalStats.totalComputeUsed.toLocaleString()} compute credits on Amulet.ai!`,
+        url: window.location.href,
+      }).catch(() => {});
+    }
+  };
+
   return (
     <div className={styles.page}>
       <div className={styles.container}>
         {/* Page Header */}
         <header className={styles.header}>
           <h1 className={styles.title}>Rewards</h1>
-          <p className={styles.subtitle}>
-            Track your compute usage and compete for top positions
-          </p>
+          <button className={styles.shareButton} onClick={handleShare}>
+            <svg className={styles.shareIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+            Share
+          </button>
         </header>
 
         {/* Error State */}
@@ -105,9 +124,6 @@ export default function RewardsPage() {
           isLoading={isLoading}
         />
 
-        {/* How Rewards Work */}
-        <RewardsInfoAccordion />
-
         {/* (B) Epoch Tabs - Sticky */}
         <EpochTabs
           value={epoch}
@@ -123,7 +139,10 @@ export default function RewardsPage() {
           isLoading={isLoading}
         />
 
-        {/* (D) Social Proof Strip */}
+        {/* (D) How Rewards Work */}
+        <RewardsInfoAccordion />
+
+        {/* (E) Social Proof Strip */}
         <SocialProofStrip
           stats={socialProof}
           epoch={epoch}

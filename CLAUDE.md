@@ -562,3 +562,123 @@ export async function fetchSocialProof(epoch: Epoch): Promise<SocialProofStats> 
 ```
 Continue working on Amulet DApp or implement real rewards API endpoints
 ```
+
+## Session History (2026-01-18) - Rewards Page Dark Mode Redesign
+
+### UI/UX Reference Implementation
+Completely rebuilt the `/rewards` page with dark mode aesthetics matching provided references:
+- **Coinbase** (IMG_8219, IMG_8220): Dark financial dashboard, big numbers, segmented time controls
+- **Apple Screen Time** (IMG_8221, IMG_8222): Large metrics, comparison percentages, stacked cards
+- **Fitness apps** (IMG_8224, IMG_8225): Progress rings, rewards framing, share affordance
+
+### Rewards Tracking Middleware
+Created backend middleware for tracking rewards data in Vercel KV:
+
+**Files Created:**
+- `api/rewards/middleware.js` - Core tracking functions with anti-gaming docs
+- `api/rewards/leaderboard.js` - GET /api/rewards/leaderboard endpoint
+- `api/rewards/personal.js` - GET /api/rewards/personal endpoint
+- `api/rewards/social-proof.js` - GET /api/rewards/social-proof endpoint
+
+**Anti-Gaming Considerations (documented in middleware):**
+1. Streak weighting: Require minimum 5 credits/day to count as active
+2. Query spam caps: Rate limits via credit system, complexity variance required
+3. Burst detection: Flag 10x spikes vs 7-day average
+4. Sybil resistance: Wallet age, staking requirements, clustering detection
+5. Credit diversity: Track query tier distribution
+
+**Storage Structure:**
+- `rewards:{wallet}:daily:{date}` - Daily aggregates with 90-day TTL
+- `rewards:{wallet}:alltime` - All-time stats
+- `rewards:active:{date}` - Set of active wallets per day
+- `rewards:leaderboard:{epoch}` - Cached leaderboard (5-min TTL)
+- `rewards:global:{epoch}` - Platform totals (5-min TTL)
+
+### Chat.js Integration
+Updated `api/chat.js` to record queries for rewards tracking:
+```javascript
+import { recordQueryForRewards } from './rewards/middleware.js';
+// After credit deduction:
+recordQueryForRewards(address, creditCost, classification.tier);
+```
+
+### UI Components Rebuilt (Dark Mode)
+All components updated with Coinbase/Apple-inspired dark aesthetics:
+
+**Color Palette:**
+- Background: `#0a0b0d` to `#111214` gradient
+- Cards: `rgba(255, 255, 255, 0.04-0.06)` with subtle borders
+- Text: White with varying opacity (0.45-0.9)
+- Accent blue: `#3b82f6`
+- Success green: `#22c55e`
+- Gold/amber: `#fbbf24`, `#f59e0b`
+
+**PersonalSummaryCard:**
+- Large 56px compute number with "cr" unit
+- Rank badge with gold gradient (or gray for unranked)
+- Medal emojis for top 3
+- 2x2 stats grid (Queries, Active Days, Streak, Top 50 Threshold)
+- Progress ring with glow effect
+- Percentile indicator
+
+**EpochTabs:**
+- Coinbase-style segmented control
+- Dark pill background with sliding indicator
+- Sticky on scroll with backdrop blur
+
+**LeaderboardTable:**
+- Dark glassmorphism container
+- Blue glow for user's row
+- Status badges: Top 10% (gold), Power User (purple), Heavy Compute (blue), Active (green), New (grey)
+- Mobile card layout with truncated addresses
+
+**RewardsInfoAccordion:**
+- Collapsible info panel
+- Dark bordered container
+- Soft text colors
+
+**SocialProofStrip:**
+- Platform-wide stats (Active Wallets, Total Compute, Queries Run)
+- 3-column layout with dividers
+
+**RewardsPage:**
+- Share button with native share API
+- Proper section ordering per spec
+- Demo mode notice for unconnected wallets
+
+### Files Modified
+- `src/pages/Rewards/RewardsPage.jsx`
+- `src/pages/Rewards/RewardsPage.module.css`
+- `src/components/rewards/PersonalSummaryCard.jsx`
+- `src/components/rewards/PersonalSummaryCard.module.css`
+- `src/components/rewards/ProgressRing.jsx`
+- `src/components/rewards/ProgressRing.module.css`
+- `src/components/rewards/EpochTabs.jsx`
+- `src/components/rewards/EpochTabs.module.css`
+- `src/components/rewards/LeaderboardTable.module.css`
+- `src/components/rewards/RewardsInfoAccordion.module.css`
+- `src/components/rewards/SocialProofStrip.module.css`
+- `api/chat.js` (added rewards tracking integration)
+
+### Key Design Patterns
+```css
+/* Dark glassmorphism card */
+background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+border: 1px solid rgba(255, 255, 255, 0.08);
+border-radius: 20px;
+backdrop-filter: blur(20px);
+
+/* Progress ring glow */
+filter: drop-shadow(0 0 6px currentColor);
+
+/* Status badge dark */
+background: rgba(59, 130, 246, 0.15);
+color: #60a5fa;
+border: 1px solid rgba(59, 130, 246, 0.3);
+```
+
+### To Resume
+```
+Test the rewards page at https://amulet-dapp.vercel.app/rewards
+Deploy and verify middleware tracking is working
+```

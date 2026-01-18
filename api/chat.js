@@ -3,6 +3,7 @@
 
 import { kv } from '@vercel/kv';
 import { classifyQuery, formatTierName } from './lib/queryClassifier.js';
+import { recordQueryForRewards } from './rewards/middleware.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -156,6 +157,11 @@ export default async function handler(req, res) {
         newBalance: newBalance,
         reason: classification.reason
       };
+
+      // Track query for rewards leaderboard (non-blocking)
+      recordQueryForRewards(address, creditCost, classification.tier).catch(err => {
+        console.error('Rewards tracking failed:', err);
+      });
     }
 
     // Call Claude API

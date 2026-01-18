@@ -17,7 +17,7 @@ const EPOCHS = [
 export default function EpochTabs({ value, onChange, isLoading = false }) {
   return (
     <div className={styles.container}>
-      <div className={styles.tabs}>
+      <div className={`${styles.tabs} ${isLoading ? styles.loading : ''}`}>
         {EPOCHS.map((epoch) => (
           <button
             key={epoch.value}

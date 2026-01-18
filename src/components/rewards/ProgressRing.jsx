@@ -30,12 +30,12 @@ export default function ProgressRing({
   const circumference = radius * 2 * Math.PI;
   const offset = circumference - (Math.min(animatedProgress, 1) * circumference);
 
-  // Colors based on progress
+  // Colors based on progress (dark mode optimized)
   const getProgressColor = () => {
-    if (progress >= 1) return 'var(--brand-green-default, #22a06b)';
-    if (progress >= 0.7) return 'var(--brand-blue-default, #1D7AFC)';
-    if (progress >= 0.4) return 'var(--brand-purple-default, #8270db)';
-    return 'var(--brand-grey-default, #758195)';
+    if (progress >= 1) return '#22c55e'; // Green - completed
+    if (progress >= 0.7) return '#3b82f6'; // Blue - close
+    if (progress >= 0.4) return '#8b5cf6'; // Purple - progressing
+    return '#6b7280'; // Grey - starting
   };
 
   const percentage = Math.round(Math.min(progress, 1) * 100);
