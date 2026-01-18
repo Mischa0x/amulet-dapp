@@ -1,24 +1,13 @@
 /**
  * Rewards API Abstraction Layer
  *
- * This module wraps the data fetching logic for the rewards dashboard.
- * Currently uses mock data, but can be easily swapped to real API endpoints.
+ * This module provides data fetching for the rewards dashboard.
+ * Uses real API endpoints with fallback to mock data if API returns empty.
  *
- * TO SWAP TO REAL API:
- * 1. Create API endpoints on your backend:
- *    - GET /api/rewards/leaderboard?epoch={24h|7d|30d|all}
- *    - GET /api/rewards/personal?epoch={epoch}&wallet={address}
- *    - GET /api/rewards/social-proof?epoch={epoch}
- *
- * 2. Update the functions below to call your endpoints instead of mock:
- *
- *    export async function fetchLeaderboard(epoch: Epoch): Promise<LeaderboardEntry[]> {
- *      const res = await fetch(`/api/rewards/leaderboard?epoch=${epoch}`);
- *      if (!res.ok) throw new Error('Failed to fetch leaderboard');
- *      return res.json();
- *    }
- *
- * 3. Add error handling and retry logic as needed.
+ * Backend endpoints:
+ * - GET /api/rewards/leaderboard?epoch={24h|7d|30d|all}
+ * - GET /api/rewards/personal?epoch={epoch}&wallet={address}
+ * - GET /api/rewards/social-proof?epoch={epoch}
  */
 
 import type { Epoch, LeaderboardEntry, PersonalStats, SocialProofStats } from './types';
@@ -32,13 +21,34 @@ import {
 export type { Epoch, LeaderboardEntry, PersonalStats, SocialProofStats } from './types';
 export { DEMO_WALLET } from './mock';
 
+// Set to true to force mock data (useful for development)
+const FORCE_MOCK = false;
+
 /**
  * Fetch the top 50 leaderboard for a given epoch
  */
 export async function fetchLeaderboard(epoch: Epoch): Promise<LeaderboardEntry[]> {
-  // Currently using mock data
-  // TODO: Replace with real API call when backend is ready
-  return getRewardsLeaderboard(epoch);
+  if (FORCE_MOCK) {
+    return getRewardsLeaderboard(epoch);
+  }
+
+  try {
+    const res = await fetch(`/api/rewards/leaderboard?epoch=${epoch}`);
+    if (!res.ok) throw new Error('API error');
+
+    const data = await res.json();
+
+    // Fallback to mock if no real data yet
+    if (!data || data.length === 0) {
+      console.log('No leaderboard data, using mock');
+      return getRewardsLeaderboard(epoch);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Leaderboard fetch failed, using mock:', error);
+    return getRewardsLeaderboard(epoch);
+  }
 }
 
 /**
@@ -48,18 +58,56 @@ export async function fetchPersonalStats(
   epoch: Epoch,
   wallet: string
 ): Promise<PersonalStats> {
-  // Currently using mock data
-  // TODO: Replace with real API call when backend is ready
-  return getRewardsPersonalStats(epoch, wallet);
+  if (FORCE_MOCK) {
+    return getRewardsPersonalStats(epoch, wallet);
+  }
+
+  try {
+    const res = await fetch(
+      `/api/rewards/personal?epoch=${epoch}&wallet=${encodeURIComponent(wallet)}`
+    );
+    if (!res.ok) throw new Error('API error');
+
+    const data = await res.json();
+
+    // Fallback to mock if user has no data
+    if (!data || (data.totalComputeUsed === 0 && data.queriesRun === 0)) {
+      console.log('No personal data, using mock');
+      return getRewardsPersonalStats(epoch, wallet);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Personal stats fetch failed, using mock:', error);
+    return getRewardsPersonalStats(epoch, wallet);
+  }
 }
 
 /**
  * Fetch platform-wide social proof statistics
  */
 export async function fetchSocialProof(epoch: Epoch): Promise<SocialProofStats> {
-  // Currently using mock data
-  // TODO: Replace with real API call when backend is ready
-  return getRewardsSocialProof(epoch);
+  if (FORCE_MOCK) {
+    return getRewardsSocialProof(epoch);
+  }
+
+  try {
+    const res = await fetch(`/api/rewards/social-proof?epoch=${epoch}`);
+    if (!res.ok) throw new Error('API error');
+
+    const data = await res.json();
+
+    // Fallback to mock if no platform data yet
+    if (!data || data.totalCompute === 0) {
+      console.log('No social proof data, using mock');
+      return getRewardsSocialProof(epoch);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Social proof fetch failed, using mock:', error);
+    return getRewardsSocialProof(epoch);
+  }
 }
 
 /**
