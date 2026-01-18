@@ -677,8 +677,58 @@ color: #60a5fa;
 border: 1px solid rgba(59, 130, 246, 0.3);
 ```
 
+## Session History (2026-01-18) - Theme Fix & Balance Rules
+
+### Fixes Implemented
+
+#### 1. Rewards Page Theme Support
+Converted all rewards CSS from hardcoded dark mode to theme-aware CSS variables:
+- `#ffffff` → `var(--brand-black)`
+- `rgba(255, 255, 255, 0.x)` → `color: var(--brand-black); opacity: 0.x;`
+- `#0a0b0d`, `#111214` → Removed (uses page background)
+- Card backgrounds → `var(--brand-white)`, `var(--brand-neon-cards-surface-light-blue)`
+- Borders → `var(--mapped-border-and-dividers-primary)`
+
+**Files Updated:**
+- `src/pages/Rewards/RewardsPage.module.css`
+- `src/components/rewards/PersonalSummaryCard.module.css`
+- `src/components/rewards/EpochTabs.module.css`
+- `src/components/rewards/LeaderboardTable.module.css`
+- `src/components/rewards/SocialProofStrip.module.css`
+- `src/components/rewards/RewardsInfoAccordion.module.css`
+- `src/components/rewards/ProgressRing.module.css`
+
+#### 2. No Negative Balances
+Updated `api/chat.js` to enforce strict credit rules:
+- Removed `GRACE_CREDITS` constant (was 25)
+- Block queries if `balance < creditCost`
+- Balance never goes below 0: `Math.max(0, balance - creditCost)`
+- Clear error message when balance is 0: "You have no credits remaining. Please purchase more credits to continue."
+
+#### 3. README Documentation
+Added "Rewards Tracking System" section to README.md:
+- How the middleware works
+- Credit rules (no negative balances)
+- API endpoints with examples
+- Storage structure in Vercel KV
+- Anti-gaming measures summary
+- Mock/real data switching
+
+### Commits
+- `02172b5` - fix: Theme-aware rewards page + no negative balances
+
+### Testing
+```bash
+# Test with zero balance - should return 402
+curl -X POST "https://amulet-dapp.vercel.app/api/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"test"}],"address":"0xNOCREDITS"}'
+
+# Check rewards page in both light/dark mode
+# https://amulet-dapp.vercel.app/rewards
+```
+
 ### To Resume
 ```
-Test the rewards page at https://amulet-dapp.vercel.app/rewards
-Deploy and verify middleware tracking is working
+Continue with any additional Amulet DApp features
 ```
