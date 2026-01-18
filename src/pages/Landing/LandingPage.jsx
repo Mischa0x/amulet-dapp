@@ -127,6 +127,7 @@ function LandingPage() {
             <div className={styles.actionsContainer}>
               <div
                 className={`${styles.actionCard} ${styles.orderHistory}`}
+                style={{ cursor: 'pointer' }}
                 onClick={() => goTo('/orderhistory')}
                 role="button"
                 tabIndex={0}
@@ -143,6 +144,7 @@ function LandingPage() {
 
               <div
                 className={`${styles.actionCard} ${styles.shopSupplements}`}
+                style={{ cursor: 'pointer' }}
                 onClick={() => goTo('/shop')}
                 role="button"
                 tabIndex={0}
@@ -161,6 +163,7 @@ function LandingPage() {
 
               <div
                 className={`${styles.actionCard} ${styles.viewVisits}`}
+                style={{ cursor: 'pointer' }}
                 onClick={() => goTo('/visits')}
                 role="button"
                 tabIndex={0}
