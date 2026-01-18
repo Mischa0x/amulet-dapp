@@ -747,3 +747,42 @@ Fixed `/api/credits/index.js` to clamp negative balances to 0:
 ```
 Continue with any additional Amulet DApp features
 ```
+
+## Session History (2026-01-18) - UI Bug Fixes
+
+### Issues Fixed
+
+#### 1. Shop Page - Product Text Overlapping Add to Cart Button
+When sidebar collapses, cards get wider and the icon area (mediaRect) with its aspect-ratio would grow too tall, squeezing out the body text area and causing description text to overlap with the "ADD TO CART" button.
+
+**Fixes Applied (`ShopProductGrid.module.css`):**
+- Added `max-height: 160px` to `.mediaRect` (100px on mobile) to cap icon area height
+- Added `overflow: hidden` to `.cardContent` for proper clipping
+- Added `min-height: 70px` to `.body` (55px on mobile) to guarantee space for text
+- Changed `flex-shrink: 1` on `.mediaRect` so it can shrink when needed
+
+#### 2. Rewards Page - Progress Ring Checkmark Badge Cutoff
+The green checkmark badge at top-right of the 100% progress ring was being clipped by parent containers.
+
+**Fixes Applied:**
+- Moved badge position from `top/right: -2px` to `top/right: 2px` (`ProgressRing.module.css`)
+- Added `padding-top: 10px` and `padding-right: 10px` to `.ringSection` (`PersonalSummaryCard.module.css`)
+
+### Commits
+| Commit | Description |
+|--------|-------------|
+| `76190b4` | fix(shop): Prevent product text from overlapping add to cart button |
+| `3ccc7cf` | fix(rewards): Prevent progress ring checkmark badge from being cut off |
+| `cf59950` | fix: Shop card text overlap and rewards badge cutoff |
+| `13f17c9` | fix: More robust fixes for shop overlap and rewards badge |
+| `3252654` | fix(shop): Ensure body text area has minimum height |
+
+### Files Modified
+- `src/pages/Shop/ShopProductGrid.module.css`
+- `src/components/rewards/ProgressRing.module.css`
+- `src/components/rewards/PersonalSummaryCard.module.css`
+
+### To Resume
+```
+Hard refresh the browser (Cmd+Shift+R) to verify UI fixes on /shop and /rewards pages
+```
