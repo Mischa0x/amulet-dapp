@@ -1173,6 +1173,96 @@ Updated the prepopulated tweet/telegram text from generic copy to:
 |--------|-------------|
 | `239a5bb` | feat: Update share text to Terminator-inspired longevity quote |
 
+## Session History (2026-01-19) - Security Audit & UI Polish
+
+### 4-Phase Security Audit
+Completed comprehensive security audit of https://amulet-dapp.vercel.app/
+
+**Phase 1: Architecture & Static Code Review**
+- Reviewed project structure, dependencies, build configuration
+- Found: Dependency vulnerabilities (h3, hono, react-router)
+
+**Phase 2: Smart Contract & Blockchain Security**
+- Reviewed TestAmulet.sol and AmuletStaking.sol
+- Found: Unrestricted faucet in TestAmulet.sol (testnet only, acceptable)
+
+**Phase 3: API & Backend Security**
+- Reviewed all serverless functions in /api
+- Found: In-memory rate limiting (resets on cold starts)
+
+**Phase 4: Web3 Integration & Frontend Security**
+- Reviewed wallet connection, transaction handling
+- Found: Missing VITE_APP_URL environment variable
+
+### Security Fixes Implemented
+
+1. **npm audit fix** - Fixed 4 dependency vulnerabilities
+2. **TestAmulet.sol warning** - Added prominent security banner
+3. **VITE_APP_URL** - Set in Vercel production and preview environments
+4. **Persistent rate limiting** - Converted to async Vercel KV-based rate limiting
+
+**Rate Limiting Architecture:**
+```javascript
+// lib/apiUtils.js - Now uses Vercel KV with fallback
+export async function checkRateLimit(identifier, maxRequests = 60, windowMs = 60000) {
+  const kvKey = `ratelimit:${key}`;
+  // Uses KV with TTL-based expiration, falls back to in-memory
+}
+```
+
+**Files Updated for Async Rate Limiting:**
+- `api/chat.js`
+- `api/credits/index.js`
+- `api/credits/claim.js`
+- `api/credits/sync-stake.js`
+- `api/stripe/checkout.js`
+- `api/refs/index.js`
+- `api/rewards/leaderboard.js`
+- `api/rewards/personal.js`
+- `api/rewards/social-proof.js`
+
+### INTEGRATION_GUIDE.md Updates
+- Added new Security Architecture section (Section 2)
+- Added Referral System documentation (Section 7)
+- Updated file paths for lib/ folder
+- Updated section numbers and migration checklist
+
+### UI Adjustments (Amulette Branding)
+
+| Change | File(s) Modified |
+|--------|-----------------|
+| Chat greeting → "Welcome to Amulette" | `AgentChat.jsx` |
+| Subtitle → "How can I help you live forever?" | `AgentChat.jsx` |
+| Removed credit display from chat | `AgentChat.jsx` |
+| Redirect to /token when out of credits | `AgentChat.jsx`, `TokenPage.jsx` |
+| Added insufficient credits banner | `TokenPage.jsx`, `TokenPage.module.css` |
+| Fixed dark mode icons | `AgentSidebar.module.css` |
+| Renamed blog to "Amulette Blog" | `BlogPage.jsx` |
+| Removed "2X credits" badge from staking card | `TokenPage.jsx` |
+
+### Dark Mode Icon Fix
+Applied `filter: var(--icon-filter)` to `.icon16` and `.icon24` classes in sidebar CSS. This uses the same pattern as the shop page icons.
+
+### Commits
+| Commit | Description |
+|--------|-------------|
+| `...` | security: Run npm audit fix |
+| `...` | security: Add warning to TestAmulet.sol |
+| `...` | feat: Add persistent rate limiting with Vercel KV |
+| `...` | docs: Update INTEGRATION_GUIDE.md |
+| `...` | fix: Remove 2X credits badge from staking card |
+| `84128d3` | fix(ui): Complete UI adjustments for chat, credits, and dark mode |
+
+### Files Modified Summary
+- `lib/apiUtils.js` - Async rate limiting with KV
+- `contracts/TestAmulet.sol` - Security warning banner
+- `src/pages/Agent/AgentChat.jsx` - Greeting, credit redirect
+- `src/pages/Agent/AgentSidebar.module.css` - Dark mode icons
+- `src/pages/Token/TokenPage.jsx` - Insufficient credits banner
+- `src/pages/Token/TokenPage.module.css` - Banner styles
+- `src/pages/Blog/BlogPage.jsx` - Renamed to Amulette Blog
+- `INTEGRATION_GUIDE.md` - Security & referral docs
+
 ### To Resume
 ```
 Continue with any additional Amulet DApp features
