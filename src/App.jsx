@@ -18,12 +18,15 @@ import RewardsPage from './pages/Rewards/RewardsPage';
 import BlogPage from './pages/Blog/BlogPage';
 import BlogPostPage from './pages/Blog/BlogPostPage';
 import ReferralLanding from './pages/Referral/ReferralLanding';
+import ReferralHandler from './components/ReferralHandler';
 
 function App() {
   return (
     <div className="App">
       <main className="App-content">
         <CartProvider>
+          {/* Handle referral registration on any page when wallet connects */}
+          <ReferralHandler />
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
