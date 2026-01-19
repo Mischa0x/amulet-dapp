@@ -1165,6 +1165,14 @@ curl -X POST "https://amulet-dapp.vercel.app/api/refs" \
 curl "https://amulet-dapp.vercel.app/api/rewards/leaderboard?epoch=all"
 ```
 
+### Share Text Update
+Updated the prepopulated tweet/telegram text from generic copy to:
+> "Come with me if you want to live forever ♾️"
+
+| Commit | Description |
+|--------|-------------|
+| `239a5bb` | feat: Update share text to Terminator-inspired longevity quote |
+
 ### To Resume
 ```
 Continue with any additional Amulet DApp features
