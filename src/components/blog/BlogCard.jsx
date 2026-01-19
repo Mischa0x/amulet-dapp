@@ -1,8 +1,24 @@
+import { memo, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { CATEGORY_COLORS, formatDate } from '../../data/blogPosts';
 import styles from './BlogCard.module.css';
 
-export default function BlogCard({ post, featured = false }) {
+// Memoized category badge to avoid recalculating styles
+const CategoryBadge = memo(function CategoryBadge({ category }) {
+  const style = useMemo(() => ({
+    backgroundColor: CATEGORY_COLORS[category]?.bg || '#f3f4f6',
+    color: CATEGORY_COLORS[category]?.text || '#374151',
+    borderColor: CATEGORY_COLORS[category]?.border || '#d1d5db',
+  }), [category]);
+
+  return (
+    <span className={styles.categoryBadge} style={style}>
+      {category}
+    </span>
+  );
+});
+
+function BlogCard({ post, featured = false }) {
   return (
     <article className={`${styles.card} ${featured ? styles.featured : ''}`}>
       <Link to={`/blog/${post.slug}`} className={styles.imageLink}>
@@ -19,17 +35,7 @@ export default function BlogCard({ post, featured = false }) {
       <div className={styles.content}>
         <div className={styles.categories}>
           {post.categories.map(category => (
-            <span
-              key={category}
-              className={styles.categoryBadge}
-              style={{
-                backgroundColor: CATEGORY_COLORS[category]?.bg || '#f3f4f6',
-                color: CATEGORY_COLORS[category]?.text || '#374151',
-                borderColor: CATEGORY_COLORS[category]?.border || '#d1d5db',
-              }}
-            >
-              {category}
-            </span>
+            <CategoryBadge key={category} category={category} />
           ))}
         </div>
 
@@ -74,3 +80,6 @@ export default function BlogCard({ post, featured = false }) {
     </article>
   );
 }
+
+// Export with memo to prevent re-renders when post data hasn't changed
+export default memo(BlogCard);

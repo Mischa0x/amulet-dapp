@@ -6,8 +6,10 @@ import { useSearchParams } from 'react-router-dom';
 import { useCredits } from '../../contexts/CreditsContext';
 import styles from './TokenPage.module.css';
 
-// AMULET Token contract on Ethereum Mainnet (update after deployment)
+// AMULET Token contract address
+// NOTE: Fallback is Sei Testnet address - set VITE_AMULET_TOKEN_ADDRESS in production
 const AMULET_CONTRACT = import.meta.env.VITE_AMULET_TOKEN_ADDRESS || '0xe8564273D6346Db0Ff54d3a6CCb1Dd12993A042c';
+// Staking contract - optional, staking UI disabled if not set
 const STAKING_CONTRACT = import.meta.env.VITE_STAKING_CONTRACT_ADDRESS;
 
 // ERC20 ABI
@@ -152,8 +154,8 @@ function TokenPage() {
       });
       // Refresh credit data via context
       refetchCredits();
-    } catch (err) {
-      console.error('Failed to sync stake:', err);
+    } catch {
+      // Silently fail - stake sync is non-critical
     }
   };
 
@@ -176,8 +178,8 @@ function TokenPage() {
       } else {
         alert(data.error || 'Failed to claim credits');
       }
-    } catch (err) {
-      console.error('Claim error:', err);
+    } catch {
+      alert('Network error. Please try again.');
     } finally {
       setClaimingFree(false);
     }
@@ -198,8 +200,8 @@ function TokenPage() {
       } else {
         alert('Failed to create checkout session');
       }
-    } catch (err) {
-      console.error('Purchase error:', err);
+    } catch {
+      alert('Network error. Please try again.');
     } finally {
       setPurchaseLoading(null);
     }

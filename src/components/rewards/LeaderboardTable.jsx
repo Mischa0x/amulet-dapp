@@ -5,7 +5,7 @@
  * Inspired by BitVault referrals leaderboard.
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { getUserBadge, getBadgeColor } from '../../lib/rewards/api';
 import styles from './LeaderboardTable.module.css';
 
@@ -18,7 +18,117 @@ const EPOCH_DAYS = {
 
 const INITIAL_ROWS = 5;
 
-export default function LeaderboardTable({
+// Memoized row component to prevent unnecessary re-renders
+const LeaderboardRow = memo(function LeaderboardRow({
+  entry,
+  isUser,
+  epochDays,
+}) {
+  const badge = getUserBadge(
+    entry.rank,
+    entry.activeDays,
+    entry.totalComputeUsed,
+    epochDays
+  );
+  const badgeColor = getBadgeColor(badge);
+
+  return (
+    <tr className={`${styles.row} ${isUser ? styles.userRow : ''}`}>
+      <td className={styles.tdRank}>
+        {entry.rank <= 3 ? (
+          <span className={styles.medal}>
+            {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
+          </span>
+        ) : (
+          <span className={styles.rankNum}>{entry.rank}</span>
+        )}
+      </td>
+      <td className={styles.tdWallet}>
+        <div className={styles.walletCell}>
+          {entry.ens ? (
+            <span className={styles.ens}>{entry.ens}</span>
+          ) : (
+            <span className={styles.address}>
+              {truncateAddress(entry.wallet)}
+            </span>
+          )}
+          {isUser && <span className={styles.youTag}>You</span>}
+        </div>
+      </td>
+      <td className={styles.tdCompute}>
+        {(entry.totalPoints || entry.totalComputeUsed).toLocaleString()}
+      </td>
+      <td className={styles.tdQueries}>
+        {(entry.referralCount || 0).toLocaleString()}
+      </td>
+      <td className={styles.tdStatus}>
+        <span className={`${styles.statusBadge} ${styles[badgeColor]}`}>
+          {badge}
+        </span>
+      </td>
+    </tr>
+  );
+});
+
+// Memoized mobile card component
+const MobileCard = memo(function MobileCard({ entry, isUser, epochDays }) {
+  const badge = getUserBadge(
+    entry.rank,
+    entry.activeDays,
+    entry.totalComputeUsed,
+    epochDays
+  );
+  const badgeColor = getBadgeColor(badge);
+
+  return (
+    <div className={`${styles.mobileCard} ${isUser ? styles.userCard : ''}`}>
+      <div className={styles.mobileCardHeader}>
+        <div className={styles.mobileRank}>
+          {entry.rank <= 3 ? (
+            <span className={styles.medal}>
+              {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
+            </span>
+          ) : (
+            <span className={styles.mobileRankNum}>#{entry.rank}</span>
+          )}
+        </div>
+        <div className={styles.mobileWallet}>
+          {entry.ens ? (
+            <span className={styles.ens}>{entry.ens}</span>
+          ) : (
+            <span className={styles.address}>
+              {truncateAddress(entry.wallet)}
+            </span>
+          )}
+          {isUser && <span className={styles.youTag}>You</span>}
+        </div>
+        <span className={`${styles.statusBadge} ${styles[badgeColor]}`}>
+          {badge}
+        </span>
+      </div>
+      <div className={styles.mobileCardStats}>
+        <div className={styles.mobileStat}>
+          <span className={styles.mobileStatValue}>
+            {(entry.totalPoints || entry.totalComputeUsed).toLocaleString()}
+          </span>
+          <span className={styles.mobileStatLabel}>Points</span>
+        </div>
+        <div className={styles.mobileStat}>
+          <span className={styles.mobileStatValue}>
+            {(entry.referralCount || 0).toLocaleString()}
+          </span>
+          <span className={styles.mobileStatLabel}>Refs</span>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+function truncateAddress(address) {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+function LeaderboardTable({
   entries,
   connectedWallet,
   epoch,
@@ -88,120 +198,28 @@ export default function LeaderboardTable({
             </tr>
           </thead>
           <tbody>
-            {displayedEntries.map((entry) => {
-              const isUser = connectedWallet &&
-                entry.wallet.toLowerCase() === connectedWallet.toLowerCase();
-              const badge = getUserBadge(
-                entry.rank,
-                entry.activeDays,
-                entry.totalComputeUsed,
-                epochDays
-              );
-              const badgeColor = getBadgeColor(badge);
-
-              return (
-                <tr
-                  key={entry.wallet}
-                  className={`${styles.row} ${isUser ? styles.userRow : ''}`}
-                >
-                  <td className={styles.tdRank}>
-                    {entry.rank <= 3 ? (
-                      <span className={styles.medal}>
-                        {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
-                      </span>
-                    ) : (
-                      <span className={styles.rankNum}>{entry.rank}</span>
-                    )}
-                  </td>
-                  <td className={styles.tdWallet}>
-                    <div className={styles.walletCell}>
-                      {entry.ens ? (
-                        <span className={styles.ens}>{entry.ens}</span>
-                      ) : (
-                        <span className={styles.address}>
-                          {truncateAddress(entry.wallet)}
-                        </span>
-                      )}
-                      {isUser && <span className={styles.youTag}>You</span>}
-                    </div>
-                  </td>
-                  <td className={styles.tdCompute}>
-                    {(entry.totalPoints || entry.totalComputeUsed).toLocaleString()}
-                  </td>
-                  <td className={styles.tdQueries}>
-                    {(entry.referralCount || 0).toLocaleString()}
-                  </td>
-                  <td className={styles.tdStatus}>
-                    <span className={`${styles.statusBadge} ${styles[badgeColor]}`}>
-                      {badge}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
+            {displayedEntries.map((entry) => (
+              <LeaderboardRow
+                key={entry.wallet}
+                entry={entry}
+                isUser={connectedWallet && entry.wallet.toLowerCase() === connectedWallet.toLowerCase()}
+                epochDays={epochDays}
+              />
+            ))}
           </tbody>
         </table>
       </div>
 
       {/* Mobile Cards */}
       <div className={styles.mobileCards}>
-        {displayedEntries.map((entry) => {
-          const isUser = connectedWallet &&
-            entry.wallet.toLowerCase() === connectedWallet.toLowerCase();
-          const badge = getUserBadge(
-            entry.rank,
-            entry.activeDays,
-            entry.totalComputeUsed,
-            epochDays
-          );
-          const badgeColor = getBadgeColor(badge);
-
-          return (
-            <div
-              key={entry.wallet}
-              className={`${styles.mobileCard} ${isUser ? styles.userCard : ''}`}
-            >
-              <div className={styles.mobileCardHeader}>
-                <div className={styles.mobileRank}>
-                  {entry.rank <= 3 ? (
-                    <span className={styles.medal}>
-                      {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
-                    </span>
-                  ) : (
-                    <span className={styles.mobileRankNum}>#{entry.rank}</span>
-                  )}
-                </div>
-                <div className={styles.mobileWallet}>
-                  {entry.ens ? (
-                    <span className={styles.ens}>{entry.ens}</span>
-                  ) : (
-                    <span className={styles.address}>
-                      {truncateAddress(entry.wallet)}
-                    </span>
-                  )}
-                  {isUser && <span className={styles.youTag}>You</span>}
-                </div>
-                <span className={`${styles.statusBadge} ${styles[badgeColor]}`}>
-                  {badge}
-                </span>
-              </div>
-              <div className={styles.mobileCardStats}>
-                <div className={styles.mobileStat}>
-                  <span className={styles.mobileStatValue}>
-                    {(entry.totalPoints || entry.totalComputeUsed).toLocaleString()}
-                  </span>
-                  <span className={styles.mobileStatLabel}>Points</span>
-                </div>
-                <div className={styles.mobileStat}>
-                  <span className={styles.mobileStatValue}>
-                    {(entry.referralCount || 0).toLocaleString()}
-                  </span>
-                  <span className={styles.mobileStatLabel}>Refs</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        {displayedEntries.map((entry) => (
+          <MobileCard
+            key={entry.wallet}
+            entry={entry}
+            isUser={connectedWallet && entry.wallet.toLowerCase() === connectedWallet.toLowerCase()}
+            epochDays={epochDays}
+          />
+        ))}
       </div>
 
       {/* Expand/Collapse Button */}
@@ -237,9 +255,8 @@ export default function LeaderboardTable({
   );
 }
 
-function truncateAddress(address) {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-}
+// Export with memo for parent component optimization
+export default memo(LeaderboardTable);
 
 function LeaderboardSkeleton() {
   return (

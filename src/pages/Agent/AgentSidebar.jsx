@@ -203,7 +203,7 @@ export default function AgentSidebar({
               <div className={styles.frame}>
                 <div className={styles.textWrapper2}>Shop Supplements</div>
                 <div className={styles.textWrapper3}>
-                  Longevity-enhaced products
+                  Longevity-enhanced products
                 </div>
               </div>
             </div>

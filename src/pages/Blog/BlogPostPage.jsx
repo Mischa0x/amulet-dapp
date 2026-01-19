@@ -1,4 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
+import DOMPurify from 'dompurify';
 import { getPostBySlug, formatDate, CATEGORY_COLORS } from '../../data/blogPosts';
 import SubscribeBlock from '../../components/blog/SubscribeBlock';
 import styles from './BlogPostPage.module.css';
@@ -85,10 +86,10 @@ export default function BlogPostPage() {
             />
           </div>
 
-          {/* Content */}
+          {/* Content - sanitized to prevent XSS */}
           <div
             className={styles.content}
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           />
 
           {/* Share section */}

@@ -1,26 +1,38 @@
 // GET /api/credits - Get user's credit balance
 import { kv } from '@vercel/kv';
+import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../../lib/apiUtils.js';
+import { logError } from '../../lib/logger.js';
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Handle CORS preflight
+  if (handlePreflight(req, res)) return;
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  // Set CORS headers with origin validation
+  if (!setCorsHeaders(req, res)) {
+    return res.status(403).json({ error: 'Origin not allowed' });
   }
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { address } = req.query;
+  const { address: rawAddress } = req.query;
 
-  if (!address) {
+  if (!rawAddress) {
     return res.status(400).json({ error: 'Wallet address required' });
   }
 
-  const normalizedAddress = address.toLowerCase();
+  // Validate address format
+  const normalizedAddress = validateAddress(rawAddress);
+  if (!normalizedAddress) {
+    return res.status(400).json({ error: 'Invalid wallet address format' });
+  }
+
+  // Rate limiting
+  const rateLimit = await checkRateLimit(normalizedAddress, 120, 60000);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({ error: 'Too many requests' });
+  }
 
   try {
     // Get credit balance from KV store
@@ -48,7 +60,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Credits API error:', error);
+    logError('api/credits', 'Credits API error', { error });
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

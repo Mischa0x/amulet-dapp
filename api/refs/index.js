@@ -6,27 +6,38 @@
  */
 
 import { kv } from '@vercel/kv';
+import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../../lib/apiUtils.js';
+import { logError } from '../../lib/logger.js';
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Handle CORS preflight
+  if (handlePreflight(req, res)) return;
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  // Set CORS headers with origin validation
+  if (!setCorsHeaders(req, res)) {
+    return res.status(403).json({ error: 'Origin not allowed' });
   }
 
   // GET - Fetch referral stats
   if (req.method === 'GET') {
     try {
-      const { address } = req.query;
+      const { address: rawAddress } = req.query;
 
-      if (!address) {
+      if (!rawAddress) {
         return res.status(400).json({ error: 'Missing address parameter' });
       }
 
-      const normalizedAddress = address.toLowerCase();
+      // Validate address format
+      const normalizedAddress = validateAddress(rawAddress);
+      if (!normalizedAddress) {
+        return res.status(400).json({ error: 'Invalid wallet address format' });
+      }
+
+      // Rate limiting
+      const rateLimit = await checkRateLimit(normalizedAddress, 120, 60000);
+      if (!rateLimit.allowed) {
+        return res.status(429).json({ error: 'Too many requests' });
+      }
 
       const countKey = `referrals:${normalizedAddress}:count`;
       const referralCount = await kv.get(countKey) || 0;
@@ -45,7 +56,7 @@ export default async function handler(req, res) {
       });
 
     } catch (error) {
-      console.error('Referral stats error:', error);
+      logError('api/refs', 'Referral stats error', { error });
       return res.status(500).json({ error: 'Failed to fetch referral stats' });
     }
   }
@@ -53,14 +64,25 @@ export default async function handler(req, res) {
   // POST - Register a referral
   if (req.method === 'POST') {
     try {
-      const { referrer, referee } = req.body;
+      const { referrer: rawReferrer, referee: rawReferee } = req.body;
 
-      if (!referrer || !referee) {
+      if (!rawReferrer || !rawReferee) {
         return res.status(400).json({ error: 'Missing referrer or referee address' });
       }
 
-      const normalizedReferrer = referrer.toLowerCase();
-      const normalizedReferee = referee.toLowerCase();
+      // Validate both addresses
+      const normalizedReferrer = validateAddress(rawReferrer);
+      const normalizedReferee = validateAddress(rawReferee);
+
+      if (!normalizedReferrer || !normalizedReferee) {
+        return res.status(400).json({ error: 'Invalid wallet address format' });
+      }
+
+      // Rate limiting for POST (stricter - 20 per minute)
+      const rateLimit = await checkRateLimit(normalizedReferee, 20, 60000);
+      if (!rateLimit.allowed) {
+        return res.status(429).json({ error: 'Too many requests' });
+      }
 
       if (normalizedReferrer === normalizedReferee) {
         return res.status(400).json({ error: 'Cannot refer yourself' });
@@ -103,7 +125,7 @@ export default async function handler(req, res) {
       });
 
     } catch (error) {
-      console.error('Referral registration error:', error);
+      logError('api/refs', 'Referral registration error', { error });
       return res.status(500).json({ error: 'Failed to register referral' });
     }
   }

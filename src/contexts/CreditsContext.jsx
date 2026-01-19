@@ -1,5 +1,5 @@
 // contexts/CreditsContext.jsx
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
 const CreditsContext = createContext(null);
@@ -8,21 +8,28 @@ export function CreditsProvider({ children }) {
   const { address } = useAccount();
   const [creditData, setCreditData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch credits from API
   const fetchCredits = useCallback(async () => {
     if (!address) {
       setCreditData(null);
       setLoading(false);
+      setError(null);
       return;
     }
 
     try {
+      setError(null);
       const res = await fetch(`/api/credits?address=${address}`);
+      if (!res.ok) {
+        throw new Error('Failed to fetch credits');
+      }
       const data = await res.json();
       setCreditData(data);
-    } catch (err) {
-      console.error('Failed to fetch credits:', err);
+    } catch {
+      setError('Failed to load credits');
+      setCreditData(null);
     } finally {
       setLoading(false);
     }
@@ -50,13 +57,15 @@ export function CreditsProvider({ children }) {
     fetchCredits();
   }, [fetchCredits]);
 
-  const value = {
+  // Memoize context value to prevent unnecessary re-renders of consumers
+  const value = useMemo(() => ({
     creditData,
     loading,
+    error,
     updateCredits,
     refetchCredits,
     setCreditData,
-  };
+  }), [creditData, loading, error, updateCredits, refetchCredits]);
 
   return (
     <CreditsContext.Provider value={value}>

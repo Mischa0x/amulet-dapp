@@ -7,8 +7,7 @@
 
 import { useEffect } from 'react';
 import { useAccount } from 'wagmi';
-
-const REFERRER_STORAGE_KEY = 'amulet_referrer';
+import { STORAGE_KEYS } from '../shared/constants';
 
 export default function ReferralHandler() {
   const { address, isConnected } = useAccount();
@@ -17,12 +16,12 @@ export default function ReferralHandler() {
     if (!isConnected || !address) return;
 
     const registerReferral = async () => {
-      const storedReferrer = localStorage.getItem(REFERRER_STORAGE_KEY);
+      const storedReferrer = localStorage.getItem(STORAGE_KEYS.REFERRER);
       if (!storedReferrer) return;
 
       // Don't register if it's your own referral link
       if (storedReferrer.toLowerCase() === address.toLowerCase()) {
-        localStorage.removeItem(REFERRER_STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEYS.REFERRER);
         return;
       }
 
@@ -39,16 +38,15 @@ export default function ReferralHandler() {
         const data = await response.json();
 
         if (response.ok) {
-          console.log('Referral registered:', data);
-          localStorage.removeItem(REFERRER_STORAGE_KEY);
+          // Referral registered successfully
+          localStorage.removeItem(STORAGE_KEYS.REFERRER);
         } else if (data.error === 'Already referred') {
           // Already referred, clear storage
-          localStorage.removeItem(REFERRER_STORAGE_KEY);
-        } else {
-          console.error('Referral registration failed:', data.error);
+          localStorage.removeItem(STORAGE_KEYS.REFERRER);
         }
-      } catch (error) {
-        console.error('Failed to register referral:', error);
+        // Silently fail for other errors - don't interrupt user experience
+      } catch {
+        // Network error - will retry on next page load
       }
     };
 

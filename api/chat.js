@@ -4,6 +4,8 @@
 import { kv } from '@vercel/kv';
 import { classifyQuery, formatTierName } from '../lib/queryClassifier.js';
 import { recordQueryForRewards } from '../lib/rewardsMiddleware.js';
+import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../lib/apiUtils.js';
+import { logError, logWarn } from '../lib/logger.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -58,13 +60,12 @@ Important guidelines:
 - Never diagnose definitively - offer possibilities and recommendations`;
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Handle CORS preflight
+  if (handlePreflight(req, res)) return;
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  // Set CORS headers with origin validation
+  if (!setCorsHeaders(req, res)) {
+    return res.status(403).json({ error: 'Origin not allowed' });
   }
 
   if (req.method !== 'POST') {
@@ -77,7 +78,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages, address } = req.body;
+    const { messages, address: rawAddress } = req.body;
+
+    // Validate and normalize address
+    const address = rawAddress ? validateAddress(rawAddress) : null;
+    if (rawAddress && !address) {
+      return res.status(400).json({ error: 'Invalid wallet address format' });
+    }
+
+    // Rate limiting (60 requests per minute per IP/address)
+    const clientId = address || req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+    const rateLimit = await checkRateLimit(clientId, 60, 60000);
+    if (!rateLimit.allowed) {
+      res.setHeader('X-RateLimit-Remaining', rateLimit.remaining);
+      res.setHeader('X-RateLimit-Reset', rateLimit.resetAt);
+      return res.status(429).json({
+        error: 'Too many requests',
+        retryAfter: Math.ceil((rateLimit.resetAt - Date.now()) / 1000)
+      });
+    }
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: 'Messages array required' });
@@ -159,7 +178,7 @@ export default async function handler(req, res) {
 
       // Track query for rewards leaderboard (non-blocking)
       recordQueryForRewards(address, creditCost, classification.tier).catch(err => {
-        console.error('Rewards tracking failed:', err);
+        logWarn('api/chat', 'Rewards tracking failed', { error: err });
       });
     }
 
@@ -184,7 +203,7 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Anthropic API error:', response.status, errorText);
+      logError('api/chat', 'Anthropic API error', { status: response.status, details: errorText });
 
       // If API fails after we deducted credits, refund them
       if (address && creditInfo) {
@@ -212,7 +231,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Chat API error:', error);
+    logError('api/chat', 'Chat API error', { error });
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

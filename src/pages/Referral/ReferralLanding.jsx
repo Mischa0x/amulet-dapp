@@ -8,8 +8,7 @@
 
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
-const REFERRER_STORAGE_KEY = 'amulet_referrer';
+import { STORAGE_KEYS } from '../../shared/constants';
 
 export default function ReferralLanding() {
   const { address } = useParams();
@@ -21,10 +20,9 @@ export default function ReferralLanding() {
       const normalizedAddress = address.toLowerCase();
 
       // Only store if not already referred
-      const existingReferrer = localStorage.getItem(REFERRER_STORAGE_KEY);
+      const existingReferrer = localStorage.getItem(STORAGE_KEYS.REFERRER);
       if (!existingReferrer) {
-        localStorage.setItem(REFERRER_STORAGE_KEY, normalizedAddress);
-        console.log('Referrer stored:', normalizedAddress);
+        localStorage.setItem(STORAGE_KEYS.REFERRER, normalizedAddress);
       }
     }
 
@@ -49,6 +47,3 @@ export default function ReferralLanding() {
     </div>
   );
 }
-
-// Export storage key for use in other components
-export { REFERRER_STORAGE_KEY };

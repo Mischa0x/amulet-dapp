@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
-import { REFERRER_STORAGE_KEY } from '../../pages/Referral/ReferralLanding';
+import { STORAGE_KEYS } from '../../shared/constants';
 import styles from './ReferAndEarn.module.css';
 
 export default function ReferAndEarn({ referralCount = 0 }) {
@@ -32,12 +32,12 @@ export default function ReferAndEarn({ referralCount = 0 }) {
     if (!isConnected || !address) return;
 
     const registerReferral = async () => {
-      const storedReferrer = localStorage.getItem(REFERRER_STORAGE_KEY);
+      const storedReferrer = localStorage.getItem(STORAGE_KEYS.REFERRER);
       if (!storedReferrer) return;
 
       // Don't register if it's your own referral link
       if (storedReferrer.toLowerCase() === address.toLowerCase()) {
-        localStorage.removeItem(REFERRER_STORAGE_KEY);
+        localStorage.removeItem(STORAGE_KEYS.REFERRER);
         return;
       }
 
@@ -56,14 +56,13 @@ export default function ReferAndEarn({ referralCount = 0 }) {
         if (response.ok) {
           setRegistrationStatus('success');
           // Clear the stored referrer after successful registration
-          localStorage.removeItem(REFERRER_STORAGE_KEY);
-          console.log('Referral registered:', data);
+          localStorage.removeItem(STORAGE_KEYS.REFERRER);
         } else if (data.error === 'Already referred') {
           // Already referred, clear storage
-          localStorage.removeItem(REFERRER_STORAGE_KEY);
+          localStorage.removeItem(STORAGE_KEYS.REFERRER);
         }
-      } catch (error) {
-        console.error('Failed to register referral:', error);
+      } catch {
+        // Silently fail - registration will be retried
       }
     };
 
@@ -77,8 +76,9 @@ export default function ReferAndEarn({ referralCount = 0 }) {
       await navigator.clipboard.writeText(referralUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy:', err);
+    } catch {
+      // Fallback: select the text for manual copy
+      alert('Press Ctrl+C to copy the link');
     }
   };
 

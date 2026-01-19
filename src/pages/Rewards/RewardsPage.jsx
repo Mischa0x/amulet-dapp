@@ -5,7 +5,7 @@
  * All content fits on one screen with collapsible leaderboard.
  */
 
-import { useState, useEffect, useCallback, useTransition } from 'react';
+import { useState, useEffect, useCallback, useTransition, useRef } from 'react';
 import { useAccount } from 'wagmi';
 import {
   EpochTabs,
@@ -34,35 +34,56 @@ export default function RewardsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // AbortController for cleanup
+  const abortControllerRef = useRef(null);
+
   // Use connected wallet or demo wallet for preview
   const activeWallet = isConnected && address ? address : DEMO_WALLET;
 
   // Fetch all data for an epoch
-  const fetchAllData = useCallback(async (selectedEpoch) => {
+  const fetchAllData = useCallback(async (selectedEpoch, signal) => {
     try {
       setError(null);
 
       const [leaderboardData, personalData, socialData] = await Promise.all([
-        fetchLeaderboard(selectedEpoch),
-        fetchPersonalStats(selectedEpoch, activeWallet),
-        fetchSocialProof(selectedEpoch),
+        fetchLeaderboard(selectedEpoch, signal),
+        fetchPersonalStats(selectedEpoch, activeWallet, signal),
+        fetchSocialProof(selectedEpoch, signal),
       ]);
+
+      // Don't update state if aborted
+      if (signal?.aborted) return;
 
       setLeaderboard(leaderboardData);
       setPersonalStats(personalData);
       setSocialProof(socialData);
     } catch (err) {
-      console.error('Failed to fetch rewards data:', err);
+      // Ignore aborted requests
+      if (err.name === 'AbortError') return;
       setError('Failed to load rewards data. Please try again.');
     } finally {
-      setIsLoading(false);
+      if (!signal?.aborted) {
+        setIsLoading(false);
+      }
     }
   }, [activeWallet]);
 
-  // Initial load
+  // Initial load and cleanup
   useEffect(() => {
+    // Abort previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+
     setIsLoading(true);
-    fetchAllData(epoch);
+    fetchAllData(epoch, abortControllerRef.current.signal);
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [epoch, fetchAllData]);
 
   // Handle epoch change with transition

@@ -1,4 +1,5 @@
 // ShopProductGrid.jsx
+import { useMemo, memo } from "react";
 import styles from "./ShopProductGrid.module.css";
 import { Link } from "react-router-dom";
 import { useCart } from "../../store/CartContext";
@@ -33,30 +34,33 @@ const skillToIcon = (skill) => {
   return icons[s] || "/assets/skill-longevity.svg";
 };
 
-export default function ShopProductGrid({
+function ShopProductGrid({
   products = [],
   searchQuery = "",
   selectedSkill = "ALL",
 }) {
   const { addItem } = useCart();
 
-  const normalizedSkill = (selectedSkill || "ALL").toUpperCase();
-  const q = (searchQuery || "").toLowerCase();
+  // Memoize filtered products to avoid recalculation on every render
+  const filtered = useMemo(() => {
+    const normalizedSkill = (selectedSkill || "ALL").toUpperCase();
+    const q = (searchQuery || "").toLowerCase();
 
-  const filtered = products.filter((p) => {
-    // 🔍 filtro por texto (usa los mismos campos que antes en ShopCatalog)
-    const text = `${p.title || p.name || ""} ${
-      p.subtitle || ""
-    } ${p.tags?.join(" ") || ""}`.toLowerCase();
-    const matchesSearch = q ? text.includes(q) : true;
+    return products.filter((p) => {
+      // Filter by text (search query)
+      const text = `${p.title || p.name || ""} ${
+        p.subtitle || ""
+      } ${p.tags?.join(" ") || ""}`.toLowerCase();
+      const matchesSearch = q ? text.includes(q) : true;
 
-    // 🧬 filtro por skill
-    const productSkill = (p.skill || "").toUpperCase();
-    const matchesSkill =
-      normalizedSkill === "ALL" ? true : productSkill === normalizedSkill;
+      // Filter by skill/category
+      const productSkill = (p.skill || "").toUpperCase();
+      const matchesSkill =
+        normalizedSkill === "ALL" ? true : productSkill === normalizedSkill;
 
-    return matchesSearch && matchesSkill;
-  });
+      return matchesSearch && matchesSkill;
+    });
+  }, [products, searchQuery, selectedSkill]);
 
   return (
     <section className={styles.grid} aria-label="Products">
@@ -93,6 +97,7 @@ export default function ShopProductGrid({
                     className={styles.skillIcon}
                     src={skillToIcon(p.skill)}
                     alt={p.skill}
+                    loading="lazy"
                   />
                 )}
               </div>
@@ -143,3 +148,5 @@ export default function ShopProductGrid({
     </section>
   );
 }
+
+export default memo(ShopProductGrid);

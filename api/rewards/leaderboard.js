@@ -6,21 +6,29 @@
  */
 
 import { buildLeaderboard } from '../../lib/rewardsMiddleware.js';
+import { setCorsHeaders, handlePreflight, checkRateLimit } from '../../lib/apiUtils.js';
+import { logError } from '../../lib/logger.js';
 
 const VALID_EPOCHS = ['24h', '7d', '30d', 'all'];
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Handle CORS preflight
+  if (handlePreflight(req, res)) return;
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  // Set CORS headers with origin validation
+  if (!setCorsHeaders(req, res)) {
+    return res.status(403).json({ error: 'Origin not allowed' });
   }
 
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Rate limiting by IP
+  const clientId = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+  const rateLimit = await checkRateLimit(clientId, 60, 60000);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({ error: 'Too many requests' });
   }
 
   try {
@@ -45,7 +53,7 @@ export default async function handler(req, res) {
     return res.status(200).json(enrichedLeaderboard);
 
   } catch (error) {
-    console.error('Leaderboard API error:', error);
+    logError('api/rewards/leaderboard', 'Leaderboard API error', { error });
     return res.status(500).json({ error: 'Failed to fetch leaderboard' });
   }
 }

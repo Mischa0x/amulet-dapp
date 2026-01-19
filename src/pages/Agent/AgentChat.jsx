@@ -1,5 +1,5 @@
 // pages/Agent/AgentChat.jsx
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { useAccount } from "wagmi";
@@ -17,6 +17,7 @@ export default function AgentChat() {
 
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const abortControllerRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { address, isConnected } = useAccount();
@@ -73,10 +74,25 @@ export default function AgentChat() {
     return text.replace(/\[product:[^\]]+\]/g, '').trim();
   };
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
   // Send message to AI
-  const sendMessage = async (text) => {
+  const sendMessage = useCallback(async (text) => {
     const userText = text || draft.trim();
     if (!userText || isLoading) return;
+
+    // Abort any previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
 
     const userMessage = {
       id: crypto.randomUUID(),
@@ -118,6 +134,7 @@ export default function AgentChat() {
           messages: conversationHistory,
           address: address // Pass wallet address for credit tracking
         }),
+        signal: abortControllerRef.current.signal,
       });
 
       // Handle insufficient credits
@@ -153,7 +170,10 @@ export default function AgentChat() {
         )
       );
     } catch (error) {
-      console.error("Chat error:", error);
+      // Ignore aborted requests
+      if (error.name === 'AbortError') {
+        return;
+      }
       setMessages((prev) =>
         prev.map((m) =>
           m.id === assistantMessage.id
@@ -168,7 +188,7 @@ export default function AgentChat() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [draft, isLoading, messages, address, updateCredits]);
 
   const handleViewProduct = (product) => {
     navigate(`/product/${product.id}`);

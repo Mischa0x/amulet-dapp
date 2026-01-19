@@ -1,5 +1,7 @@
 // POST /api/stripe/checkout - Create Stripe checkout session for credit purchases
 import Stripe from 'stripe';
+import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../../lib/apiUtils.js';
+import { logError } from '../../lib/logger.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -32,12 +34,12 @@ const PACKAGES = {
 };
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Handle CORS preflight
+  if (handlePreflight(req, res)) return;
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+  // Set CORS headers with origin validation
+  if (!setCorsHeaders(req, res)) {
+    return res.status(403).json({ error: 'Origin not allowed' });
   }
 
   if (req.method !== 'POST') {
@@ -48,18 +50,28 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Stripe not configured' });
   }
 
-  const { packageId, address } = req.body;
+  const { packageId, address: rawAddress } = req.body;
 
-  if (!packageId || !address) {
+  if (!packageId || !rawAddress) {
     return res.status(400).json({ error: 'Package ID and wallet address required' });
+  }
+
+  // Validate address format
+  const normalizedAddress = validateAddress(rawAddress);
+  if (!normalizedAddress) {
+    return res.status(400).json({ error: 'Invalid wallet address format' });
+  }
+
+  // Rate limiting for checkout (10 per minute to prevent abuse)
+  const rateLimit = await checkRateLimit(normalizedAddress, 10, 60000);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({ error: 'Too many requests' });
   }
 
   const pkg = PACKAGES[packageId];
   if (!pkg) {
     return res.status(400).json({ error: 'Invalid package ID' });
   }
-
-  const normalizedAddress = address.toLowerCase();
 
   try {
     // Determine the app URL from environment or request headers
@@ -100,7 +112,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Stripe checkout error:', error);
+    logError('api/stripe/checkout', 'Stripe checkout error', { error });
     return res.status(500).json({ error: 'Failed to create checkout session' });
   }
 }

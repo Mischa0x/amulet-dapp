@@ -5,9 +5,10 @@
  * Uses a 4-column grid on desktop, 2-column on mobile.
  */
 
+import { memo, useMemo } from 'react';
 import styles from './PersonalSummaryCard.module.css';
 
-export default function PersonalSummaryCard({ stats, epoch, isLoading = false }) {
+function PersonalSummaryCard({ stats, epoch, isLoading = false }) {
   if (isLoading) {
     return <PersonalSummaryCardSkeleton />;
   }
@@ -48,7 +49,8 @@ export default function PersonalSummaryCard({ stats, epoch, isLoading = false })
     return null;
   };
 
-  const statsData = [
+  // Memoize stats data to prevent recalculation on parent re-renders
+  const statsData = useMemo(() => [
     {
       label: 'Rank',
       value: isRanked ? (getMedalEmoji(rank) || `#${rank}`) : '—',
@@ -73,7 +75,7 @@ export default function PersonalSummaryCard({ stats, epoch, isLoading = false })
       value: referralCount.toLocaleString(),
       subValue: streakDays > 0 ? `🔥 ${streakDays} day streak` : '+1 pt each',
     },
-  ];
+  ], [rank, isRanked, percentile, totalPoints, totalComputeUsed, referralPoints, queriesRun, activeDays, referralCount, streakDays]);
 
   return (
     <div className={styles.statsGrid}>
@@ -103,3 +105,5 @@ function PersonalSummaryCardSkeleton() {
     </div>
   );
 }
+
+export default memo(PersonalSummaryCard);

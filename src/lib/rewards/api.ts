@@ -27,19 +27,25 @@ const FORCE_MOCK = false;
 /**
  * Fetch the top 50 leaderboard for a given epoch
  */
-export async function fetchLeaderboard(epoch: Epoch): Promise<LeaderboardEntry[]> {
+export async function fetchLeaderboard(
+  epoch: Epoch,
+  signal?: AbortSignal
+): Promise<LeaderboardEntry[]> {
   if (FORCE_MOCK) {
     return getRewardsLeaderboard(epoch);
   }
 
   try {
-    const res = await fetch(`/api/rewards/leaderboard?epoch=${epoch}`);
+    const res = await fetch(`/api/rewards/leaderboard?epoch=${epoch}`, { signal });
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();
     return data || [];
   } catch (error) {
-    console.error('Leaderboard fetch failed:', error);
+    // Re-throw abort errors to be handled by caller
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     return [];
   }
 }
@@ -49,66 +55,67 @@ export async function fetchLeaderboard(epoch: Epoch): Promise<LeaderboardEntry[]
  */
 export async function fetchPersonalStats(
   epoch: Epoch,
-  wallet: string
+  wallet: string,
+  signal?: AbortSignal
 ): Promise<PersonalStats> {
   if (FORCE_MOCK) {
     return getRewardsPersonalStats(epoch, wallet);
   }
 
+  const defaultStats: PersonalStats = {
+    wallet,
+    rank: undefined,
+    totalComputeUsed: 0,
+    referralPoints: 0,
+    referralCount: 0,
+    totalPoints: 0,
+    queriesRun: 0,
+    activeDays: 0,
+    streakDays: 0,
+    top50ThresholdPoints: 0,
+    percentile: 0,
+  };
+
   try {
     const res = await fetch(
-      `/api/rewards/personal?epoch=${epoch}&wallet=${encodeURIComponent(wallet)}`
+      `/api/rewards/personal?epoch=${epoch}&wallet=${encodeURIComponent(wallet)}`,
+      { signal }
     );
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();
-    return data || {
-      wallet,
-      rank: undefined,
-      totalComputeUsed: 0,
-      referralPoints: 0,
-      referralCount: 0,
-      totalPoints: 0,
-      queriesRun: 0,
-      activeDays: 0,
-      streakDays: 0,
-      top50ThresholdPoints: 0,
-      percentile: 0,
-    };
+    return data || defaultStats;
   } catch (error) {
-    console.error('Personal stats fetch failed:', error);
-    return {
-      wallet,
-      rank: undefined,
-      totalComputeUsed: 0,
-      referralPoints: 0,
-      referralCount: 0,
-      totalPoints: 0,
-      queriesRun: 0,
-      activeDays: 0,
-      streakDays: 0,
-      top50ThresholdPoints: 0,
-      percentile: 0,
-    };
+    // Re-throw abort errors to be handled by caller
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
+    return defaultStats;
   }
 }
 
 /**
  * Fetch platform-wide social proof statistics
  */
-export async function fetchSocialProof(epoch: Epoch): Promise<SocialProofStats> {
+export async function fetchSocialProof(
+  epoch: Epoch,
+  signal?: AbortSignal
+): Promise<SocialProofStats> {
   if (FORCE_MOCK) {
     return getRewardsSocialProof(epoch);
   }
 
   try {
-    const res = await fetch(`/api/rewards/social-proof?epoch=${epoch}`);
+    const res = await fetch(`/api/rewards/social-proof?epoch=${epoch}`, { signal });
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();
     return data || { activeWallets: 0, totalCompute: 0, totalQueries: 0 };
   } catch (error) {
-    console.error('Social proof fetch failed:', error);
+    // Re-throw abort errors to be handled by caller
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     return { activeWallets: 0, totalCompute: 0, totalQueries: 0 };
   }
 }

@@ -1,9 +1,19 @@
 // POST /api/stripe/webhook - Handle Stripe payment webhooks
 import Stripe from 'stripe';
 import { kv } from '@vercel/kv';
+import { validateAddress } from '../../lib/apiUtils.js';
+import { logError, logWarn } from '../../lib/logger.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+// Valid packages with expected credits - must match TokenPage.jsx
+const VALID_PACKAGES = {
+  mortal: { credits: 100, priceInCents: 500 },
+  awakened: { credits: 500, priceInCents: 2250 },
+  transcendent: { credits: 2000, priceInCents: 8000 },
+  immortal: { credits: 10000, priceInCents: 35000 },
+};
 
 // Disable body parsing to get raw body for signature verification
 export const config = {
@@ -38,7 +48,7 @@ export default async function handler(req, res) {
   try {
     event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err.message);
+    logWarn('api/stripe/webhook', 'Webhook signature verification failed', { error: err.message });
     return res.status(400).json({ error: 'Invalid signature' });
   }
 
@@ -46,14 +56,40 @@ export default async function handler(req, res) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    const walletAddress = session.metadata?.walletAddress;
-    const credits = parseInt(session.metadata?.credits, 10);
+    const rawWalletAddress = session.metadata?.walletAddress;
+    const metadataCredits = parseInt(session.metadata?.credits, 10);
     const packageId = session.metadata?.packageId;
 
-    if (!walletAddress || !credits) {
-      console.error('Missing metadata in checkout session');
+    if (!rawWalletAddress || !metadataCredits || !packageId) {
+      logWarn('api/stripe/webhook', 'Missing metadata in checkout session', { sessionId: session.id });
       return res.status(400).json({ error: 'Missing metadata' });
     }
+
+    // Validate wallet address format
+    const walletAddress = validateAddress(rawWalletAddress);
+    if (!walletAddress) {
+      logWarn('api/stripe/webhook', 'Invalid wallet address format', { rawAddress: rawWalletAddress });
+      return res.status(400).json({ error: 'Invalid wallet address' });
+    }
+
+    // SECURITY: Verify package exists and credits match expected values
+    const expectedPackage = VALID_PACKAGES[packageId];
+    if (!expectedPackage) {
+      logWarn('api/stripe/webhook', 'Invalid package ID', { packageId });
+      return res.status(400).json({ error: 'Invalid package' });
+    }
+
+    if (metadataCredits !== expectedPackage.credits) {
+      logWarn('api/stripe/webhook', 'Credits mismatch', {
+        packageId,
+        expected: expectedPackage.credits,
+        received: metadataCredits,
+      });
+      return res.status(400).json({ error: 'Credits mismatch' });
+    }
+
+    // Use the validated credits from our server-side config, not from metadata
+    const credits = expectedPackage.credits;
 
     try {
       // Get current credit data
@@ -86,10 +122,10 @@ export default async function handler(req, res) {
         timestamp: Date.now(),
       });
 
-      console.log(`Credits added: ${credits} to ${walletAddress}`);
+      // Success - credits added (no log in production)
 
     } catch (error) {
-      console.error('Error processing payment:', error);
+      logError('api/stripe/webhook', 'Error processing payment', { error, walletAddress, credits });
       return res.status(500).json({ error: 'Failed to process payment' });
     }
   }
