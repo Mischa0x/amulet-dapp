@@ -68,7 +68,7 @@ export default function OrderSummary({
           type="button"
           className={styles.discountApply}
           disabled={!code.trim()}
-          onClick={() => {/* TODO: redeem code */}}
+          onClick={() => {/* Discount codes not yet implemented */}}
         >
           Apply
         </button>

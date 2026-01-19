@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   }
 
   if (!webhookSecret) {
-    console.error('Stripe webhook secret not configured');
+    logError('api/stripe/webhook', 'Stripe webhook secret not configured');
     return res.status(500).json({ error: 'Webhook not configured' });
   }
 

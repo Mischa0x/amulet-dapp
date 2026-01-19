@@ -7,7 +7,7 @@ import {
   useWaitForTransactionReceipt,
 } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
-import { ERC20_ABI, TOKEN_CONTRACT_ADDRESS } from '../shared/constants';
+import { ERC20_ABI, TOKEN_CONTRACT_ADDRESS } from '../shared/constants.js';
 
 export function WagmiInterface() {
   const [recipient, setRecipient] = useState('');

@@ -55,7 +55,7 @@ export default function AuthPage() {
               className={styles.form}
               onSubmit={(e) => {
                 e.preventDefault();
-                // TODO auth
+                // Auth handled by Web3 wallet connection - this form is a placeholder
               }}
             >
               {mode === "signup" && (

@@ -80,11 +80,12 @@ export const EXTERNAL_URLS = {
   TWITTER: 'https://twitter.com/amulet_ai',
 };
 
-// Token contract address
-// NOTE: Fallback is Sei Testnet address - set VITE_AMULET_TOKEN_ADDRESS in production
-export const TOKEN_CONTRACT_ADDRESS =
+// Token contract address (Sei Testnet)
+// Set VITE_AMULET_TOKEN_ADDRESS in production environment
+export const TOKEN_CONTRACT_ADDRESS = /** @type {`0x${string}`} */ (
   (typeof import.meta !== 'undefined' && import.meta.env?.VITE_AMULET_TOKEN_ADDRESS) ||
-  '0xe8564273D6346Db0Ff54d3a6CCb1Dd12993A042c';
+  '0xe8564273D6346Db0Ff54d3a6CCb1Dd12993A042c'
+);
 
 // ERC20 ABI (minimal for balance and approve)
 export const ERC20_ABI = [

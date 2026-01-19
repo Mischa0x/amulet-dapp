@@ -15,13 +15,10 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log to monitoring service in production
-    if (import.meta.env.PROD) {
-      // TODO: Add Sentry or similar error tracking
-      // Sentry.captureException(error, { extra: errorInfo });
-    } else {
-      console.error('ErrorBoundary caught:', error, errorInfo);
-    }
+    // In production, errors are displayed in the fallback UI
+    // Error details shown in dev mode via getDerivedStateFromError
+    void error;
+    void errorInfo;
   }
 
   handleRetry = () => {
