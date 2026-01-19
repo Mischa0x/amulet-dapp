@@ -194,6 +194,9 @@ function LandingPage() {
 
         <span className={`${styles.corner} ${styles.topRight}`}>
           <div className={styles.topRightNav}>
+            <Link to="/auth" className={styles.blogLink}>
+              Sign In
+            </Link>
             <Link to="/blog" className={styles.blogLink}>
               Blog
             </Link>
