@@ -1,297 +1,244 @@
-// visits.js
+/**
+ * Visits Page - Redesigned
+ *
+ * Clean, compact design following rewards page methodology.
+ * Shows visit summary stats and collapsible list of visits.
+ */
+
 import React, { useState } from "react";
-import styles from "./visits.module.css";
-import PrivacyPolicyAgreement from "../../components/Questionnaries/PrivacyPolicyAgreement.jsx";
-import TelehealthServicesConsent from "../../components/Questionnaries/TelehealthServicesConsent.jsx";
-import ErectileDysfunctionQuestionnaire from "../../components/Questionnaries/ErectileDysfunctionQuestionnaire.jsx";
-import PersonalInformationForm from "../../components/Questionnaries/PersonalInformationForm.jsx";
+import styles from "./Visits.module.css";
+
+// Mock visits data
 const VISITS = [
   {
     id: 1,
     doctorName: "Dr. Katherine Voss",
     specialization: "Longevity Medicine",
-    date: "01.09.2025",
+    date: "Jan 9, 2025",
     status: "pending",
-    consultationName: "Longevity Consultation",
-    consultationPrice: "$ 299.00",
-    visitReason: "Longevity enhancement optimization and metabolic assessment",
-    statusMessage:
-      "Your longevity enhancement protocol has been sent to the doctor for review.",
+    consultationType: "Longevity Consultation",
+    price: 299,
+    reason: "Longevity enhancement optimization and metabolic assessment",
+    items: [
+      { name: "Sildenafil 50mg", type: "Medication", price: 29.99 },
+      { name: "Doctor Consultation", type: "Service", price: 100 },
+    ],
   },
   {
     id: 2,
     doctorName: "Dr. Katherine Voss",
     specialization: "Longevity Medicine",
-    date: "22.08.2025",
+    date: "Aug 22, 2025",
     status: "approved",
-    consultationName: "Longevity Consultation",
-    consultationPrice: "$ 299.00",
-    visitReason: "Follow-up on longevity protocol and lab results review.",
-    statusMessage:
-      "Your visit has been approved. You can proceed with the scheduled consultation.",
+    consultationType: "Follow-up Visit",
+    price: 149,
+    reason: "Follow-up on longevity protocol and lab results review",
+    items: [
+      { name: "Lab Panel Review", type: "Service", price: 149 },
+    ],
   },
   {
     id: 3,
     doctorName: "Dr. Katherine Voss",
     specialization: "Longevity Medicine",
-    date: "22.08.2025",
+    date: "Aug 15, 2025",
     status: "denied",
-    consultationName: "Longevity Consultation",
-    consultationPrice: "$ 299.00",
-    visitReason: "Longevity consultation request with incomplete data.",
-    statusMessage:
-      "Your visit request was not approved. Please review the requirements and try again.",
+    consultationType: "Initial Consultation",
+    price: 299,
+    reason: "Incomplete medical history documentation",
+    items: [],
   },
 ];
 
-// Config para clases/íconos según estado
 const STATUS_CONFIG = {
   pending: {
-    label: "PENDING QUESTIONNAIRE",
-    cardClass: styles.cardBlue,
-    chipClass: styles.chipWarn,
-    textClass: styles.statusTextWarn,
-    icon: "/assets/bx-time.svg",
-    iconAlt: "Pending",
+    label: "Pending",
+    className: styles.statusPending,
+    icon: "⏳",
   },
   approved: {
-    label: "APPROVED",
-    cardClass: styles.cardGrey,
-    chipClass: styles.chipOk,
-    textClass: styles.statusTextOk,
-    icon: "/assets/checkbox-approved-green.svg",
-    iconAlt: "Approved",
+    label: "Approved",
+    className: styles.statusApproved,
+    icon: "✓",
   },
   denied: {
-    label: "DENIED",
-    cardClass: styles.cardGrey,
-    chipClass: styles.chipErr,
-    textClass: styles.statusTextErr,
-    icon: "/assets/cancel-red.svg",
-    iconAlt: "Denied",
-  },
-  payment: {
-    label: "PAYMENT PENDING",
-    text: " - PAYMENT PENDING",
+    label: "Denied",
+    className: styles.statusDenied,
+    icon: "✕",
   },
 };
 
 export default function Visits() {
-  const [selectedVisit, setSelectedVisit] = useState(VISITS[0]);
-  const [activeTab, setActiveTab] = useState("privacy"); 
+  const [expandedVisit, setExpandedVisit] = useState(null);
+  const [showAll, setShowAll] = useState(false);
 
-  const [open, setOpen] = useState(false);
+  // Calculate stats
+  const stats = {
+    total: VISITS.length,
+    pending: VISITS.filter(v => v.status === "pending").length,
+    approved: VISITS.filter(v => v.status === "approved").length,
+    denied: VISITS.filter(v => v.status === "denied").length,
+  };
 
+  const displayedVisits = showAll ? VISITS : VISITS.slice(0, 3);
 
-  const selectedConfig = STATUS_CONFIG[selectedVisit.status];
+  const toggleExpand = (id) => {
+    setExpandedVisit(expandedVisit === id ? null : id);
+  };
 
   return (
-    <div className={styles.visitsOverview}>
+    <div className={styles.page}>
       <div className={styles.container}>
-        {/* Page title */}
-        <div className={styles.pageTitle}>
-          <span className={styles.pageTitleText}>LONGEVITY DOCTOR VISITS</span>
+        {/* Header */}
+        <header className={styles.header}>
+          <h1 className={styles.title}>Doctor Visits</h1>
+          <span className={styles.subtitle}>{stats.total} total visits</span>
+        </header>
+
+        {/* Stats Grid */}
+        <div className={styles.statsGrid}>
+          <div className={styles.statCard}>
+            <span className={styles.statValue}>{stats.total}</span>
+            <span className={styles.statLabel}>Total Visits</span>
+          </div>
+          <div className={styles.statCard}>
+            <span className={`${styles.statValue} ${styles.pendingValue}`}>{stats.pending}</span>
+            <span className={styles.statLabel}>Pending</span>
+          </div>
+          <div className={styles.statCard}>
+            <span className={`${styles.statValue} ${styles.approvedValue}`}>{stats.approved}</span>
+            <span className={styles.statLabel}>Approved</span>
+          </div>
+          <div className={styles.statCard}>
+            <span className={`${styles.statValue} ${styles.deniedValue}`}>{stats.denied}</span>
+            <span className={styles.statLabel}>Denied</span>
+          </div>
         </div>
 
-        {/* Main grid: left list + right panel */}
-        <div className={styles.mainGrid}>
-          {/* LEFT — visits list */}
-          <div className={styles.leftCol}>
-            {VISITS.map((visit) => {
+        {/* Visits List */}
+        <div className={styles.visitsSection}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Recent Visits</h2>
+          </div>
+
+          <div className={styles.visitsList}>
+            {displayedVisits.map((visit) => {
               const config = STATUS_CONFIG[visit.status];
-              const isActive = selectedVisit.id === visit.id;
+              const isExpanded = expandedVisit === visit.id;
 
               return (
                 <div
                   key={visit.id}
-                  className={`${styles.card} ${config.cardClass} ${
-                    isActive ? styles.cardActive : ""
-                  }`}
-                  onClick={() => setSelectedVisit(visit)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      setSelectedVisit(visit);
-                    }
-                  }}
+                  className={`${styles.visitCard} ${isExpanded ? styles.expanded : ''}`}
                 >
-                  <div className={styles.cardMeta}>
-                    <div className={styles.cardTitle}>{visit.doctorName}</div>
-                    <div className={styles.cardSubtitle}>
-                      {visit.specialization}
+                  <div
+                    className={styles.visitHeader}
+                    onClick={() => toggleExpand(visit.id)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div className={styles.visitMain}>
+                      <div className={styles.visitInfo}>
+                        <span className={styles.visitDoctor}>{visit.doctorName}</span>
+                        <span className={styles.visitType}>{visit.consultationType}</span>
+                      </div>
+                      <div className={styles.visitMeta}>
+                        <span className={styles.visitDate}>{visit.date}</span>
+                        <span className={styles.visitPrice}>${visit.price}</span>
+                      </div>
                     </div>
-                    <div className={styles.cardDate}>{visit.date}</div>
+                    <div className={styles.visitRight}>
+                      <span className={`${styles.statusBadge} ${config.className}`}>
+                        <span className={styles.statusIcon}>{config.icon}</span>
+                        {config.label}
+                      </span>
+                      <span className={`${styles.expandIcon} ${isExpanded ? styles.rotated : ''}`}>
+                        ▼
+                      </span>
+                    </div>
                   </div>
 
-                  <div
-                    className={`${styles.statusChip} ${config.chipClass}`}
-                  >
-                    <span className={styles.statusIconWrap}>
-                      <img
-                        className={styles.statusIcon}
-                        src={config.icon}
-                        alt={config.iconAlt}
-                      />
-                    </span>
-                    
-                  </div>
+                  {isExpanded && (
+                    <div className={styles.visitDetails}>
+                      <div className={styles.detailSection}>
+                        <span className={styles.detailLabel}>Reason for Visit</span>
+                        <p className={styles.detailText}>{visit.reason}</p>
+                      </div>
+
+                      {visit.items.length > 0 && (
+                        <div className={styles.detailSection}>
+                          <span className={styles.detailLabel}>Order Items</span>
+                          <div className={styles.itemsList}>
+                            {visit.items.map((item, idx) => (
+                              <div key={idx} className={styles.orderItem}>
+                                <div className={styles.itemInfo}>
+                                  <span className={styles.itemName}>{item.name}</span>
+                                  <span className={styles.itemType}>{item.type}</span>
+                                </div>
+                                <span className={styles.itemPrice}>${item.price.toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {visit.status === "pending" && (
+                        <div className={styles.actionRow}>
+                          <button className={styles.primaryButton}>
+                            Complete Questionnaire
+                          </button>
+                          <button className={styles.secondaryButton}>
+                            Cancel Visit
+                          </button>
+                        </div>
+                      )}
+
+                      {visit.status === "approved" && (
+                        <div className={styles.actionRow}>
+                          <button className={styles.primaryButton}>
+                            View Prescription
+                          </button>
+                          <button className={styles.secondaryButton}>
+                            Message Doctor
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
 
-          {/* RIGHT — panel (dinámico según selectedVisit) */}
-          <div className={styles.rightCol}>
-            <div className={styles.panelHeader}>
-              <div
-                className={`${styles.statusChip} ${selectedConfig.chipClass}`}
-              >
-                <span className={styles.statusIconWrap}>
-                  <img
-                    className={styles.statusIcon}
-                    src={selectedConfig.icon}
-                    alt={selectedConfig.iconAlt}
-                  />
-                </span>
-                <span className={selectedConfig.textClass}>
-                  {selectedConfig.label}
-                </span>
-               
-              </div>
-
-
-                   <div
-                className={`${styles.statusChip} ${selectedConfig.chipClass}`}
-              >
-                <span className={styles.statusIconWrap}>
-                  <img
-                    className={styles.statusIcon}
-                    src={selectedConfig.icon}
-                    alt={selectedConfig.iconAlt}
-                  />
-                </span>
-                <span className={selectedConfig.textClass}>
-                 PAYMENT PENDING
-                </span>
-               
-              </div>
-
-
-            </div>
-
-            <div className={styles.infoCard}>
-              <div className={styles.infoSection}>
-                <div className={styles.infoTitle}>ORDER ITEMS</div>
-                <div className={styles.infoRow}>
-                  <span className={styles.statusIconWrap}>
-                    <img
-                      className={styles.statusIcon}
-                      src={selectedConfig.icon}
-                      alt={selectedConfig.iconAlt}
-                    />
-                  </span>
-                  <p className={styles.infoText}>
-                   Sildenafil 50mg
-Medication
-Sildenafil Citrate 50mg oral tablet for erectile dysfunction treatment. Effective PDE5 inhibitor for improved blood flow.
-
-Vendor: Health Labs Inc. $29.99
-                  </p>
-                </div>
-
-                    <div className={styles.infoRow}>
-                  <span className={styles.statusIconWrap}>
-                    <img
-                      className={styles.statusIcon}
-                      src={selectedConfig.icon}
-                      alt={selectedConfig.iconAlt}
-                    />
-                  </span>
-                  <p className={styles.infoText}>
-Doctor Visit
-Medication
-Doctor Visit - Required for medication prescription and revision
-
-Vendor: Wellness Pharmacy $100.00
-
-                  </p>
-                </div>
-
-                
-              </div>
-            </div>
-              <div className={styles.btnGhost} onClick={() => setOpen(true)}>
-  VIEW DETAILS
-</div>
-<div className={styles.tabsRow}>
-  <div
-    className={`${styles.tabChip} ${activeTab === "privacy" ? styles.tabActive : ""}`}
-    role="button"
-    tabIndex={0}
-    onClick={() => setActiveTab("privacy")}
-    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("privacy")}
-  >
-    <span className={activeTab === "privacy" ? styles.tabTextActive : styles.tabText}>
-      PRIVACY POLICY AGREEMENT
-    </span>
-  </div>
-
-  <div
-    className={`${styles.tabChip} ${activeTab === "TelehealthServicesConsent" ? styles.tabActive : ""}`}
-    role="button"
-    tabIndex={0}
-    onClick={() => setActiveTab("TelehealthServicesConsent")}
-    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("TelehealthServicesConsent")}
-  >
-    <span className={activeTab === "TelehealthServicesConsent" ? styles.tabTextActive : styles.tabText}>
-      TELEHEALTH SERVICES CONSENT
-    </span>
-  </div>
-
-  <div
-    className={`${styles.tabChip} ${activeTab === "ErectileDysfunctionQuestionnaire" ? styles.tabActive : ""}`}
-    role="button"
-    tabIndex={0}
-    onClick={() => setActiveTab("ErectileDysfunctionQuestionnaire")}
-    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("ErectileDysfunctionQuestionnaire")}
-  >
-    <span className={activeTab === "ErectileDysfunctionQuestionnaire" ? styles.tabTextActive : styles.tabText}>
-      ERECTILE DYSFUNCTION QUESTIONNARIED
-    </span>
-  </div>
-
-  <div
-    className={`${styles.tabChip} ${activeTab === "PersonalInformationForm" ? styles.tabActive : ""}`}
-    role="button"
-    tabIndex={0}
-    onClick={() => setActiveTab("PersonalInformationForm")}
-    onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && setActiveTab("PersonalInformationForm")}
-  >
-    <span className={activeTab === "PersonalInformationForm" ? styles.tabTextActive : styles.tabText}>
-    PERSONAL INFORMATION FORM 
-    </span>
-  </div>
-</div>
-
-
-         {activeTab === "privacy" && <PrivacyPolicyAgreement />}
-
-{activeTab === "TelehealthServicesConsent" && <TelehealthServicesConsent />}
-
-{activeTab === "ErectileDysfunctionQuestionnaire" && <ErectileDysfunctionQuestionnaire />}
-{activeTab === "PersonalInformationForm" && <PersonalInformationForm />}
-
-
-
-
-
-
-
-          </div>
+          {VISITS.length > 3 && (
+            <button
+              className={styles.expandButton}
+              onClick={() => setShowAll(!showAll)}
+            >
+              {showAll ? (
+                <>
+                  Show Less
+                  <span className={styles.expandArrow}>▲</span>
+                </>
+              ) : (
+                <>
+                  View All Visits ({VISITS.length})
+                  <span className={styles.expandArrow}>▼</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
 
-      
+        {/* Info Card */}
+        <div className={styles.infoCard}>
+          <div className={styles.infoTitle}>How Doctor Visits Work</div>
+          <div className={styles.infoText}>
+            Complete the required questionnaires and consent forms. A licensed physician will review
+            your information and either approve your prescription or request additional details.
+            Approved prescriptions are sent directly to our partner pharmacy.
+          </div>
+        </div>
       </div>
     </div>
   );

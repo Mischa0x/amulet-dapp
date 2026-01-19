@@ -282,6 +282,46 @@
   margin-top: auto;
 }
 
+/* Benefits List */
+.benefitsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.benefitItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--brand-black);
+  opacity: 0.7;
+}
+
+.benefitIcon {
+  color: var(--brand-green-dark, #22c55e);
+  font-weight: bold;
+}
+
+/* Learn More Link */
+.learnMoreLink {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 4px 0 12px 0;
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 12px;
+  color: var(--brand-blue-default, #1D7AFC);
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 0.15s ease;
+}
+
+.learnMoreLink:hover {
+  opacity: 0.7;
+}
+
 /* Pricing List */
 .pricingList {
   display: flex;
@@ -568,5 +608,176 @@
 
   .packageRate {
     font-size: 11px;
+  }
+}
+
+/* Tokenomics Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: var(--brand-white);
+  border-radius: 16px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--mapped-border-and-dividers-primary, rgba(0,0,0,0.08));
+}
+
+.modalTitle {
+  font-family: var(--heading-h2-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--brand-black);
+  margin: 0;
+}
+
+.modalBadge {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 11px;
+  padding: 4px 10px;
+  background: var(--brand-gold, #B8860B);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.modalBody {
+  padding: 24px;
+}
+
+.modalText {
+  font-family: var(--body-md-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--brand-black);
+  opacity: 0.7;
+  margin: 0 0 20px 0;
+}
+
+.modalFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modalFeature {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: var(--brand-neon-cards-surface-light-blue, rgba(0,0,0,0.02));
+  border-radius: 8px;
+}
+
+.featureIcon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-blue-default, #1D7AFC);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.featureContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.featureTitle {
+  font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-black);
+}
+
+.featureDesc {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 12px;
+  color: var(--brand-black);
+  opacity: 0.6;
+}
+
+.modalDisclaimer {
+  font-family: var(--body-sm-font-family, 'Satoshi-Regular', sans-serif);
+  font-size: 12px;
+  color: var(--brand-black);
+  opacity: 0.5;
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--mapped-border-and-dividers-primary, rgba(0,0,0,0.08));
+}
+
+.modalClose {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin-top: 16px;
+  background: var(--brand-blue-default, #1D7AFC);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--body-md-bold-font-family, 'Satoshi-Bold', sans-serif);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.modalClose:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+  .modalContent {
+    max-height: 80vh;
+  }
+
+  .modalHeader {
+    padding: 16px 20px;
+  }
+
+  .modalTitle {
+    font-size: 16px;
+  }
+
+  .modalBody {
+    padding: 20px;
+  }
+
+  .modalFeature {
+    padding: 10px;
+  }
+
+  .featureIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
   }
 }

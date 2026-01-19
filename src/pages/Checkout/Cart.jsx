@@ -3,6 +3,23 @@ import styles from "./Cart.module.css";
 import { useCart } from "../../store/CartContext";
 import OrderSummary from "./OrderSummary";
 
+// Map skill to icon (same as ShopProductGrid)
+const skillToIcon = (skill) => {
+  const s = (skill || "").toLowerCase();
+  const icons = {
+    restoration: "/assets/skill-restoration.svg",
+    vitality: "/assets/skill-vitality.svg",
+    regen: "/assets/skill-regen.svg",
+    hormonal: "/assets/skill-hormonal.svg",
+    clarity: "/assets/skill-clarity.svg",
+    alternative: "/assets/skill-alternative.svg",
+    metabolics: "/assets/skill-metabolics.svg",
+    longevity: "/assets/skill-longevity.svg",
+    structure: "/assets/skill-structure.svg",
+  };
+  return icons[s] || "/assets/skill-longevity.svg";
+};
+
 export default function Cart() {
   const { items, count, total, updateQty, removeItem } = useCart();
   const lines = useMemo(() => Object.values(items || {}), [items]);
@@ -50,8 +67,8 @@ export default function Cart() {
                   <div className={styles.itemImageBox}>
                     <img
                       className={styles.itemImage}
-                      src={product?.image || "/assets/futurePill.svg"}
-                      alt=""
+                      src={skillToIcon(product?.skill)}
+                      alt={product?.skill || "Product"}
                     />
                   </div>
                   <div className={styles.itemText}>
