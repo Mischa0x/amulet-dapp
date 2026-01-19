@@ -3,7 +3,7 @@
 
 import { kv } from '@vercel/kv';
 import { classifyQuery, formatTierName } from './lib/queryClassifier.js';
-import { recordQueryForRewards } from './rewards/middleware.js';
+import { recordQueryForRewards } from './lib/rewardsMiddleware.js';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 

@@ -5,7 +5,7 @@
  * Returns the top 50 wallets ranked by compute credits used.
  */
 
-import { buildLeaderboard } from './middleware.js';
+import { buildLeaderboard } from '../lib/rewardsMiddleware.js';
 
 const VALID_EPOCHS = ['24h', '7d', '30d', 'all'];
 
