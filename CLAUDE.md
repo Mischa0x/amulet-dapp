@@ -1338,3 +1338,75 @@ Comprehensive audit covering:
 ```
 Continue with any additional Amulet DApp features
 ```
+
+## Session History (2026-01-19) - Auth Page & Backend Integration
+
+### Auth Page Added to amulet-dapp
+Added email/password authentication page from wagmiSei reference repo.
+
+**Files Added/Modified:**
+- `src/pages/Auth/AuthPage.jsx` - Already existed with email/password form
+- `src/App.jsx` - Added `/auth` route and AuthPage lazy import
+- `src/pages/Landing/LandingPage.jsx` - Added "Sign In" link in top right header
+
+**Commits:**
+| Commit | Description |
+|--------|-------------|
+| `816784f` | feat: Add /auth route for email/password login |
+| `e1df8c1` | feat: Add Sign In link to landing page header |
+| `f37cc3a` | fix: Move Sign In link to right of Blog |
+
+### Auth Page Features
+- LOGIN / SIGN UP tabs
+- Email & Password fields
+- Full name field (signup only)
+- Confirm password (signup only)
+- Remember me checkbox
+- Forgot password link
+- CONNECT WALLET button (secondary)
+- Terms & Privacy links
+
+### Backend Auth System (mszsorondo/amulet.ai)
+Discovered full authentication system in backend repo:
+
+**API Endpoints:**
+- `POST /api/register` - Create account
+- `POST /api/login` - Login with username/email + password
+- `POST /api/logout` - Logout
+- `GET /api/user` - Get current user
+- `GET /api/auth/google` - Google OAuth
+- `GET /api/verify-email` - Email verification
+- `POST /api/resend-verification` - Resend verification
+
+**Tech Stack:**
+- Passport.js (Local + Google strategies)
+- Express-session for session management
+- Scrypt password hashing with salts
+- PostgreSQL + Drizzle ORM
+- Email verification flow
+
+**User Schema:**
+```typescript
+users: {
+  id, username, email, password,
+  firstName, lastName, phone, dob,
+  address, bioSex, age, height, weight,
+  emailVerified, accountStatus, authProvider,
+  googleId, isAdmin
+}
+```
+
+### Backend Deployment Status
+- **Replit URL found:** `https://8e489cd7-f251-458e-bb74-1309ded45f2e-00-3cw8zmj0o84x8.picard.replit.dev`
+- **Status:** Not running (needs deployment)
+
+### Next Steps
+1. Run backend locally: `npm run dev`
+2. Connect AuthPage.jsx to backend API endpoints
+3. Test login/signup flow
+4. Deploy backend to production
+
+### To Resume
+```
+Resume connecting AuthPage to the backend auth API
+```
