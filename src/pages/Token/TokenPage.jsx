@@ -290,7 +290,6 @@ function TokenPage() {
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <span className={styles.cardTitle}>Stake AMULET</span>
-              <span className={styles.cardBadge}>2x credits</span>
             </div>
             {hasActiveStake ? (
               <>
