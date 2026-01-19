@@ -84,14 +84,14 @@ export default function ReferAndEarn({ referralCount = 0 }) {
 
   const handleShareX = () => {
     if (!referralUrl) return;
-    const text = encodeURIComponent('Try Amulet.ai - AI-powered longevity assistant');
+    const text = encodeURIComponent('Come with me if you want to live forever ♾️');
     const url = encodeURIComponent(referralUrl);
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
   };
 
   const handleShareTelegram = () => {
     if (!referralUrl) return;
-    const text = encodeURIComponent('Try Amulet.ai - AI-powered longevity assistant');
+    const text = encodeURIComponent('Come with me if you want to live forever ♾️');
     window.open(`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${text}`, '_blank');
   };
 
