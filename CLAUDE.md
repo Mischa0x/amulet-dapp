@@ -1410,3 +1410,103 @@ users: {
 ```
 Resume connecting AuthPage to the backend auth API
 ```
+
+## Session History (2026-01-19) - Backend Integration & Visits UI
+
+### Developer Backend Integration
+Integrated features from developer's repos (mszsorondo/amulet.ai, PeakHealth-Agents) into amulet-dapp.
+
+**Approach:** Option A - Keep amulet-dapp as base, add developer's features to it.
+
+### Database & Auth Setup
+Connected to Neon PostgreSQL with developer's schema:
+
+**Files Created:**
+- `lib/db.js` - Neon database connection
+- `lib/schema.js` - Drizzle ORM schema (copied from developer)
+- `lib/auth.js` - JWT token verification utility
+
+### API Routes Created
+
+**Auth (`api/auth/`):**
+- `register.js` - User registration with scrypt password hashing
+- `login.js` - User login with JWT token generation
+
+**Products (`api/products/`):**
+- `supplements.js` - Fetch supplements from database
+- `medications.js` - Fetch medications from database
+- `labs.js` - Fetch lab tests from database
+
+**Visits (`api/visits/`):**
+- `questionnaire.js` - Save/retrieve medical questionnaires
+- `consent.js` - Record telehealth and privacy consents
+- `send-to-doc.js` - Submit visit to Beluga Health API
+
+**Webhooks (`api/webhooks/`):**
+- `beluga.js` - Handle Beluga Health webhook events (RX_WRITTEN, CONSULT_CONCLUDED, etc.)
+
+**Chat (`api/chat/`):**
+- `agents.js` - Multi-agent chat via PeakHealth-Agents with credit deduction
+
+### Visits Page UI Components
+
+**Created (`src/components/visits/`):**
+- `VisitQuestionnaire.jsx` - Multi-step medical questionnaire
+  - ED questions (symptoms, heart conditions, medications)
+  - Weight Loss questions (weight history, diabetes/thyroid, lifestyle)
+  - General health questions
+- `VisitQuestionnaire.module.css`
+- `VisitConsent.jsx` - Consent agreements with electronic signature
+  - Telehealth consent
+  - Privacy policy consent
+  - HIPAA authorization (optional)
+- `VisitConsent.module.css`
+- `VisitFlow.jsx` - Orchestration component (Questionnaire → Consent → Submit)
+- `VisitFlow.module.css`
+- `index.js` - Barrel export
+
+**Updated:**
+- `src/pages/Visits/Visits.jsx` - Integrated VisitFlow, added "New Visit" button
+- `src/pages/Visits/Visits.module.css` - Added loading states, review notice
+
+### AuthPage Updated
+- Changed API endpoints from localhost to same-origin (`/api/auth/register`, `/api/auth/login`)
+- Added localStorage storage for authToken and user data
+
+### Packages Installed
+- `@neondatabase/serverless` - Neon PostgreSQL driver
+- `drizzle-orm` - ORM for database operations
+- `zod` - Schema validation
+- `drizzle-zod` - Drizzle + Zod integration
+- `jose` - JWT library
+
+### Environment Variables Required (Vercel)
+```
+DATABASE_URL=postgresql://...
+JWT_SECRET=<random-secret>
+BELUGA_STAGING_API_KEY=<api-key>
+BELUGA_WEBHOOK_SECRET=<webhook-secret>
+AGENTS_API_URL=https://peakhealth-agents-production.railway.app
+```
+
+### Files Summary
+| Path | Purpose |
+|------|---------|
+| `lib/db.js` | Neon PostgreSQL connection |
+| `lib/schema.js` | Drizzle ORM database schema |
+| `lib/auth.js` | JWT verification utility |
+| `api/auth/register.js` | User registration |
+| `api/auth/login.js` | User login |
+| `api/products/*.js` | Products from database |
+| `api/visits/*.js` | Medical visits flow |
+| `api/webhooks/beluga.js` | Beluga webhook handler |
+| `api/chat/agents.js` | Multi-agent chat |
+| `src/components/visits/*.jsx` | Visit flow UI components |
+
+### Build Status
+✅ Build successful - all components compile correctly
+
+### To Resume
+```
+Add environment variables to Vercel and test the complete visits flow
+```

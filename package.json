@@ -11,13 +11,17 @@
     "blog:process": "node scripts/process-blog-posts.js"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "@openzeppelin/contracts": "^5.4.0",
     "@rainbow-me/rainbowkit": "^2.2.9",
     "@tanstack/react-query": "^5.90.10",
     "@vercel/kv": "^3.0.0",
     "buffer": "^6.0.3",
     "dompurify": "^3.3.1",
+    "drizzle-orm": "^0.45.1",
+    "drizzle-zod": "^0.8.3",
     "gsap": "^3.13.0",
+    "jose": "^6.1.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
@@ -25,7 +29,8 @@
     "siwe": "^3.0.0",
     "stripe": "^20.1.2",
     "viem": "^2.39.0",
-    "wagmi": "^2.19.4"
+    "wagmi": "^2.19.4",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

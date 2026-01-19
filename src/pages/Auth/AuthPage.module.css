@@ -1,3 +1,14 @@
+/* Error message */
+.errorMessage {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
 /* Shell: two columns on desktop, single on mobile */
 .authShell {
   min-height: 100vh;

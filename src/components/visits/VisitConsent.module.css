@@ -1,0 +1,248 @@
+/**
+ * Visit Consent Styles
+ */
+
+.container {
+  background: var(--brand-white);
+  border: 1px solid var(--mapped-border-and-dividers-primary);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--mapped-border-and-dividers-primary);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--brand-black);
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--brand-black);
+  opacity: 0.6;
+  margin: 0;
+}
+
+.consentList {
+  display: flex;
+  flex-direction: column;
+}
+
+.consentItem {
+  border-bottom: 1px solid var(--mapped-border-and-dividers-primary);
+}
+
+.consentItem:last-child {
+  border-bottom: none;
+}
+
+.consentHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--brand-blue-default);
+  cursor: pointer;
+}
+
+.consentTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brand-black);
+}
+
+.required {
+  color: var(--brand-red-default);
+  margin-left: 4px;
+}
+
+.expandButton {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--mapped-border-and-dividers-primary);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brand-blue-default);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.expandButton:hover {
+  background: var(--brand-neon-cards-surface-light-blue);
+}
+
+.consentContent {
+  padding: 0 24px 20px 56px;
+  background: var(--brand-neon-cards-surface-light-blue);
+  margin-top: -8px;
+  padding-top: 16px;
+}
+
+.contentLine {
+  font-size: 13px;
+  color: var(--brand-black);
+  opacity: 0.8;
+  line-height: 1.6;
+  margin: 0 0 8px 0;
+}
+
+.contentLine:last-child {
+  margin-bottom: 0;
+}
+
+.contentLine:empty {
+  height: 8px;
+}
+
+/* Signature Section */
+.signatureSection {
+  padding: 20px 24px;
+  border-top: 1px solid var(--mapped-border-and-dividers-primary);
+  background: var(--brand-white);
+}
+
+.signatureLabel {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--brand-black);
+  margin-bottom: 4px;
+}
+
+.signatureHint {
+  font-size: 13px;
+  color: var(--brand-black);
+  opacity: 0.6;
+  margin: 0 0 12px 0;
+}
+
+.signatureInput {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--brand-white);
+  border: 1px solid var(--mapped-border-and-dividers-primary);
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: "Brush Script MT", cursive, sans-serif;
+  color: var(--brand-black);
+  transition: border-color 0.15s ease;
+}
+
+.signatureInput:focus {
+  outline: none;
+  border-color: var(--brand-blue-default);
+}
+
+.signatureInput::placeholder {
+  font-family: inherit;
+  color: var(--brand-black);
+  opacity: 0.3;
+}
+
+/* Error */
+.error {
+  padding: 12px 24px;
+  background: var(--brand-red-lighter);
+  color: var(--brand-red-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-top: 1px solid var(--mapped-border-and-dividers-primary);
+  background: var(--brand-white);
+}
+
+.backButton {
+  padding: 12px 20px;
+  background: transparent;
+  border: 1px solid var(--mapped-border-and-dividers-primary);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--brand-black);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.backButton:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.submitButton {
+  padding: 12px 24px;
+  background: var(--brand-blue-default);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand-white-always);
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: var(--brand-blue-dark);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header {
+    padding: 16px;
+  }
+
+  .consentHeader {
+    padding: 14px 16px;
+  }
+
+  .consentContent {
+    padding: 0 16px 16px 48px;
+  }
+
+  .signatureSection {
+    padding: 16px;
+  }
+
+  .actions {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .backButton,
+  .submitButton {
+    width: 100%;
+  }
+
+  .submitButton {
+    order: -1;
+  }
+}

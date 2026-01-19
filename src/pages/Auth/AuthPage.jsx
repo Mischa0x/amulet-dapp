@@ -1,20 +1,111 @@
 // pages/Auth/AuthPage.jsx
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./AuthPage.module.css";
-//import GhostBackground from "../../components/GhostBackground/GhostBackground"; // 👈 igual que en Landing
-import logo from "/assets/blue_logo_transparent_square.png"
+import logo from "/assets/blue_logo_transparent_square.png";
 
+// API URL - empty string uses same origin (Vercel Functions)
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 export default function AuthPage() {
   const [mode, setMode] = useState("login");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  // Form state
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError(""); // Clear error on input change
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      if (mode === "signup") {
+        // Validate passwords match
+        if (formData.password !== formData.passwordConfirm) {
+          setError("Passwords do not match");
+          setLoading(false);
+          return;
+        }
+
+        // Register
+        const response = await fetch(`${API_URL}/api/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            username: formData.username || formData.email.split("@")[0],
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Registration failed");
+        }
+
+        // Registration successful - switch to login
+        setMode("login");
+        setError("");
+        alert("Account created! Please log in.");
+      } else {
+        // Login
+        const response = await fetch(`${API_URL}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            username: formData.email, // Backend accepts email as username
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (data.emailVerified === false) {
+            throw new Error("Please verify your email before logging in");
+          }
+          throw new Error(data.message || "Login failed");
+        }
+
+        // Store token and user info
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+        }
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+
+        // Login successful - redirect to dashboard/agent
+        navigate("/agent");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.pageRoot}>
       {/* BACKGROUND */}
       <div className={styles.bgWrap} aria-hidden="true">
-        {/*  <GhostBackground /> */}
-        {/* opcional: velo para contraste */}
         <div className={styles.bgOverlay} />
       </div>
 
@@ -36,7 +127,7 @@ export default function AuthPage() {
                 role="tab"
                 aria-selected={mode === "login"}
                 className={`${styles.tab} ${mode === "login" ? styles.tabActive : ""}`}
-                onClick={() => setMode("login")}
+                onClick={() => { setMode("login"); setError(""); }}
               >
                 LOGIN
               </button>
@@ -45,29 +136,48 @@ export default function AuthPage() {
                 role="tab"
                 aria-selected={mode === "signup"}
                 className={`${styles.tab} ${mode === "signup" ? styles.tabActive : ""}`}
-                onClick={() => setMode("signup")}
+                onClick={() => { setMode("signup"); setError(""); }}
               >
                 SIGN UP
               </button>
             </div>
 
-            <form
-              className={styles.form}
-              onSubmit={(e) => {
-                e.preventDefault();
-                // Auth handled by Web3 wallet connection - this form is a placeholder
-              }}
-            >
+            {error && (
+              <div className={styles.errorMessage}>
+                {error}
+              </div>
+            )}
+
+            <form className={styles.form} onSubmit={handleSubmit}>
               {mode === "signup" && (
                 <div className={styles.field}>
-                  <label className={styles.label} htmlFor="name">Full name</label>
-                  <input id="name" name="name" className={styles.input} type="text" autoComplete="name" placeholder="Your name" />
+                  <label className={styles.label} htmlFor="username">Username</label>
+                  <input
+                    id="username"
+                    name="username"
+                    className={styles.input}
+                    type="text"
+                    autoComplete="username"
+                    placeholder="Choose a username"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                  />
                 </div>
               )}
 
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="email">Email</label>
-                <input id="email" name="email" className={styles.input} type="email" autoComplete="email" placeholder="you@example.com" />
+                <input
+                  id="email"
+                  name="email"
+                  className={styles.input}
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
 
               <div className={styles.field}>
@@ -79,13 +189,26 @@ export default function AuthPage() {
                   type="password"
                   autoComplete={mode === "login" ? "current-password" : "new-password"}
                   placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
 
               {mode === "signup" && (
                 <div className={styles.field}>
                   <label className={styles.label} htmlFor="passwordConfirm">Confirm password</label>
-                  <input id="passwordConfirm" name="passwordConfirm" className={styles.input} type="password" autoComplete="new-password" placeholder="••••••••" />
+                  <input
+                    id="passwordConfirm"
+                    name="passwordConfirm"
+                    className={styles.input}
+                    type="password"
+                    autoComplete="new-password"
+                    placeholder="••••••••"
+                    value={formData.passwordConfirm}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
               )}
 
@@ -99,8 +222,12 @@ export default function AuthPage() {
                 </div>
               )}
 
-              <button type="submit" className={styles.primaryButton}>
-                {mode === "login" ? "Log in" : "Create account"}
+              <button
+                type="submit"
+                className={styles.primaryButton}
+                disabled={loading}
+              >
+                {loading ? "Please wait..." : (mode === "login" ? "Log in" : "Create account")}
               </button>
 
               <div className={styles.dividerRow}>
@@ -110,7 +237,7 @@ export default function AuthPage() {
               </div>
 
               <button type="button" className={styles.secondaryButton}>
-               CONNECT WALLET
+                CONNECT WALLET
               </button>
 
               <p className={styles.metaText}>
@@ -126,20 +253,13 @@ export default function AuthPage() {
         <aside className={styles.rightCol} aria-hidden="true">
           <div className={styles.sidePanel}>
             <h2 className={styles.sideTitle}>Live longer, live better</h2>
-           
-                           {/* <GhostBackground />*/}
-         
           </div>
         </aside>
-<Link to="/" className={styles.logoLink}>
-  <img src={logo} alt="logo" className={styles.logoInfinite} />
-</Link>
+
+        <Link to="/" className={styles.logoLink}>
+          <img src={logo} alt="logo" className={styles.logoInfinite} />
+        </Link>
       </div>
-
-
-
-
-
     </div>
   );
 }
