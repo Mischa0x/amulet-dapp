@@ -2,22 +2,24 @@
 
 **Source:** `github.com/Mischa0x/amulet-dapp`
 **Target:** `github.com/mszsorondo/amulet.ai` (branch: `new_frontend`)
-**Date:** 2026-01-18
+**Date:** 2026-01-19 (Updated with security audit fixes)
 
 ---
 
 ## Table of Contents
 
 1. [Conflict Analysis](#1-conflict-analysis)
-2. [Blog System](#2-blog-system)
-3. [Compute Credits Methodology](#3-compute-credits-methodology)
-4. [Query Credit Tracking System](#4-query-credit-tracking-system)
-5. [Stripe Integration](#5-stripe-integration)
-6. [View Visits Page (Beluga Integration)](#6-view-visits-page-beluga-integration)
-7. [Order History Page (Beluga Integration)](#7-order-history-page-beluga-integration)
-8. [Shop Supplements Page (Beluga Integration)](#8-shop-supplements-page-beluga-integration)
-9. [Environment Variables](#9-environment-variables)
-10. [Migration Checklist](#10-migration-checklist)
+2. [Security Architecture](#2-security-architecture) *(NEW)*
+3. [Blog System](#3-blog-system)
+4. [Compute Credits Methodology](#4-compute-credits-methodology)
+5. [Query Credit Tracking System](#5-query-credit-tracking-system)
+6. [Stripe Integration](#6-stripe-integration)
+7. [Referral System](#7-referral-system) *(NEW)*
+8. [View Visits Page (Beluga Integration)](#8-view-visits-page-beluga-integration)
+9. [Order History Page (Beluga Integration)](#9-order-history-page-beluga-integration)
+10. [Shop Supplements Page (Beluga Integration)](#10-shop-supplements-page-beluga-integration)
+11. [Environment Variables](#11-environment-variables)
+12. [Migration Checklist](#12-migration-checklist)
 
 ---
 
@@ -44,7 +46,80 @@
 
 ---
 
-## 2. Blog System
+## 2. Security Architecture
+
+### Overview
+A 4-phase security audit was conducted on 2026-01-19. All critical and high-severity issues have been addressed.
+
+### Security Features Implemented
+
+#### Persistent Rate Limiting (Vercel KV)
+Rate limiting now uses Vercel KV for persistence across serverless cold starts.
+
+**Location:** `lib/apiUtils.js`
+
+```javascript
+// Rate limiting is now async and persistent
+const rateLimit = await checkRateLimit(identifier, maxRequests, windowMs);
+```
+
+**Key Features:**
+- Persists across serverless function instances
+- Uses TTL-based automatic cleanup
+- Graceful fallback to in-memory if KV unavailable
+- All API endpoints updated to use `await`
+
+#### CORS Origin Validation
+All API endpoints validate request origins against an allowlist.
+
+**Allowed Origins:**
+- `https://amulet-dapp.vercel.app`
+- `https://amulet-dapp-git-main-mischa0x.vercel.app`
+- `http://localhost:5173` (dev only)
+- `http://localhost:3000` (dev only)
+
+#### Input Validation
+- Ethereum addresses validated with regex: `/^0x[a-fA-F0-9]{40}$/`
+- All user inputs sanitized before use
+- DOMPurify used for HTML content (blog posts)
+
+#### Stripe Security
+- Webhook signature verification required
+- Server-side package validation (prevents credit manipulation)
+- `VITE_APP_URL` prevents open redirect in checkout
+
+### Shared Utilities
+
+**Location:** `lib/` (outside `/api/` to reduce Vercel function count)
+
+```
+lib/
+├── apiUtils.js          # CORS, rate limiting, address validation
+├── logger.js            # Structured logging
+├── queryClassifier.js   # Query tier classification
+└── rewardsMiddleware.js # Rewards tracking
+```
+
+### Smart Contract Security
+
+**TestAmulet.sol** - Contains unrestricted `faucet()` function.
+- ⚠️ **TESTNET ONLY** - Never deploy to mainnet
+- Prominent warning added in contract comments
+
+**AmuletStaking.sol** - Production-ready
+- Uses OpenZeppelin's `ReentrancyGuard`
+- Uses `SafeERC20` for token transfers
+- Access control via `Ownable`
+
+### Dependencies
+All dependency vulnerabilities resolved via `npm audit fix`:
+- h3: Request Smuggling (TE.TE) - Fixed
+- hono: JWT Algorithm Confusion - Fixed
+- react-router: CSRF/XSS issues - Fixed
+
+---
+
+## 3. Blog System
 
 ### Overview
 A markdown-based blog system with category filtering, inspired by Hemi.xyz.
@@ -133,7 +208,7 @@ URLs are auto-linked: https://example.com
 
 ---
 
-## 3. Compute Credits Methodology
+## 4. Compute Credits Methodology
 
 ### Overview
 A tokenomics system where users pay for AI queries using credits. Credits can be obtained via:
@@ -203,7 +278,7 @@ function MyComponent() {
 
 ---
 
-## 4. Query Credit Tracking System
+## 5. Query Credit Tracking System
 
 ### Overview
 Automatic credit deduction integrated into the chat API. Classifies queries and charges accordingly.
@@ -213,13 +288,16 @@ Automatic credit deduction integrated into the chat API. Classifies queries and 
 ```
 api/
 ├── chat.js                    # Chat endpoint with credit integration
-├── credits/
-│   ├── index.js               # GET /api/credits - fetch balance
-│   ├── claim.js               # POST /api/credits/claim - free credits
-│   ├── use.js                 # POST /api/credits/use - manual deduct
-│   └── sync-stake.js          # POST /api/credits/sync-stake - blockchain
-└── lib/
-    └── queryClassifier.js     # Query tier classification
+└── credits/
+    ├── index.js               # GET /api/credits - fetch balance
+    ├── claim.js               # POST /api/credits/claim - free credits
+    └── sync-stake.js          # POST /api/credits/sync-stake - blockchain
+
+lib/
+├── apiUtils.js                # CORS, rate limiting, address validation
+├── logger.js                  # Structured logging
+├── queryClassifier.js         # Query tier classification
+└── rewardsMiddleware.js       # Rewards tracking
 ```
 
 ### API Endpoints
@@ -331,7 +409,7 @@ Located in `api/lib/queryClassifier.js`:
 
 ---
 
-## 5. Stripe Integration
+## 6. Stripe Integration
 
 ### Overview
 Payment processing for credit purchases with webhook verification.
@@ -407,7 +485,7 @@ const handlePurchase = async (packageId) => {
 
 ---
 
-## 5.5 Rewards Tracking System (NEW)
+## 6.5 Rewards Tracking System
 
 ### Overview
 Gamified leaderboard tracking user compute credit usage. Tracks queries, calculates ranks, and displays social proof metrics.
@@ -551,7 +629,88 @@ Once real usage occurs, mock data is replaced with live data.
 
 ---
 
-## 6. View Visits Page (Beluga Integration)
+## 7. Referral System
+
+### Overview
+Simple referral system where users earn points for inviting others.
+
+**Rewards:**
+- +1 point for referrer when someone uses their link
+- +1 point for referee for signing up via referral
+
+### Files
+
+```
+api/refs/
+└── index.js           # Combined GET/POST referral API
+
+src/components/
+├── ReferralHandler.jsx    # App-level auto-registration
+└── rewards/ReferAndEarn.jsx  # Share link UI
+
+src/pages/Referral/
+└── ReferralLanding.jsx    # Captures referrer from URL
+```
+
+### API Endpoints
+
+#### GET `/api/refs?address=0x...`
+Returns referral stats for a wallet.
+
+**Response:**
+```json
+{
+  "address": "0x...",
+  "referralCount": 5,
+  "referralPoints": 5,
+  "referredBy": "0x..." | null
+}
+```
+
+#### POST `/api/refs`
+Registers a new referral.
+
+**Request:**
+```json
+{
+  "referrer": "0x...",
+  "referee": "0x..."
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "referrer": "0x...",
+  "referee": "0x...",
+  "referrerTotalReferrals": 6
+}
+```
+
+### Referral Flow
+1. User copies referral link: `https://amulet-dapp.vercel.app/ref/{address}`
+2. Friend clicks link → `ReferralLanding.jsx` stores referrer in localStorage
+3. Friend connects wallet on any page
+4. `ReferralHandler.jsx` (app-level) POSTs to `/api/refs`
+5. Both parties receive +1 referral point
+
+### KV Storage
+```
+referrals:{wallet}:count   - Number of people referred
+referrals:{wallet}:points  - Referral points earned
+referrals:{wallet}:list    - Set of referred addresses
+referred_by:{wallet}       - Who referred this wallet
+```
+
+### Anti-Abuse
+- Self-referral blocked (`referrer === referee`)
+- One referrer per wallet (can't change after first registration)
+- Rate limited (20 POST requests per minute)
+
+---
+
+## 8. View Visits Page (Beluga Integration)
 
 ### Overview
 Medical consultation tracking with doctor visits, status tracking, and questionnaire tabs.
@@ -621,7 +780,7 @@ useEffect(() => {
 
 ---
 
-## 7. Order History Page (Beluga Integration)
+## 9. Order History Page (Beluga Integration)
 
 ### Overview
 Paginated, sortable order history table with status tracking.
@@ -687,7 +846,7 @@ useEffect(() => {
 
 ---
 
-## 8. Shop Supplements Page (Beluga Integration)
+## 10. Shop Supplements Page (Beluga Integration)
 
 ### Overview
 Product catalog with category filtering, search, and cart integration.
@@ -788,7 +947,7 @@ const handleCheckout = async () => {
 
 ---
 
-## 9. Environment Variables
+## 11. Environment Variables
 
 ### Required Variables
 
@@ -815,8 +974,11 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_... # or pk_live_...
 VITE_AMULET_TOKEN_ADDRESS=0xe8564273D6346Db0Ff54d3a6CCb1Dd12993A042c
 VITE_STAKING_CONTRACT_ADDRESS=0x...     # After deployment
 
-# App URL (for Stripe redirects)
+# App URL (REQUIRED for Stripe redirects - prevents open redirect)
 VITE_APP_URL=https://your-domain.com
+
+# WalletConnect
+VITE_WALLETCONNECT_PROJECT_ID=your_project_id
 ```
 
 ### Vercel KV Setup
@@ -829,7 +991,15 @@ VITE_APP_URL=https://your-domain.com
 
 ---
 
-## 10. Migration Checklist
+## 12. Migration Checklist
+
+### Phase 0: Security Setup (Do This First)
+
+- [ ] Run `npm audit fix` to resolve dependency vulnerabilities
+- [ ] Copy `lib/` folder (apiUtils.js, logger.js, queryClassifier.js, rewardsMiddleware.js)
+- [ ] Set `VITE_APP_URL` in Vercel environment variables
+- [ ] Verify CORS origins in `lib/apiUtils.js` match your domains
+- [ ] **Never deploy TestAmulet.sol to mainnet** (testnet only!)
 
 ### Phase 1: Core Pages (No Backend Dependencies)
 
@@ -874,7 +1044,17 @@ VITE_APP_URL=https://your-domain.com
 - [ ] Connect Shop checkout to Beluga API
 - [ ] Test full order flow
 
-### Phase 6: Staking (Optional)
+### Phase 6: Referral System
+
+- [ ] Copy `/api/refs/index.js`
+- [ ] Copy `src/components/ReferralHandler.jsx`
+- [ ] Copy `src/components/rewards/ReferAndEarn.jsx`
+- [ ] Copy `src/pages/Referral/ReferralLanding.jsx`
+- [ ] Add routes: `/ref/:address`
+- [ ] Add `ReferralHandler` to App.jsx (app-level)
+- [ ] Test referral flow
+
+### Phase 7: Staking (Optional)
 
 - [ ] Deploy AmuletStaking.sol contract
 - [ ] Add contract address to env
@@ -891,9 +1071,11 @@ VITE_APP_URL=https://your-domain.com
 | Credits API | `/api/credits/*` | None |
 | Stripe API | `/api/stripe/*` | None (different from `/api/checkout`) |
 | Chat API | `/api/chat` | None (different from `/api/chat/integrated_chat`) |
-| **Rewards API** | `/api/rewards/*` | None |
+| Rewards API | `/api/rewards/*` | None |
+| **Referral API** | `/api/refs` | None |
 | Token Page | `/token` | None |
-| **Rewards Page** | `/rewards` | None |
+| Rewards Page | `/rewards` | None |
+| **Referral Landing** | `/ref/:address` | None |
 | Visits | `/visits` | None |
 | Order History | `/orderhistory` | None |
 | Shop | `/shop`, `/product/:id` | None |
@@ -906,3 +1088,5 @@ All additions are **purely additive** with no modifications to existing code.
 2. **Non-blocking middleware** - Rewards tracking won't break chat if it fails
 3. **Consume, don't modify** - Frontend can call main backend APIs, but doesn't change them
 4. **Graceful fallbacks** - Mock data shown when APIs return empty results
+5. **Persistent rate limiting** - Uses Vercel KV instead of in-memory (survives cold starts)
+6. **Shared utilities in `/lib/`** - Outside `/api/` to reduce Vercel function count (12 limit on Hobby)
