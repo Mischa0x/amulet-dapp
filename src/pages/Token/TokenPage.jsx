@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useCredits } from '../../contexts/CreditsContext';
 import styles from './TokenPage.module.css';
 
@@ -68,7 +68,11 @@ const PACKAGES = [
 function TokenPage() {
   const { address, isConnected } = useAccount();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const { creditData, loading, refetchCredits, setCreditData } = useCredits();
+
+  // Check if redirected from chat due to insufficient credits
+  const insufficientCredits = location.state?.insufficientCredits;
   const [claimingFree, setClaimingFree] = useState(false);
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [stakeAmount, setStakeAmount] = useState('');
@@ -228,6 +232,13 @@ function TokenPage() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
+        {/* Insufficient Credits Banner */}
+        {insufficientCredits && (
+          <div className={styles.insufficientBanner}>
+            You've run out of credits. Purchase more below to continue chatting with Amulette.
+          </div>
+        )}
+
         {/* Success/Cancel Messages */}
         {paymentSuccess && (
           <div className={styles.successBanner}>

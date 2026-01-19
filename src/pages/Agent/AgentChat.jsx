@@ -12,16 +12,14 @@ export default function AgentChat() {
   const [products, setProducts] = useState([]);
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [lastCreditUsage, setLastCreditUsage] = useState(null);
-  const [creditError, setCreditError] = useState(null);
 
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { address, isConnected } = useAccount();
-  const { creditData, loading: creditLoading, updateCredits, refetchCredits } = useCredits();
+  const { address } = useAccount();
+  const { updateCredits } = useCredits();
 
   // Load all products once
   useEffect(() => {
@@ -117,10 +115,6 @@ export default function AgentChat() {
     }
 
     try {
-      // Clear any previous credit error
-      setCreditError(null);
-      setLastCreditUsage(null);
-
       // Build conversation history for context
       const conversationHistory = [...messages, userMessage].map((m) => ({
         role: m.role,
@@ -137,12 +131,12 @@ export default function AgentChat() {
         signal: abortControllerRef.current.signal,
       });
 
-      // Handle insufficient credits
+      // Handle insufficient credits - redirect to token page
       if (response.status === 402) {
-        const errorData = await response.json();
-        setCreditError(errorData);
         // Remove the loading assistant message
         setMessages((prev) => prev.filter((m) => m.id !== assistantMessage.id));
+        // Redirect to token page with message
+        navigate('/token', { state: { insufficientCredits: true } });
         return;
       }
 
@@ -157,7 +151,6 @@ export default function AgentChat() {
 
       // Update credit info if returned
       if (data.credits) {
-        setLastCreditUsage(data.credits);
         updateCredits(data.credits);
       }
 
@@ -199,53 +192,12 @@ export default function AgentChat() {
   return (
     <>
       <div className={styles.chatColumn}>
-        {/* Credit Balance Display */}
-        {isConnected && !creditLoading && (
-          <div className={styles.creditBar}>
-            <span className={styles.creditLabel}>Credits:</span>
-            <span className={styles.creditValue}>{creditData?.balance ?? 0}</span>
-            {(creditData?.balance ?? 0) < 10 && (
-              <button
-                className={styles.buyCreditsLink}
-                onClick={() => navigate('/token')}
-              >
-                Get More
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Insufficient Credits Error */}
-        {creditError && (
-          <div className={styles.creditError}>
-            <p><strong>Insufficient Credits</strong></p>
-            <p>{creditError.message}</p>
-            <button
-              className={styles.buyCreditsButton}
-              onClick={() => navigate('/token')}
-            >
-              Buy Credits
-            </button>
-            <button
-              className={styles.dismissButton}
-              onClick={() => setCreditError(null)}
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
         <div className={styles.messagesList}>
           <div className={styles.messagesInner}>
             {messages.length === 0 && (
               <div className={styles.welcomeMessage}>
-                <h2>Welcome to Amulet AI</h2>
-                <p>I'm Dr. Alex, your longevity physician. How can I help you today?</p>
-                {!isConnected && (
-                  <p className={styles.connectPrompt}>
-                    Connect your wallet to track credit usage.
-                  </p>
-                )}
+                <h2>Welcome to Amulette</h2>
+                <p>How can I help you live forever?</p>
               </div>
             )}
 
@@ -268,14 +220,6 @@ export default function AgentChat() {
                         <div className={styles.markdownContent}>
                           <ReactMarkdown>{m.content}</ReactMarkdown>
                         </div>
-
-                        {/* Credit usage indicator */}
-                        {m.creditUsage && (
-                          <div className={styles.creditUsage}>
-                            <span className={styles.creditTier}>{m.creditUsage.tierName}</span>
-                            <span className={styles.creditCost}>-{m.creditUsage.creditsUsed} credits</span>
-                          </div>
-                        )}
 
                         {/* Product recommendations */}
                         {m.productIds && m.productIds.length > 0 && (

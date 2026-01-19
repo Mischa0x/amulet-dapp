@@ -125,10 +125,12 @@
 .icon16 {
   width: 16px;
   height: 16px;
+  filter: var(--icon-filter);
 }
 .icon24 {
   width: 16px;
   height: 16px;
+  filter: var(--icon-filter);
 }
 
 .sectionTitleRow {
