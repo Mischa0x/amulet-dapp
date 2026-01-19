@@ -25,6 +25,7 @@ const RewardsPage = lazy(() => import('./pages/Rewards/RewardsPage'));
 const BlogPage = lazy(() => import('./pages/Blog/BlogPage'));
 const BlogPostPage = lazy(() => import('./pages/Blog/BlogPostPage'));
 const ReferralLanding = lazy(() => import('./pages/Referral/ReferralLanding'));
+const AuthPage = lazy(() => import('./pages/Auth/AuthPage'));
 
 // Simple loading fallback
 const PageLoader = () => (
@@ -45,6 +46,7 @@ function App() {
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<LandingPage />} />
+              <Route path="/auth" element={<AuthPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
               <Route path="/ref/:address" element={<ReferralLanding />} />
