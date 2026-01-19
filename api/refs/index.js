@@ -1,8 +1,8 @@
 /**
  * Referral API
  *
- * GET /api/referral?address=0x... - Get referral stats
- * POST /api/referral - Register a referral
+ * GET /api/refs?address=0x... - Get referral stats
+ * POST /api/refs - Register a referral
  */
 
 import { kv } from '@vercel/kv';
