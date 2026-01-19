@@ -166,6 +166,7 @@
   flex-direction: column;
   gap: 2px;
   text-align: right;
+  min-width: 100px;
 }
 
 .visitDate {
@@ -178,12 +179,15 @@
   font-size: 15px;
   font-weight: 600;
   color: var(--brand-black);
+  font-variant-numeric: tabular-nums;
 }
 
 .visitRight {
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 130px;
+  justify-content: flex-end;
 }
 
 /* Status Badge */
@@ -300,6 +304,9 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--brand-black);
+  font-variant-numeric: tabular-nums;
+  min-width: 70px;
+  text-align: right;
 }
 
 /* Action Row */

@@ -71,7 +71,6 @@ function TokenPage() {
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [stakeAmount, setStakeAmount] = useState('');
   const [stakingStep, setStakingStep] = useState(null); // 'approving' | 'staking'
-  const [showTokenomics, setShowTokenomics] = useState(false);
 
   // Check for Stripe redirect
   const paymentSuccess = searchParams.get('success') === 'true';
@@ -303,7 +302,7 @@ function TokenPage() {
             ) : (
               <>
                 <p className={styles.cardDesc}>
-                  Stake AMULET for 12 months to receive 2x compute credits (20 credits per token).
+                  Stake AMULET for:
                 </p>
                 <div className={styles.benefitsList}>
                   <div className={styles.benefitItem}>
@@ -318,13 +317,14 @@ function TokenPage() {
                     <span className={styles.benefitIcon}>✓</span>
                     <span>Future rewards and governance rights</span>
                   </div>
+                  <div className={styles.benefitItem}>
+                    <span className={styles.benefitIcon}>✓</span>
+                    <span>Protocol IP participation</span>
+                  </div>
                 </div>
-                <button
-                  className={styles.learnMoreLink}
-                  onClick={() => setShowTokenomics(true)}
-                >
-                  Learn about AMULET tokenomics →
-                </button>
+                <p className={styles.cardDescSmall}>
+                  Full Amulet Tokenomics will be released soon
+                </p>
                 <div className={styles.stakeInput}>
                   <input
                     type="number"
@@ -410,63 +410,6 @@ function TokenPage() {
         </div>
       </div>
 
-      {/* Tokenomics Modal */}
-      {showTokenomics && (
-        <div className={styles.modalOverlay} onClick={() => setShowTokenomics(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>AMULET Tokenomics</h2>
-              <span className={styles.modalBadge}>Coming Soon</span>
-            </div>
-            <div className={styles.modalBody}>
-              <p className={styles.modalText}>
-                The complete AMULET tokenomics documentation is currently being finalized.
-                Here's what staking AMULET will offer:
-              </p>
-              <div className={styles.modalFeatures}>
-                <div className={styles.modalFeature}>
-                  <div className={styles.featureIcon}>💰</div>
-                  <div className={styles.featureContent}>
-                    <span className={styles.featureTitle}>Credit Discounts</span>
-                    <span className={styles.featureDesc}>Stakers receive up to 50% discount on compute credits compared to fiat purchases.</span>
-                  </div>
-                </div>
-                <div className={styles.modalFeature}>
-                  <div className={styles.featureIcon}>🎯</div>
-                  <div className={styles.featureContent}>
-                    <span className={styles.featureTitle}>Priority Access</span>
-                    <span className={styles.featureDesc}>Early access to new AI models, features, and beta programs.</span>
-                  </div>
-                </div>
-                <div className={styles.modalFeature}>
-                  <div className={styles.featureIcon}>🗳️</div>
-                  <div className={styles.featureContent}>
-                    <span className={styles.featureTitle}>Governance Rights</span>
-                    <span className={styles.featureDesc}>Participate in protocol decisions and feature prioritization.</span>
-                  </div>
-                </div>
-                <div className={styles.modalFeature}>
-                  <div className={styles.featureIcon}>🎁</div>
-                  <div className={styles.featureContent}>
-                    <span className={styles.featureTitle}>Reward Programs</span>
-                    <span className={styles.featureDesc}>Exclusive airdrops, bonus credits, and partner rewards for long-term stakers.</span>
-                  </div>
-                </div>
-              </div>
-              <p className={styles.modalDisclaimer}>
-                Full tokenomics whitepaper and staking contracts will be released in the coming weeks.
-                Stay tuned for updates.
-              </p>
-              <button
-                className={styles.modalClose}
-                onClick={() => setShowTokenomics(false)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
