@@ -4,7 +4,6 @@ import styles from "./ShopFilters.module.css";
 
 const SKILLS = [
   "ALL",
-  "ALTERNATIVE",
   "CLARITY",
   "HORMONAL",
   "LONGEVITY",
