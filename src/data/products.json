@@ -7,7 +7,7 @@
     "description": "Effective oral medication for erectile dysfunction. Fast-acting with shorter half-life than tadalafil.",
     "status": "Top seller",
     "price": 19.99,
-    "skill": "RESTORATION"
+    "skill": "VITALITY"
   },
   {
     "id": "ed-cialis",
@@ -17,7 +17,7 @@
     "description": "Long-acting ED treatment, often preferred for its ~36-hour window.",
     "status": "Top seller",
     "price": 19.99,
-    "skill": "REGEN"
+    "skill": "VITALITY"
   },
   {
     "id": "hair-finasteride",
@@ -27,7 +27,7 @@
     "description": "Blocks DHT to slow or reverse male pattern hair loss.",
     "status": "Controversial",
     "price": 19.99,
-    "skill": "VITALITY"
+    "skill": "HORMONAL"
   },
   {
     "id": "hair-minoxidil",
@@ -37,7 +37,7 @@
     "description": "Topical treatment that stimulates hair follicles and promotes growth.",
     "status": "Widely used",
     "price": 19.99,
-    "skill": "VITALITY"
+    "skill": "STRUCTURE"
   },
   {
     "id": "weight-ozempic",
@@ -67,7 +67,7 @@
     "description": "Includes sertraline, fluoxetine, escitalopram, and venlafaxine — widely prescribed antidepressants.",
     "status": "Widely used",
     "price": 19.99,
-    "skill": "LONGEVITY"
+    "skill": "CLARITY"
   },
   {
     "id": "mental-bupropion",
@@ -77,7 +77,7 @@
     "description": "Antidepressant also used for smoking cessation; fewer sexual side effects than SSRIs.",
     "status": "Popular choice",
     "price": 19.99,
-    "skill": "RESTORATION"
+    "skill": "CLARITY"
   },
   {
     "id": "mental-propranolol",
@@ -87,7 +87,7 @@
     "description": "Beta-blocker sometimes prescribed for performance anxiety.",
     "status": "Off-label",
     "price": 19.99,
-    "skill": "STRUCTURE"
+    "skill": "CLARITY"
   },
   {
     "id": "womens-contraceptives",
@@ -247,6 +247,6 @@
     "description": "Used in controlled therapeutic settings for depression and anxiety.",
     "status": "Controversial",
     "price": 19.99,
-    "skill": "LONGEVITY"
+    "skill": "REGEN"
   }
 ]

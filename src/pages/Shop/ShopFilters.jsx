@@ -6,7 +6,6 @@ const SKILLS = [
   "ALL",
   "CLARITY",
   "HORMONAL",
-  "LONGEVITY",
   "METABOLICS",
   "REGEN",
   "RESTORATION",
