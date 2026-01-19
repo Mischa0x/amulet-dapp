@@ -42,7 +42,7 @@ export default function ReferAndEarn({ referralCount = 0 }) {
       }
 
       try {
-        const response = await fetch('/api/referrals/register', {
+        const response = await fetch('/api/referral-register', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
