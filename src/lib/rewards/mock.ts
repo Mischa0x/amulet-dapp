@@ -121,10 +121,21 @@ export async function getRewardsLeaderboard(epoch: Epoch): Promise<LeaderboardEn
       activeDays
     );
 
+    // Referral data - top users tend to have more referrals
+    const rankFactor = 1 - (index / 50);
+    const referralCount = Math.floor(rand() * 15 * rankFactor);
+    const referralPoints = referralCount; // 1 point per referral
+
+    // Total points = compute + referrals
+    const totalPoints = totalComputeUsed + referralPoints;
+
     return {
       wallet: stat.wallet,
       ens: stat.ens,
       totalComputeUsed,
+      referralPoints,
+      referralCount,
+      totalPoints,
       queriesRun,
       activeDays,
       streakDays,
@@ -132,8 +143,8 @@ export async function getRewardsLeaderboard(epoch: Epoch): Promise<LeaderboardEn
     };
   });
 
-  // Re-sort by compute for this epoch (rankings can shift)
-  entries.sort((a, b) => b.totalComputeUsed - a.totalComputeUsed);
+  // Re-sort by total points for this epoch (rankings can shift)
+  entries.sort((a, b) => b.totalPoints - a.totalPoints);
 
   // Reassign ranks after sorting
   entries.forEach((entry, index) => {
@@ -161,17 +172,20 @@ export async function getRewardsPersonalStats(
     entry => entry.wallet.toLowerCase() === normalizedWallet
   );
 
-  const top50Threshold = leaderboard[49]?.totalComputeUsed || 0;
+  const top50Threshold = leaderboard[49]?.totalPoints || 0;
 
   if (userEntry) {
     return {
       wallet,
       rank: userEntry.rank,
       totalComputeUsed: userEntry.totalComputeUsed,
+      referralPoints: userEntry.referralPoints,
+      referralCount: userEntry.referralCount,
+      totalPoints: userEntry.totalPoints,
       queriesRun: userEntry.queriesRun,
       activeDays: userEntry.activeDays,
       streakDays: userEntry.streakDays,
-      top50ThresholdCompute: top50Threshold,
+      top50ThresholdPoints: top50Threshold,
       percentile: Math.max(1, 100 - Math.floor(userEntry.rank * 0.5)),
     };
   }
@@ -187,9 +201,14 @@ export async function getRewardsPersonalStats(
   const activeDays = Math.min(Math.floor(config.days * rand() * 0.5), config.days);
   const streakDays = Math.floor(activeDays * rand());
 
-  // Calculate percentile based on compute usage relative to top 50
+  // Referral data for unranked user
+  const referralCount = Math.floor(rand() * 3);
+  const referralPoints = referralCount;
+  const totalPoints = totalComputeUsed + referralPoints;
+
+  // Calculate percentile based on total points relative to top 50
   const percentile = Math.min(
-    Math.floor((totalComputeUsed / top50Threshold) * 50),
+    Math.floor((totalPoints / top50Threshold) * 50),
     49
   );
 
@@ -197,10 +216,13 @@ export async function getRewardsPersonalStats(
     wallet,
     rank: undefined, // Not in top 50
     totalComputeUsed,
+    referralPoints,
+    referralCount,
+    totalPoints,
     queriesRun,
     activeDays,
     streakDays,
-    top50ThresholdCompute: top50Threshold,
+    top50ThresholdPoints: top50Threshold,
     percentile: Math.max(1, percentile),
   };
 }

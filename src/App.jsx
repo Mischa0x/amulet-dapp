@@ -16,7 +16,8 @@ import WalletGuard from './components/WalletGuard';
 import TokenPage from './pages/Token/TokenPage';
 import RewardsPage from './pages/Rewards/RewardsPage';
 import BlogPage from './pages/Blog/BlogPage';
-import BlogPostPage from './pages/Blog/BlogPostPage';   
+import BlogPostPage from './pages/Blog/BlogPostPage';
+import ReferralLanding from './pages/Referral/ReferralLanding';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/ref/:address" element={<ReferralLanding />} />
 
             {/* Protected routes → only visible when wallet is connected */}
 

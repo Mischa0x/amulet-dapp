@@ -12,6 +12,7 @@ import {
   PersonalSummaryCard,
   LeaderboardTable,
   SocialProofStrip,
+  ReferAndEarn,
 } from '../../components/rewards';
 import {
   fetchLeaderboard,
@@ -108,6 +109,11 @@ export default function RewardsPage() {
           epoch={epoch}
           isLoading={isLoading}
         />
+
+        {/* Refer & Earn */}
+        {isConnected && (
+          <ReferAndEarn referralCount={personalStats?.referralCount || 0} />
+        )}
 
         {/* Social Proof */}
         <SocialProofStrip

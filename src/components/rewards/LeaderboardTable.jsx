@@ -82,8 +82,8 @@ export default function LeaderboardTable({
             <tr>
               <th className={styles.thRank}>#</th>
               <th className={styles.thWallet}>Wallet</th>
-              <th className={styles.thCompute}>Compute</th>
-              <th className={styles.thQueries}>Queries</th>
+              <th className={styles.thCompute}>Points</th>
+              <th className={styles.thQueries}>Refs</th>
               <th className={styles.thStatus}>Status</th>
             </tr>
           </thead>
@@ -126,10 +126,10 @@ export default function LeaderboardTable({
                     </div>
                   </td>
                   <td className={styles.tdCompute}>
-                    {entry.totalComputeUsed.toLocaleString()}
+                    {(entry.totalPoints || entry.totalComputeUsed).toLocaleString()}
                   </td>
                   <td className={styles.tdQueries}>
-                    {entry.queriesRun.toLocaleString()}
+                    {(entry.referralCount || 0).toLocaleString()}
                   </td>
                   <td className={styles.tdStatus}>
                     <span className={`${styles.statusBadge} ${styles[badgeColor]}`}>
@@ -188,15 +188,15 @@ export default function LeaderboardTable({
               <div className={styles.mobileCardStats}>
                 <div className={styles.mobileStat}>
                   <span className={styles.mobileStatValue}>
-                    {entry.totalComputeUsed.toLocaleString()}
+                    {(entry.totalPoints || entry.totalComputeUsed).toLocaleString()}
                   </span>
-                  <span className={styles.mobileStatLabel}>Compute</span>
+                  <span className={styles.mobileStatLabel}>Points</span>
                 </div>
                 <div className={styles.mobileStat}>
                   <span className={styles.mobileStatValue}>
-                    {entry.queriesRun.toLocaleString()}
+                    {(entry.referralCount || 0).toLocaleString()}
                   </span>
-                  <span className={styles.mobileStatLabel}>Queries</span>
+                  <span className={styles.mobileStatLabel}>Refs</span>
                 </div>
               </div>
             </div>

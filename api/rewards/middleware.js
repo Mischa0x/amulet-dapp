@@ -148,6 +148,25 @@ export function getDatesInRange(startDate, endDate) {
 }
 
 /**
+ * Get referral points for a wallet
+ */
+export async function getReferralPoints(wallet) {
+  const normalizedWallet = wallet.toLowerCase();
+  const pointsKey = `referrals:${normalizedWallet}:points`;
+  const countKey = `referrals:${normalizedWallet}:count`;
+
+  const [points, count] = await Promise.all([
+    kv.get(pointsKey),
+    kv.get(countKey),
+  ]);
+
+  return {
+    referralPoints: points || 0,
+    referralCount: count || 0,
+  };
+}
+
+/**
  * Aggregate wallet stats for an epoch
  */
 export async function aggregateWalletStats(wallet, epoch) {
@@ -199,9 +218,18 @@ export async function aggregateWalletStats(wallet, epoch) {
     streakDays = currentStreak;
   }
 
+  // Get referral points (these are all-time, not epoch-specific)
+  const { referralPoints, referralCount } = await getReferralPoints(normalizedWallet);
+
+  // Total points = compute + referrals
+  const totalPoints = totalCompute + referralPoints;
+
   return {
     wallet: normalizedWallet,
     totalComputeUsed: totalCompute,
+    referralPoints,
+    referralCount,
+    totalPoints,
     queriesRun,
     activeDays,
     streakDays,
@@ -250,8 +278,8 @@ export async function buildLeaderboard(epoch) {
   const statsPromises = wallets.map(wallet => aggregateWalletStats(wallet, epoch));
   const allStats = await Promise.all(statsPromises);
 
-  // Sort by total compute (descending)
-  allStats.sort((a, b) => b.totalComputeUsed - a.totalComputeUsed);
+  // Sort by total points (compute + referrals) descending
+  allStats.sort((a, b) => b.totalPoints - a.totalPoints);
 
   // Take top 50 and assign ranks
   const leaderboard = allStats.slice(0, MAX_LEADERBOARD_SIZE).map((stats, index) => ({
@@ -277,27 +305,30 @@ export async function getPersonalStats(epoch, wallet) {
   const entry = leaderboard.find(e => e.wallet === normalizedWallet);
   const rank = entry ? entry.rank : undefined;
 
-  // Get threshold (rank 50's compute or lowest in leaderboard)
+  // Get threshold (rank 50's total points or lowest in leaderboard)
   const threshold = leaderboard.length >= 50
-    ? leaderboard[49].totalComputeUsed
+    ? leaderboard[49].totalPoints
     : leaderboard.length > 0
-      ? leaderboard[leaderboard.length - 1].totalComputeUsed
+      ? leaderboard[leaderboard.length - 1].totalPoints
       : 100;
 
   // Calculate percentile (mock for now - would need full user count)
   const totalUsers = leaderboard.length > 0 ? Math.max(leaderboard.length * 2, 100) : 100;
   const percentile = rank
     ? Math.round((1 - (rank / totalUsers)) * 100)
-    : Math.round((stats.totalComputeUsed / (threshold || 1)) * 50);
+    : Math.round((stats.totalPoints / (threshold || 1)) * 50);
 
   return {
     wallet: normalizedWallet,
     rank,
     totalComputeUsed: stats.totalComputeUsed,
+    referralPoints: stats.referralPoints,
+    referralCount: stats.referralCount,
+    totalPoints: stats.totalPoints,
     queriesRun: stats.queriesRun,
     activeDays: stats.activeDays,
     streakDays: stats.streakDays,
-    top50ThresholdCompute: threshold,
+    top50ThresholdPoints: threshold,
     percentile: Math.min(99, Math.max(1, percentile)),
   };
 }

@@ -25,17 +25,20 @@ export default function PersonalSummaryCard({ stats, epoch, isLoading = false })
 
   const {
     rank,
-    totalComputeUsed,
-    queriesRun,
-    activeDays,
-    streakDays,
-    top50ThresholdCompute,
-    percentile,
+    totalComputeUsed = 0,
+    referralPoints = 0,
+    referralCount = 0,
+    totalPoints = 0,
+    queriesRun = 0,
+    activeDays = 0,
+    streakDays = 0,
+    top50ThresholdPoints = 100,
+    percentile = 0,
   } = stats;
 
   const isRanked = rank !== undefined && rank !== null;
-  const progress = top50ThresholdCompute > 0
-    ? Math.min(Math.round((totalComputeUsed / top50ThresholdCompute) * 100), 100)
+  const progress = top50ThresholdPoints > 0
+    ? Math.min(Math.round((totalPoints / top50ThresholdPoints) * 100), 100)
     : 0;
 
   const getMedalEmoji = (r) => {
@@ -53,9 +56,11 @@ export default function PersonalSummaryCard({ stats, epoch, isLoading = false })
       highlight: isRanked && rank <= 10,
     },
     {
-      label: 'Compute Used',
-      value: totalComputeUsed.toLocaleString(),
-      subValue: 'credits',
+      label: 'Total Points',
+      value: totalPoints.toLocaleString(),
+      subValue: referralPoints > 0
+        ? `${totalComputeUsed} compute + ${referralPoints} referral`
+        : 'from compute usage',
       highlight: true,
     },
     {
@@ -64,9 +69,9 @@ export default function PersonalSummaryCard({ stats, epoch, isLoading = false })
       subValue: `${activeDays} active days`,
     },
     {
-      label: 'Progress',
-      value: `${progress}%`,
-      subValue: streakDays > 0 ? `🔥 ${streakDays} day streak` : 'to Top 50',
+      label: 'Referrals',
+      value: referralCount.toLocaleString(),
+      subValue: streakDays > 0 ? `🔥 ${streakDays} day streak` : '+1 pt each',
     },
   ];
 

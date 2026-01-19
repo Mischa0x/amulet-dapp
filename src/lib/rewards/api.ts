@@ -37,17 +37,10 @@ export async function fetchLeaderboard(epoch: Epoch): Promise<LeaderboardEntry[]
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();
-
-    // Fallback to mock if no real data yet
-    if (!data || data.length === 0) {
-      console.log('No leaderboard data, using mock');
-      return getRewardsLeaderboard(epoch);
-    }
-
-    return data;
+    return data || [];
   } catch (error) {
-    console.error('Leaderboard fetch failed, using mock:', error);
-    return getRewardsLeaderboard(epoch);
+    console.error('Leaderboard fetch failed:', error);
+    return [];
   }
 }
 
@@ -69,17 +62,34 @@ export async function fetchPersonalStats(
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();
-
-    // Fallback to mock if user has no data
-    if (!data || (data.totalComputeUsed === 0 && data.queriesRun === 0)) {
-      console.log('No personal data, using mock');
-      return getRewardsPersonalStats(epoch, wallet);
-    }
-
-    return data;
+    return data || {
+      wallet,
+      rank: undefined,
+      totalComputeUsed: 0,
+      referralPoints: 0,
+      referralCount: 0,
+      totalPoints: 0,
+      queriesRun: 0,
+      activeDays: 0,
+      streakDays: 0,
+      top50ThresholdPoints: 0,
+      percentile: 0,
+    };
   } catch (error) {
-    console.error('Personal stats fetch failed, using mock:', error);
-    return getRewardsPersonalStats(epoch, wallet);
+    console.error('Personal stats fetch failed:', error);
+    return {
+      wallet,
+      rank: undefined,
+      totalComputeUsed: 0,
+      referralPoints: 0,
+      referralCount: 0,
+      totalPoints: 0,
+      queriesRun: 0,
+      activeDays: 0,
+      streakDays: 0,
+      top50ThresholdPoints: 0,
+      percentile: 0,
+    };
   }
 }
 
@@ -96,17 +106,10 @@ export async function fetchSocialProof(epoch: Epoch): Promise<SocialProofStats> 
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();
-
-    // Fallback to mock if no platform data yet
-    if (!data || data.totalCompute === 0) {
-      console.log('No social proof data, using mock');
-      return getRewardsSocialProof(epoch);
-    }
-
-    return data;
+    return data || { activeWallets: 0, totalCompute: 0, totalQueries: 0 };
   } catch (error) {
-    console.error('Social proof fetch failed, using mock:', error);
-    return getRewardsSocialProof(epoch);
+    console.error('Social proof fetch failed:', error);
+    return { activeWallets: 0, totalCompute: 0, totalQueries: 0 };
   }
 }
 

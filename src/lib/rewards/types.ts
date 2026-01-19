@@ -11,9 +11,12 @@ export type LeaderboardEntry = {
   wallet: string;
   ens?: string;
   totalComputeUsed: number;
+  referralPoints: number;        // points from referrals
+  referralCount: number;         // number of people referred
+  totalPoints: number;           // compute + referrals
   queriesRun: number;
-  activeDays: number;      // for selected epoch
-  streakDays: number;      // for selected epoch
+  activeDays: number;            // for selected epoch
+  streakDays: number;            // for selected epoch
   rank: number;
 };
 
@@ -21,10 +24,13 @@ export type PersonalStats = {
   wallet: string;
   rank?: number;                 // undefined if not in top 50
   totalComputeUsed: number;
+  referralPoints: number;        // points from referrals
+  referralCount: number;         // number of people referred
+  totalPoints: number;           // compute + referrals
   queriesRun: number;
   activeDays: number;
   streakDays: number;
-  top50ThresholdCompute: number; // compute used by rank #50
+  top50ThresholdPoints: number;  // points used by rank #50
   percentile: number;            // 0-100 mock percentile vs all users
 };
 
