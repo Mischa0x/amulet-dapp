@@ -1060,6 +1060,111 @@ Verified that these frontend-only changes do not conflict with the developer's w
 
 All changes are isolated to rewards components, sidebar CSS, header CSS, and global color variables.
 
+## Session History (2026-01-19) - Referral System Implementation
+
+### Feature Overview
+Implemented a simple referral system for Amulet DApp inspired by BitVault:
+- **+1 point** for the referrer when someone uses their link
+- **+1 point** for the referee for signing up via a referral link
+- Points integrate into the existing `/rewards` leaderboard as `totalPoints = compute + referrals`
+
+### Referral Flow
+1. User copies referral link from `/rewards` page: `https://amulet-dapp.vercel.app/ref/{address}`
+2. Friend clicks link → `ReferralLanding.jsx` stores referrer in localStorage
+3. Friend connects wallet on any page
+4. `ReferralHandler.jsx` (app-level) detects wallet connection, POSTs to `/api/refs`
+5. Both parties receive +1 referral point
+
+### Files Created
+- `api/refs/index.js` - Combined GET/POST referral API endpoint
+- `src/components/ReferralHandler.jsx` - App-level component for auto-registering referrals
+- `src/pages/Referral/ReferralLanding.jsx` - Captures referrer from URL, stores in localStorage
+- `src/components/rewards/ReferAndEarn.jsx` - UI component for copy/share referral link
+- `src/components/rewards/ReferAndEarn.module.css` - Styles for ReferAndEarn
+- `lib/rewardsMiddleware.js` - Moved from api/lib to avoid function count
+
+### Files Modified
+- `src/App.jsx` - Added ReferralHandler and /ref/:address route
+- `src/components/rewards/LeaderboardTable.jsx` - Added "Refs" column
+- `src/components/rewards/PersonalSummaryCard.jsx` - Shows referral stats
+- `src/lib/rewards/types.ts` - Added referralPoints, referralCount, totalPoints
+- `api/chat.js` - Updated lib import path
+- `api/rewards/*.js` - Updated lib import paths
+
+### API Endpoints
+
+**GET /api/refs?address=0x...**
+```json
+{
+  "address": "0x...",
+  "referralCount": 1,
+  "referralPoints": 1,
+  "referredBy": "0x..." | null
+}
+```
+
+**POST /api/refs**
+```json
+// Request
+{ "referrer": "0x...", "referee": "0x..." }
+
+// Response
+{
+  "success": true,
+  "referrer": "0x...",
+  "referee": "0x...",
+  "referrerTotalReferrals": 1
+}
+```
+
+### Vercel Function Limit Fix
+Hit Vercel Hobby plan limit of 12 serverless functions. Fixed by:
+1. Consolidated `api/referral-register.js` + `api/referral-stats.js` → `api/refs/index.js`
+2. Moved `api/lib/` → `lib/` (outside api folder, not counted)
+3. Removed unused `api/credits/use.js` (credit deduction happens in chat.js)
+
+**Final function count: 10** (under 12 limit)
+
+### Storage Structure (Vercel KV)
+```
+referrals:{wallet}:count     - Number of people referred
+referrals:{wallet}:points    - Referral points earned
+referrals:{wallet}:list      - Set of referred wallet addresses
+referred_by:{wallet}         - Who referred this wallet
+```
+
+### Key Bug Fix
+**Issue:** Referrals weren't registering when user connected wallet on landing page.
+
+**Cause:** `ReferAndEarn` component only mounted on `/rewards` page.
+
+**Fix:** Created `ReferralHandler.jsx` at app level (in `App.jsx`) that listens for wallet connections and registers referrals on any page.
+
+### Commits
+| Commit | Description |
+|--------|-------------|
+| `506b90d` | fix: Consolidate referral APIs to stay under Vercel function limit |
+| `f1807a6` | fix: Use explicit API route passthrough in vercel.json |
+| `a5e2545` | fix: Move referral API to subfolder for Vercel routing |
+| `07e9a11` | fix: Rename referral API to /api/refs |
+| `c89e1aa` | fix: Move lib files outside api folder |
+| `2b241f5` | fix: Remove unused credits/use.js to stay under function limit |
+| `1539fe2` | fix: Add ReferralHandler at app level to register referrals on any page |
+
+### Testing
+```bash
+# Get referral stats
+curl "https://amulet-dapp.vercel.app/api/refs?address=0x..."
+
+# Register referral manually
+curl -X POST "https://amulet-dapp.vercel.app/api/refs" \
+  -H "Content-Type: application/json" \
+  -d '{"referrer":"0x...","referee":"0x..."}'
+
+# Check leaderboard with referral points
+curl "https://amulet-dapp.vercel.app/api/rewards/leaderboard?epoch=all"
+```
+
 ### To Resume
 ```
 Continue with any additional Amulet DApp features
