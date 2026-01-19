@@ -975,6 +975,91 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 VITE_STRIPE_PUBLISHABLE_KEY=pk_live_...
 ```
 
+## Session History (2026-01-19) - UI Polish & Rewards Page Consolidation
+
+### Changes Implemented
+
+#### 1. Sidebar Card Titles - Dark Mode Fix
+Changed all sidebar card titles to use `var(--brand-black)` which properly swaps to white in dark mode.
+
+**Previous Issue:** Titles used colors like `--brand-green-darker`, `--brand-purple-darker` which swapped to pastel colors instead of white.
+
+**Files Modified:** `src/pages/Agent/AgentSidebar.module.css`
+
+**Classes Updated:**
+- `.textWrapper2`, `.textWrapper3` (Shop Supplements)
+- `.shopSupplements`, `.longevityEnhaced` (Order History)
+- `.shopSupplements2`, `.longevityEnhaced2` (View Visits)
+- `.tokenTitle`, `.tokenSubtitle` (Get Tokens)
+- `.rewardsTitle`, `.rewardsSubtitle` (Rewards)
+- `.blogTitle`, `.blogSubtitle` (Blog)
+
+#### 2. Search & Cart Positioning
+Moved search icon, search bar, and shopping cart to the top right of the header.
+
+**Fix:** Changed `.headerSection` from `justify-content: space-between` to `justify-content: flex-end`
+
+**File Modified:** `src/pages/Agent/AgentHeader.module.css`
+
+#### 3. Rewards Page Consolidation (BitVault-Inspired)
+Redesigned the `/rewards` page to be more compact, fitting everything on one screen.
+
+**PersonalSummaryCard → Compact Stats Grid:**
+- 4-column grid on desktop, 2-column on mobile
+- Shows: Rank, Compute Used (credits), Queries, Progress
+- Removed large progress ring, replaced with percentage
+
+**LeaderboardTable → Collapsible:**
+- Shows top 5 by default
+- "View Full Leaderboard" button expands to all 50
+- Search bar only appears when expanded
+
+**RewardsPage Layout:**
+- Header with title + EpochTabs on same row
+- Compact inline "How Rewards Work" info card
+- Reduced padding/margins throughout
+
+**Files Modified:**
+- `src/pages/Rewards/RewardsPage.jsx`
+- `src/pages/Rewards/RewardsPage.module.css`
+- `src/components/rewards/PersonalSummaryCard.jsx`
+- `src/components/rewards/PersonalSummaryCard.module.css`
+- `src/components/rewards/LeaderboardTable.jsx`
+- `src/components/rewards/LeaderboardTable.module.css`
+- `src/components/rewards/EpochTabs.module.css`
+- `src/components/rewards/SocialProofStrip.module.css`
+
+#### 4. Light Mode Card Colors - Improved Saturation
+Increased saturation of card background colors for better visibility in light mode.
+
+**Color Changes (`src/styleguide.css`):**
+| Variable | Before | After |
+|----------|--------|-------|
+| `--brand-neon-cards-surface-light-blue` | `#e9f5fe` | `#d4e9fc` |
+| `--brand-neon-cards-surface-light-green` | `#e8f9f2` | `#d0f4e4` |
+| `--brand-neon-cards-surface-light-purple` | `#f7edff` | `#ecdcff` |
+| `--brand-neon-cards-surface-light-yellow` | `#fef9e7` | `#fef0c3` |
+| `--brand-neon-cards-surface-light-orange` | `#fff4ed` | `#fee4d6` |
+| `--brand-neon-cards-surface-light-pink` | `#fdf2f8` | `#fce4f0` |
+| `--brand-neon-cards-surface-light-teal` | `#e6fffa` | `#ccfbf1` |
+| `--brand-blue-lighter` | `#e8e8e8` | `#d8e8f8` |
+
+### Commits
+| Commit | Description |
+|--------|-------------|
+| `160fc3a` | feat(ui): Compact rewards page, dark mode sidebar titles, improved light mode colors |
+
+### No Conflicts with Developer's Backend Work
+Verified that these frontend-only changes do not conflict with the developer's work:
+- Stripe Elements integration
+- JWT authentication
+- SIWE wallet login
+- Shop isActive filtering
+- Chat typing animation
+- Backend APIs
+
+All changes are isolated to rewards components, sidebar CSS, header CSS, and global color variables.
+
 ### To Resume
 ```
 Continue with any additional Amulet DApp features
