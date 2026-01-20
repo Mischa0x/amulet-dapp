@@ -210,6 +210,11 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error('Auth error:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    // Temporarily show error for debugging
+    return res.status(500).json({
+      message: 'Internal server error',
+      debug: error.message,
+      stack: error.stack?.split('\n').slice(0, 3)
+    });
   }
 }
