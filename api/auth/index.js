@@ -26,6 +26,8 @@ const users = pgTable('users', {
   lastLogin: timestamp('last_login'),
   emailVerified: boolean('email_verified'),
   createdAt: timestamp('created_at'),
+  accountStatus: text('account_status'),
+  authProvider: text('auth_provider'),
 });
 
 const signupWhitelist = pgTable('signup_whitelist', {
@@ -120,6 +122,8 @@ async function handleRegister(req, res) {
     passwordSalt: salt,
     emailVerified: true,
     createdAt: new Date(),
+    accountStatus: 'active',
+    authProvider: 'local',
   }).returning();
 
   return res.status(201).json({
