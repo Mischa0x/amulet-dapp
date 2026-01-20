@@ -210,7 +210,7 @@ export default function AgentChat() {
                 <p>How can I help you live forever?</p>
                 {!canQuery && (
                   <div className={styles.walletPrompt}>
-                    <p>Connect your wallet to start chatting with Dr. Alex</p>
+                    <p>Connect your wallet to start chatting with Amulette</p>
                   </div>
                 )}
               </div>
