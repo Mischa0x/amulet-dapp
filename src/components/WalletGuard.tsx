@@ -1,17 +1,19 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAccount } from "wagmi";
-// If you don't want SIWE at all anymore, you can delete this import:
-// import { useAmuletAuthStatus } from "../providers/useAmuletAuthStatus";
 
 export default function WalletGuard() {
   const { isConnected } = useAccount();
   const location = useLocation();
 
-  // ❌ Not connected → can only stay on landing ("/")
-  if (!isConnected) {
-    return <Navigate to="/" replace state={{ from: location }} />;
+  // Check for email auth token
+  const authToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+  const isEmailAuthenticated = !!authToken;
+
+  // ✅ Allow access if wallet connected OR email authenticated
+  if (isConnected || isEmailAuthenticated) {
+    return <Outlet />;
   }
 
-  // ✅ Wallet connected → allow access to protected routes
-  return <Outlet />;
+  // ❌ Not authenticated → redirect to landing
+  return <Navigate to="/" replace state={{ from: location }} />;
 }
