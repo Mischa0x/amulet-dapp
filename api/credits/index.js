@@ -220,16 +220,21 @@ async function handleAdminListUsers(req, res) {
 
     for (const key of keys) {
       const address = key.replace('credits:', '');
-      const creditData = await kv.get(key);
-      if (creditData) {
-        users.push({
-          address,
-          balance: creditData.balance || 0,
-          freeClaimedAt: creditData.freeClaimedAt || null,
-          stakedCredits: creditData.stakedCredits || 0,
-          purchasedCredits: creditData.purchasedCredits || 0,
-          totalUsed: creditData.totalUsed || 0,
-        });
+      try {
+        const creditData = await kv.get(key);
+        if (creditData && typeof creditData === 'object' && creditData.balance !== undefined) {
+          users.push({
+            address,
+            balance: creditData.balance || 0,
+            freeClaimedAt: creditData.freeClaimedAt || null,
+            stakedCredits: creditData.stakedCredits || 0,
+            purchasedCredits: creditData.purchasedCredits || 0,
+            totalUsed: creditData.totalUsed || 0,
+          });
+        }
+      } catch (keyError) {
+        // Skip keys that aren't valid credit data (might be rate limit counters, etc.)
+        continue;
       }
     }
 
