@@ -108,11 +108,12 @@ export default async function handler(req, res) {
     const session = await stripeResponse.json();
 
     if (!stripeResponse.ok) {
-      logError('api/stripe/checkout', 'Stripe API error', { error: session });
+      logError('api/stripe/checkout', 'Stripe API error', { error: session, appUrl });
       return res.status(500).json({
         error: 'Failed to create checkout session',
         details: session.error?.message || 'Unknown error',
         type: session.error?.type,
+        debug: { appUrl, successUrl: `${appUrl}/token?success=true&credits=${pkg.credits}` },
       });
     }
 
