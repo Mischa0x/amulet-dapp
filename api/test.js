@@ -34,7 +34,28 @@ export default async function handler(req, res) {
       test4.error = e.message;
     }
 
-    return res.status(200).json({ test1, test2, test3, test4 });
+    // Test 5: Drizzle import
+    let test5 = { step: 'drizzle_import', success: false };
+    try {
+      const { db } = await import('../lib/db.js');
+      test5.success = true;
+    } catch (e) {
+      test5.error = e.message;
+    }
+
+    // Test 6: Query users table
+    let test6 = { step: 'users_query', success: false };
+    try {
+      const { db } = await import('../lib/db.js');
+      const { users } = await import('../lib/schema.js');
+      const result = await db.select().from(users).limit(1);
+      test6.success = true;
+      test6.count = result.length;
+    } catch (e) {
+      test6.error = e.message;
+    }
+
+    return res.status(200).json({ test1, test2, test3, test4, test5, test6 });
   } catch (error) {
     return res.status(500).json({ error: error.message, stack: error.stack });
   }
