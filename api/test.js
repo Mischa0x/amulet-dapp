@@ -1,4 +1,4 @@
-// Database test and schema check endpoint
+// Database test endpoint
 import { neon } from '@neondatabase/serverless';
 
 export default async function handler(req, res) {
@@ -8,59 +8,27 @@ export default async function handler(req, res) {
     const sql = neon(process.env.DATABASE_URL);
     const results = {};
 
-    // Test 1: Get all tables
+    // Check for existing user
+    const email = req.query.email || 'amanhasan518@gmail.com';
     try {
-      const tables = await sql`
-        SELECT table_name
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-        ORDER BY table_name
-      `;
-      results.tables = tables.map(t => t.table_name);
+      const user = await sql`SELECT id, username, email FROM users WHERE email = ${email}`;
+      results.existing_user = user;
     } catch (e) {
-      results.tables = { error: e.message };
+      results.existing_user = { error: e.message };
     }
 
-    // Test 2: Check signup_whitelist
-    try {
-      const cols = await sql`
-        SELECT column_name, data_type
-        FROM information_schema.columns
-        WHERE table_name = 'signup_whitelist'
-        ORDER BY ordinal_position
-      `;
-      results.whitelist_columns = cols;
-    } catch (e) {
-      results.whitelist_columns = { error: e.message };
-    }
-
-    // Test 3: Count whitelist entries
-    try {
-      const result = await sql`SELECT COUNT(*) as count FROM signup_whitelist`;
-      results.whitelist_count = result[0].count;
-    } catch (e) {
-      results.whitelist_count = { error: e.message };
-    }
-
-    // Test 4: Sample whitelist entry
-    try {
-      const sample = await sql`SELECT * FROM signup_whitelist LIMIT 3`;
-      results.whitelist_sample = sample;
-    } catch (e) {
-      results.whitelist_sample = { error: e.message };
-    }
-
-    // Test 5: Users table columns
-    try {
-      const cols = await sql`
-        SELECT column_name, data_type
-        FROM information_schema.columns
-        WHERE table_name = 'users'
-        ORDER BY ordinal_position
-      `;
-      results.users_columns = cols;
-    } catch (e) {
-      results.users_columns = { error: e.message };
+    // Try raw insert
+    if (req.query.test === 'insert') {
+      try {
+        const result = await sql`
+          INSERT INTO users (username, email, password_hash, password_salt, email_verified, created_at)
+          VALUES ('testuser123', 'test123@example.com', 'hash', 'salt', true, NOW())
+          RETURNING id, username, email
+        `;
+        results.insert_test = result;
+      } catch (e) {
+        results.insert_test = { error: e.message };
+      }
     }
 
     return res.status(200).json(results);
