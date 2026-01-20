@@ -45,9 +45,7 @@ const users = pgTable('users', {
 const signupWhitelist = pgTable('signup_whitelist', {
   id: serial('id').primaryKey(),
   email: text('email').notNull().unique(),
-  inviteCode: text('invite_code'),
-  used: boolean('used').default(false),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at'),
 });
 
 // Create DB connection
@@ -117,10 +115,6 @@ async function handleRegister(req, res) {
     return res.status(403).json({ message: 'Email not whitelisted. Please request access.' });
   }
 
-  if (whitelist[0].used) {
-    return res.status(403).json({ message: 'This invite has already been used.' });
-  }
-
   // Check if user already exists
   const existing = await db.select().from(users)
     .where(or(eq(users.email, email.toLowerCase()), eq(users.username, username)));
@@ -141,11 +135,6 @@ async function handleRegister(req, res) {
     accountStatus: 'active',
     emailVerified: true, // Auto-verify whitelisted users
   }).returning();
-
-  // Mark whitelist as used
-  await db.update(signupWhitelist)
-    .set({ used: true })
-    .where(eq(signupWhitelist.email, email.toLowerCase()));
 
   return res.status(201).json({
     message: 'Account created successfully',
