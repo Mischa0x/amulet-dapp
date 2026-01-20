@@ -7,7 +7,11 @@ import { logError } from '../../lib/logger.js';
 let stripe = null;
 function getStripe() {
   if (!stripe) {
-    stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-12-18.acacia',
+      timeout: 30000,
+      maxNetworkRetries: 2,
+    });
   }
   return stripe;
 }
@@ -119,7 +123,17 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    logError('api/stripe/checkout', 'Stripe checkout error', { error: error.message, stack: error.stack });
-    return res.status(500).json({ error: 'Failed to create checkout session', details: error.message });
+    logError('api/stripe/checkout', 'Stripe checkout error', {
+      message: error.message,
+      type: error.type,
+      code: error.code,
+      statusCode: error.statusCode,
+    });
+    return res.status(500).json({
+      error: 'Failed to create checkout session',
+      details: error.message,
+      type: error.type,
+      code: error.code,
+    });
   }
 }
