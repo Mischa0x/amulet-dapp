@@ -1,45 +1,52 @@
-// Simple test endpoint - using static imports
+// Simple test endpoint - inline dependencies
 import { neon } from '@neondatabase/serverless';
-import { db } from '../lib/db.js';
-import { users } from '../lib/schema.js';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+
+// Inline users table definition for testing
+const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  username: text('username'),
+  email: text('email'),
+  createdAt: timestamp('created_at'),
+});
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   try {
-    // Test 1: Basic response
-    const test1 = { step: 'basic', success: true };
+    const results = {};
 
-    // Test 2: Check DATABASE_URL
-    const test2 = {
-      step: 'env_check',
+    // Test 1: Basic
+    results.basic = { success: true };
+
+    // Test 2: Env
+    results.env = {
       hasDbUrl: !!process.env.DATABASE_URL,
       dbUrlLength: process.env.DATABASE_URL?.length || 0
     };
 
-    // Test 3: Neon connection
-    let test3 = { step: 'neon_connection', success: false };
+    // Test 3: Neon direct
     try {
       const sql = neon(process.env.DATABASE_URL);
       const result = await sql`SELECT 1 as test`;
-      test3.success = true;
-      test3.result = result;
+      results.neon = { success: true, result };
     } catch (e) {
-      test3.error = e.message;
+      results.neon = { success: false, error: e.message };
     }
 
-    // Test 4: Drizzle query
-    let test4 = { step: 'drizzle_query', success: false };
+    // Test 4: Drizzle
     try {
+      const sql = neon(process.env.DATABASE_URL);
+      const db = drizzle(sql);
       const result = await db.select().from(users).limit(1);
-      test4.success = true;
-      test4.count = result.length;
+      results.drizzle = { success: true, count: result.length };
     } catch (e) {
-      test4.error = e.message;
+      results.drizzle = { success: false, error: e.message };
     }
 
-    return res.status(200).json({ test1, test2, test3, test4 });
+    return res.status(200).json(results);
   } catch (error) {
-    return res.status(500).json({ error: error.message, stack: error.stack });
+    return res.status(500).json({ error: error.message });
   }
 }
