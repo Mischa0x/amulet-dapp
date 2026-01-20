@@ -16,6 +16,15 @@ export default function AdminPage() {
   const [adjustReason, setAdjustReason] = useState("");
   const [adjusting, setAdjusting] = useState(false);
 
+  // Email state
+  const [activeTab, setActiveTab] = useState("users"); // "users" or "email"
+  const [betaEmails, setBetaEmails] = useState([]);
+  const [loadingBeta, setLoadingBeta] = useState(false);
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailResult, setEmailResult] = useState(null);
+
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -89,6 +98,69 @@ export default function AdminPage() {
     }
   };
 
+  const fetchBetaEmails = useCallback(async () => {
+    setLoadingBeta(true);
+    try {
+      const adminKey = localStorage.getItem("adminKey") || "";
+      const response = await fetch(`${API_URL}/api/credits?action=admin-list-beta`, {
+        headers: { "x-admin-key": adminKey },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch beta emails");
+
+      const result = await response.json();
+      setBetaEmails(result.emails || []);
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    } finally {
+      setLoadingBeta(false);
+    }
+  }, []);
+
+  const handleSendEmail = async (testMode = false) => {
+    if (!emailSubject.trim() || !emailBody.trim()) {
+      alert("Subject and body are required");
+      return;
+    }
+
+    setEmailSending(true);
+    setEmailResult(null);
+
+    try {
+      const adminKey = localStorage.getItem("adminKey") || "";
+      const response = await fetch(`${API_URL}/api/credits?action=admin-send-beta`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": adminKey,
+        },
+        body: JSON.stringify({
+          subject: emailSubject,
+          html: emailBody,
+          testMode,
+        }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Failed to send emails");
+      }
+
+      const result = await response.json();
+      setEmailResult(result);
+
+      if (!testMode) {
+        alert(`Successfully sent to ${result.sent} recipients!`);
+      } else {
+        alert(`Test email sent to first beta user!`);
+      }
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    } finally {
+      setEmailSending(false);
+    }
+  };
+
   const filteredUsers = data?.users?.filter((user) =>
     user.address.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
@@ -145,6 +217,115 @@ export default function AdminPage() {
         <p>User Credits & Rewards Management</p>
       </header>
 
+      {/* Tab Navigation */}
+      <div className={styles.tabNav}>
+        <button
+          className={`${styles.tabButton} ${activeTab === "users" ? styles.tabActive : ""}`}
+          onClick={() => setActiveTab("users")}
+        >
+          Users & Credits
+        </button>
+        <button
+          className={`${styles.tabButton} ${activeTab === "email" ? styles.tabActive : ""}`}
+          onClick={() => {
+            setActiveTab("email");
+            if (betaEmails.length === 0) fetchBetaEmails();
+          }}
+        >
+          Email Beta Users
+        </button>
+      </div>
+
+      {activeTab === "email" && (
+        <div className={styles.emailSection}>
+          <div className={styles.emailStats}>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{betaEmails.length}</div>
+              <div className={styles.statLabel}>Beta Signups</div>
+            </div>
+            <button
+              onClick={fetchBetaEmails}
+              disabled={loadingBeta}
+              className={styles.refreshButton}
+            >
+              {loadingBeta ? "Loading..." : "Refresh List"}
+            </button>
+          </div>
+
+          <div className={styles.emailComposer}>
+            <h3>Compose Email</h3>
+
+            <div className={styles.formGroup}>
+              <label>Subject</label>
+              <input
+                type="text"
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+                placeholder="Welcome to Amulet Beta!"
+                className={styles.emailInput}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Body (HTML supported)</label>
+              <textarea
+                value={emailBody}
+                onChange={(e) => setEmailBody(e.target.value)}
+                placeholder="<h1>Welcome to Amulet!</h1><p>You've been selected for our closed beta...</p>"
+                rows={12}
+                className={styles.emailTextarea}
+              />
+            </div>
+
+            <div className={styles.emailActions}>
+              <button
+                onClick={() => handleSendEmail(true)}
+                disabled={emailSending || !emailSubject || !emailBody}
+                className={styles.testButton}
+              >
+                {emailSending ? "Sending..." : "Send Test"}
+              </button>
+              <button
+                onClick={() => {
+                  if (window.confirm(`Send email to ${betaEmails.length} beta users?`)) {
+                    handleSendEmail(false);
+                  }
+                }}
+                disabled={emailSending || !emailSubject || !emailBody || betaEmails.length === 0}
+                className={styles.sendAllButton}
+              >
+                {emailSending ? "Sending..." : `Send to All (${betaEmails.length})`}
+              </button>
+            </div>
+
+            {emailResult && (
+              <div className={styles.emailResult}>
+                <p>Sent: {emailResult.sent} | Failed: {emailResult.failed || 0}</p>
+                {emailResult.errors?.length > 0 && (
+                  <details>
+                    <summary>View errors</summary>
+                    <pre>{JSON.stringify(emailResult.errors, null, 2)}</pre>
+                  </details>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className={styles.emailListSection}>
+            <h3>Beta Email List ({betaEmails.length})</h3>
+            <div className={styles.emailList}>
+              {betaEmails.map((e) => (
+                <div key={e.id} className={styles.emailItem}>
+                  {e.email}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "users" && (
+        <>
       {/* Summary Stats */}
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
@@ -269,6 +450,8 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+        </>
+      )}
     </div>
   );
 }

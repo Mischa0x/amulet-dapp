@@ -19,8 +19,9 @@
 9. [Order History Page (Beluga Integration)](#9-order-history-page-beluga-integration)
 10. [Shop Supplements Page (Beluga Integration)](#10-shop-supplements-page-beluga-integration)
 11. [Environment Variables](#11-environment-variables)
-12. [Authentication & Admin System](#12-authentication--admin-system) *(NEW)*
-13. [Migration Checklist](#13-migration-checklist)
+12. [Authentication & Admin System](#12-authentication--admin-system)
+13. [Email System (Resend)](#13-email-system-resend) *(NEW)*
+14. [Migration Checklist](#14-migration-checklist)
 
 ---
 
@@ -983,6 +984,10 @@ VITE_WALLETCONNECT_PROJECT_ID=your_project_id
 
 # Admin Dashboard (optional)
 ADMIN_SECRET=your_secure_admin_key
+
+# Email (Resend)
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=Amulet <noreply@yourdomain.com>  # Optional
 ```
 
 ### Vercel KV Setup
@@ -1075,7 +1080,119 @@ public/assets/logout-icon.svg       - New icon
 
 ---
 
-## 13. Migration Checklist
+## 13. Email System (Resend)
+
+### Overview (Added 2026-01-20)
+Email integration using Resend for sending emails to beta signup users. Integrated into the admin dashboard.
+
+### Setup
+
+1. **Create Resend Account**: Sign up at [resend.com](https://resend.com)
+2. **Get API Key**: Dashboard → API Keys → Create API Key
+3. **Verify Domain**: Dashboard → Domains → Add Domain (follow DNS instructions)
+4. **Add Environment Variables**:
+   ```bash
+   RESEND_API_KEY=re_...
+   RESEND_FROM_EMAIL=Amulet <noreply@yourdomain.com>  # Optional, defaults to Amulet <noreply@amulet.ai>
+   ```
+
+### API Endpoints (merged into credits API)
+
+#### GET `/api/credits?action=admin-list-beta`
+Lists all emails from the beta whitelist.
+
+**Headers:** `x-admin-key: {ADMIN_SECRET}`
+
+**Response:**
+```json
+{
+  "totalEmails": 1000,
+  "emails": [
+    { "id": 1, "email": "user@example.com", "createdAt": "2026-01-15T10:30:00Z" }
+  ]
+}
+```
+
+#### POST `/api/credits?action=admin-send-email`
+Send email to custom list of recipients.
+
+**Headers:** `x-admin-key: {ADMIN_SECRET}`
+
+**Request:**
+```json
+{
+  "to": ["user1@example.com", "user2@example.com"],
+  "subject": "Welcome to Amulet!",
+  "html": "<h1>Welcome!</h1><p>Your beta access is ready.</p>",
+  "from": "Amulet <hello@amulet.ai>"  // Optional
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "sent": 998,
+  "failed": 2,
+  "results": [{ "email": "user1@example.com", "id": "abc123" }],
+  "errors": [{ "email": "bad@email", "error": "Invalid email" }]
+}
+```
+
+#### POST `/api/credits?action=admin-send-beta`
+Send email to ALL beta whitelist users.
+
+**Headers:** `x-admin-key: {ADMIN_SECRET}`
+
+**Request:**
+```json
+{
+  "subject": "Amulet Beta is Live!",
+  "html": "<h1>Welcome to the Beta!</h1><p>Your exclusive access is ready.</p>",
+  "testMode": false  // Set true to only send to first user
+}
+```
+
+### Admin UI
+
+Access via Admin Dashboard → "Email Beta Users" tab.
+
+**Features:**
+- View beta email count
+- Compose HTML emails with subject
+- Test mode: Send to first user only
+- Send to all: Confirmation required
+- Results display: Sent/failed counts
+
+### Batch Sending
+
+Emails are sent in batches of 50 with 100ms delays to avoid rate limits. Resend's free tier allows 100 emails/day, paid plans allow much higher volumes.
+
+### Files
+
+```
+api/credits/index.js           # Email handlers added
+src/pages/Admin/AdminPage.jsx  # Email tab UI
+src/pages/Admin/AdminPage.module.css  # Email styles
+```
+
+### Dependencies
+
+```bash
+npm install resend
+```
+
+### Environment Variables
+
+Add to Vercel:
+```bash
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=Amulet <noreply@yourdomain.com>  # Optional
+```
+
+---
+
+## 14. Migration Checklist
 
 ### Phase 0: Security Setup (Do This First)
 

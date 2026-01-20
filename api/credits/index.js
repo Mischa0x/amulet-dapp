@@ -2,13 +2,18 @@
  * Credits API - Combined endpoint
  * GET  /api/credits?address={address} - Get balance
  * GET  /api/credits?action=admin-list - List all users (admin only)
+ * GET  /api/credits?action=admin-list-beta - List beta whitelist emails (admin only)
  * POST /api/credits?action=claim - Claim free credits
  * POST /api/credits?action=sync-stake - Sync staked credits
  * POST /api/credits?action=admin-adjust - Adjust user credits (admin only)
+ * POST /api/credits?action=admin-send-email - Send email via Resend (admin only)
+ * POST /api/credits?action=admin-send-beta - Send email to all beta users (admin only)
  */
 import { kv } from '@vercel/kv';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
+import { Resend } from 'resend';
+import { neon } from '@neondatabase/serverless';
 import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../../lib/apiUtils.js';
 import { logError } from '../../lib/logger.js';
 
@@ -271,6 +276,130 @@ async function handleAdminAdjustCredits(req, res) {
   });
 }
 
+// ============ ADMIN: LIST BETA WHITELIST ============
+async function handleAdminListBeta(req, res) {
+  if (!isAdmin(req)) {
+    return res.status(401).json({ error: 'Unauthorized - Admin access required' });
+  }
+
+  const sql = neon(process.env.DATABASE_URL);
+  const emails = await sql`SELECT id, email, created_at FROM signup_whitelist ORDER BY created_at DESC`;
+
+  return res.status(200).json({
+    totalEmails: emails.length,
+    emails: emails.map(e => ({ id: e.id, email: e.email, createdAt: e.created_at })),
+  });
+}
+
+// ============ ADMIN: SEND EMAIL ============
+async function handleAdminSendEmail(req, res) {
+  if (!isAdmin(req)) {
+    return res.status(401).json({ error: 'Unauthorized - Admin access required' });
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ error: 'Resend API key not configured' });
+  }
+
+  const { to, subject, html, text, from } = req.body;
+
+  if (!to || !subject || (!html && !text)) {
+    return res.status(400).json({ error: 'Required: to, subject, and html or text' });
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const fromEmail = from || process.env.RESEND_FROM_EMAIL || 'Amulet <noreply@amulet.ai>';
+
+  // Handle single email or array
+  const recipients = Array.isArray(to) ? to : [to];
+
+  const results = [];
+  const errors = [];
+
+  // Send in batches of 50 to avoid rate limits
+  const batchSize = 50;
+  for (let i = 0; i < recipients.length; i += batchSize) {
+    const batch = recipients.slice(i, i + batchSize);
+
+    // Use Resend's batch API for efficiency
+    const promises = batch.map(async (email) => {
+      try {
+        const { data, error } = await resend.emails.send({
+          from: fromEmail,
+          to: email,
+          subject,
+          html: html || undefined,
+          text: text || undefined,
+        });
+        if (error) {
+          errors.push({ email, error: error.message });
+        } else {
+          results.push({ email, id: data.id });
+        }
+      } catch (err) {
+        errors.push({ email, error: err.message });
+      }
+    });
+
+    await Promise.all(promises);
+
+    // Small delay between batches
+    if (i + batchSize < recipients.length) {
+      await new Promise(r => setTimeout(r, 100));
+    }
+  }
+
+  return res.status(200).json({
+    success: true,
+    sent: results.length,
+    failed: errors.length,
+    results,
+    errors: errors.length > 0 ? errors : undefined,
+  });
+}
+
+// ============ ADMIN: SEND TO BETA LIST ============
+async function handleAdminSendBeta(req, res) {
+  if (!isAdmin(req)) {
+    return res.status(401).json({ error: 'Unauthorized - Admin access required' });
+  }
+
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ error: 'Resend API key not configured' });
+  }
+
+  const { subject, html, text, from, testMode } = req.body;
+
+  if (!subject || (!html && !text)) {
+    return res.status(400).json({ error: 'Required: subject, and html or text' });
+  }
+
+  // Fetch all beta emails from whitelist
+  const sql = neon(process.env.DATABASE_URL);
+  const whitelist = await sql`SELECT email FROM signup_whitelist`;
+
+  if (whitelist.length === 0) {
+    return res.status(400).json({ error: 'No emails in beta whitelist' });
+  }
+
+  const emails = whitelist.map(w => w.email);
+
+  // Test mode - only send to first email
+  if (testMode) {
+    const testEmail = emails[0];
+    return handleAdminSendEmail({
+      ...req,
+      body: { to: testEmail, subject: `[TEST] ${subject}`, html, text, from }
+    }, res);
+  }
+
+  // Send to all beta users
+  return handleAdminSendEmail({
+    ...req,
+    body: { to: emails, subject, html, text, from }
+  }, res);
+}
+
 // ============ MAIN HANDLER ============
 export default async function handler(req, res) {
   if (handlePreflight(req, res)) return;
@@ -285,6 +414,9 @@ export default async function handler(req, res) {
       if (action === 'admin-list') {
         return await handleAdminListUsers(req, res);
       }
+      if (action === 'admin-list-beta') {
+        return await handleAdminListBeta(req, res);
+      }
       return await handleGetBalance(req, res);
     }
 
@@ -296,6 +428,10 @@ export default async function handler(req, res) {
           return await handleSyncStake(req, res);
         case 'admin-adjust':
           return await handleAdminAdjustCredits(req, res);
+        case 'admin-send-email':
+          return await handleAdminSendEmail(req, res);
+        case 'admin-send-beta':
+          return await handleAdminSendBeta(req, res);
         default:
           return res.status(400).json({ error: 'Invalid action' });
       }
