@@ -73,12 +73,10 @@ export default async function handler(req, res) {
   try {
     // Determine the app URL from environment or request headers
     let appUrl = 'https://amulet-dapp.vercel.app';
-    if (process.env.VITE_APP_URL) {
-      appUrl = process.env.VITE_APP_URL;
+    if (req.headers.origin && req.headers.origin.startsWith('http')) {
+      appUrl = req.headers.origin.trim();
     } else if (process.env.VERCEL_URL) {
-      appUrl = `https://${process.env.VERCEL_URL}`;
-    } else if (req.headers.origin && req.headers.origin.startsWith('http')) {
-      appUrl = req.headers.origin;
+      appUrl = `https://${process.env.VERCEL_URL.trim()}`;
     }
 
     // Use fetch directly to Stripe API
