@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { useAccount } from "wagmi";
 import { listProducts } from "../../services/ProductsService";
 import { useCredits } from "../../contexts/CreditsContext";
+import { useCart } from "../../store/CartContext";
 import styles from "./AgentChat.module.css";
 
 export default function AgentChat() {
@@ -20,6 +21,7 @@ export default function AgentChat() {
   const location = useLocation();
   const { address } = useAccount();
   const { updateCredits } = useCredits();
+  const { addItem } = useCart();
 
   // Load all products once
   useEffect(() => {
@@ -229,11 +231,9 @@ export default function AgentChat() {
                               if (!product) return null;
                               return (
                                 <div key={product.id} className={styles.productCard}>
-                                  <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className={styles.productImage}
-                                  />
+                                  <div className={styles.productImagePlaceholder}>
+                                    <span className={styles.productSkillBadge}>{product.skill || '💊'}</span>
+                                  </div>
                                   <div className={styles.productMeta}>
                                     <div className={styles.productName}>{product.name}</div>
                                     <div className={styles.productPrice}>
@@ -257,6 +257,14 @@ export default function AgentChat() {
                                           alt=""
                                           className={styles.actionIcon}
                                         />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        className={styles.addToCartButton}
+                                        aria-label={`Add ${product.name} to cart`}
+                                        onClick={() => addItem(product, 1)}
+                                      >
+                                        Add to Cart
                                       </button>
                                     </div>
                                   </div>
