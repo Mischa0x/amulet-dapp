@@ -16,30 +16,16 @@ const userGroups = pgTable('user_groups', {
   collectionName: text('collection_name').notNull(),
 });
 
+// Minimal users table for auth - only columns we need
 const users = pgTable('users', {
   id: serial('id').primaryKey(),
-  username: text('username').notNull().unique(),
-  email: text('email').notNull().unique(),
+  username: text('username').notNull(),
+  email: text('email').notNull(),
   password: text('password_hash').notNull(),
   passwordSalt: text('password_salt'),
-  bioSex: text('bio_sex'),
-  age: integer('age'),
-  firstLine: text('first_line'),
-  secondLine: text('second_line'),
-  city: text('city'),
-  state: text('state'),
-  zipCode: text('zip_code'),
-  height: text('height'),
-  weight: text('weight'),
-  activityLevel: text('activity_level'),
-  healthState: text('health_state'),
-  signupDate: timestamp('signup_date').defaultNow().notNull(),
   lastLogin: timestamp('last_login'),
-  emailVerified: boolean('email_verified').default(false),
-  accountStatus: text('account_status').default('pending'),
-  authProvider: text('auth_provider').default('local'),
-  googleId: text('google_id').unique(),
-  userGroupId: integer('user_group_id'),
+  emailVerified: boolean('email_verified'),
+  createdAt: timestamp('created_at'),
 });
 
 const signupWhitelist = pgTable('signup_whitelist', {
@@ -132,8 +118,8 @@ async function handleRegister(req, res) {
     username,
     password: hash,
     passwordSalt: salt,
-    accountStatus: 'active',
-    emailVerified: true, // Auto-verify whitelisted users
+    emailVerified: true,
+    createdAt: new Date(),
   }).returning();
 
   return res.status(201).json({
