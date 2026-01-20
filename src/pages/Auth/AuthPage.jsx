@@ -1,6 +1,8 @@
 // pages/Auth/AuthPage.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 import styles from "./AuthPage.module.css";
 import logo from "/assets/blue_logo_transparent_square.png";
 
@@ -12,6 +14,15 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { openConnectModal } = useConnectModal();
+  const { isConnected } = useAccount();
+
+  // Redirect to agent page when wallet connects
+  useEffect(() => {
+    if (isConnected) {
+      navigate("/agent");
+    }
+  }, [isConnected, navigate]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -236,7 +247,11 @@ export default function AuthPage() {
                 <span className={styles.dividerLine} />
               </div>
 
-              <button type="button" className={styles.secondaryButton}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={openConnectModal}
+              >
                 CONNECT WALLET
               </button>
 
