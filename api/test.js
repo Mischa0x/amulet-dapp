@@ -50,6 +50,19 @@ export default async function handler(req, res) {
       results.whitelist_sample = { error: e.message };
     }
 
+    // Test 5: Users table columns
+    try {
+      const cols = await sql`
+        SELECT column_name, data_type
+        FROM information_schema.columns
+        WHERE table_name = 'users'
+        ORDER BY ordinal_position
+      `;
+      results.users_columns = cols;
+    } catch (e) {
+      results.users_columns = { error: e.message };
+    }
+
     return res.status(200).json(results);
   } catch (error) {
     return res.status(500).json({ error: error.message });
