@@ -1,5 +1,5 @@
 // pages/Auth/AuthPage.jsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
@@ -16,13 +16,6 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const { openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
-
-  // Redirect to agent page when wallet connects
-  useEffect(() => {
-    if (isConnected) {
-      navigate("/agent");
-    }
-  }, [isConnected, navigate]);
 
   // Form state
   const [formData, setFormData] = useState({
