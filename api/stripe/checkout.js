@@ -1,20 +1,6 @@
 // POST /api/stripe/checkout - Create Stripe checkout session for credit purchases
-import Stripe from 'stripe';
 import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../../lib/apiUtils.js';
 import { logError } from '../../lib/logger.js';
-
-// Initialize Stripe lazily to ensure env vars are loaded
-let stripe = null;
-function getStripe() {
-  if (!stripe) {
-    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-12-18.acacia',
-      timeout: 30000,
-      maxNetworkRetries: 2,
-    });
-  }
-  return stripe;
-}
 
 // Credit packages (matching frontend TokenPage.jsx)
 const PACKAGES = {
@@ -92,30 +78,40 @@ export default async function handler(req, res) {
       || (req.headers.referer && new URL(req.headers.referer).origin)
       || 'https://amulet-dapp.vercel.app';
 
-    const session = await getStripe().checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: pkg.name,
-              description: pkg.description,
-            },
-            unit_amount: pkg.price,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${appUrl}/token?success=true&credits=${pkg.credits}`,
-      cancel_url: `${appUrl}/token?canceled=true`,
-      metadata: {
-        walletAddress: normalizedAddress,
-        packageId,
-        credits: pkg.credits.toString(),
+    // Use fetch directly to Stripe API
+    const params = new URLSearchParams();
+    params.append('payment_method_types[]', 'card');
+    params.append('line_items[0][price_data][currency]', 'usd');
+    params.append('line_items[0][price_data][product_data][name]', pkg.name);
+    params.append('line_items[0][price_data][product_data][description]', pkg.description);
+    params.append('line_items[0][price_data][unit_amount]', pkg.price.toString());
+    params.append('line_items[0][quantity]', '1');
+    params.append('mode', 'payment');
+    params.append('success_url', `${appUrl}/token?success=true&credits=${pkg.credits}`);
+    params.append('cancel_url', `${appUrl}/token?canceled=true`);
+    params.append('metadata[walletAddress]', normalizedAddress);
+    params.append('metadata[packageId]', packageId);
+    params.append('metadata[credits]', pkg.credits.toString());
+
+    const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
+      body: params.toString(),
     });
+
+    const session = await stripeResponse.json();
+
+    if (!stripeResponse.ok) {
+      logError('api/stripe/checkout', 'Stripe API error', { error: session });
+      return res.status(500).json({
+        error: 'Failed to create checkout session',
+        details: session.error?.message || 'Unknown error',
+        type: session.error?.type,
+      });
+    }
 
     return res.status(200).json({
       sessionId: session.id,
@@ -125,15 +121,10 @@ export default async function handler(req, res) {
   } catch (error) {
     logError('api/stripe/checkout', 'Stripe checkout error', {
       message: error.message,
-      type: error.type,
-      code: error.code,
-      statusCode: error.statusCode,
     });
     return res.status(500).json({
       error: 'Failed to create checkout session',
       details: error.message,
-      type: error.type,
-      code: error.code,
     });
   }
 }
