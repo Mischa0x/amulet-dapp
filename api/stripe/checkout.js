@@ -3,7 +3,14 @@ import Stripe from 'stripe';
 import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../../lib/apiUtils.js';
 import { logError } from '../../lib/logger.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Initialize Stripe lazily to ensure env vars are loaded
+let stripe = null;
+function getStripe() {
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return stripe;
+}
 
 // Credit packages (matching frontend TokenPage.jsx)
 const PACKAGES = {
@@ -81,7 +88,7 @@ export default async function handler(req, res) {
       || (req.headers.referer && new URL(req.headers.referer).origin)
       || 'https://amulet-dapp.vercel.app';
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
@@ -112,7 +119,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    logError('api/stripe/checkout', 'Stripe checkout error', { error });
-    return res.status(500).json({ error: 'Failed to create checkout session' });
+    logError('api/stripe/checkout', 'Stripe checkout error', { error: error.message, stack: error.stack });
+    return res.status(500).json({ error: 'Failed to create checkout session', details: error.message });
   }
 }
