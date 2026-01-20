@@ -10,6 +10,8 @@ import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from
 import { logError, logWarn } from '../lib/logger.js';
 import { PRODUCTS } from '../lib/products.js';
 
+const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+
 const SYSTEM_PROMPT = `You are Dr. Alex, a millennial physician specializing in longevity medicine. You're always positive, supportive, and genuinely want to help people optimize their health and extend their healthspan.
 
 Your communication style:
