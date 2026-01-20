@@ -3,11 +3,58 @@
  * POST /api/auth?action=login
  * POST /api/auth?action=register
  */
-import { db } from '../../lib/db.js';
-import { users, signupWhitelist } from '../../lib/schema.js';
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+import { pgTable, serial, text, timestamp, boolean, integer } from 'drizzle-orm/pg-core';
 import { eq, or } from 'drizzle-orm';
 import crypto from 'crypto';
 import { SignJWT } from 'jose';
+
+// Inline table definitions for Vercel bundling
+const userGroups = pgTable('user_groups', {
+  id: serial('id').primaryKey(),
+  collectionName: text('collection_name').notNull(),
+});
+
+const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  username: text('username').notNull().unique(),
+  email: text('email').notNull().unique(),
+  password: text('password_hash').notNull(),
+  passwordSalt: text('password_salt'),
+  bioSex: text('bio_sex'),
+  age: integer('age'),
+  firstLine: text('first_line'),
+  secondLine: text('second_line'),
+  city: text('city'),
+  state: text('state'),
+  zipCode: text('zip_code'),
+  height: text('height'),
+  weight: text('weight'),
+  activityLevel: text('activity_level'),
+  healthState: text('health_state'),
+  signupDate: timestamp('signup_date').defaultNow().notNull(),
+  lastLogin: timestamp('last_login'),
+  emailVerified: boolean('email_verified').default(false),
+  accountStatus: text('account_status').default('pending'),
+  authProvider: text('auth_provider').default('local'),
+  googleId: text('google_id').unique(),
+  userGroupId: integer('user_group_id'),
+});
+
+const signupWhitelist = pgTable('signup_whitelist', {
+  id: serial('id').primaryKey(),
+  email: text('email').notNull().unique(),
+  inviteCode: text('invite_code'),
+  used: boolean('used').default(false),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Create DB connection
+function getDb() {
+  const sql = neon(process.env.DATABASE_URL);
+  return drizzle(sql);
+}
 
 // Scrypt password hashing
 async function hashPassword(password) {
@@ -32,14 +79,10 @@ async function verifyPassword(password, storedHash, salt) {
   return hash === storedHash;
 }
 
-// Generate JWT token
-async function generateToken(user) {
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'amulet-secret-key');
-  const token = await new SignJWT({
-    userId: user.id,
-    email: user.email,
-    username: user.username
-  })
+// Create JWT token
+async function createToken(userId, email) {
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+  const token = await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
@@ -47,148 +90,114 @@ async function generateToken(user) {
   return token;
 }
 
-// Handle registration
+// CORS headers
+function setCors(req, res) {
+  const origin = req.headers.origin || '*';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+}
+
+// ============ REGISTER ============
 async function handleRegister(req, res) {
-  const { username, email, password, firstName, lastName } = req.body;
+  const { email, password, username } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+  if (!email || !password || !username) {
+    return res.status(400).json({ message: 'Email, password, and username are required' });
   }
 
-  // Check if email already exists
-  const existingUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email.toLowerCase()))
-    .limit(1);
+  const db = getDb();
 
-  if (existingUser.length > 0) {
-    return res.status(409).json({ message: 'Email already registered' });
+  // Check if email is whitelisted
+  const whitelist = await db.select().from(signupWhitelist)
+    .where(eq(signupWhitelist.email, email.toLowerCase()));
+
+  if (whitelist.length === 0) {
+    return res.status(403).json({ message: 'Email not whitelisted. Please request access.' });
   }
 
-  // Check whitelist (optional - skip in dev)
-  const isDev = process.env.NODE_ENV !== 'production';
-  if (!isDev) {
-    const whitelisted = await db
-      .select()
-      .from(signupWhitelist)
-      .where(eq(signupWhitelist.email, email.toLowerCase()))
-      .limit(1);
+  if (whitelist[0].used) {
+    return res.status(403).json({ message: 'This invite has already been used.' });
+  }
 
-    if (whitelisted.length === 0) {
-      return res.status(403).json({
-        message: 'Your account is awaiting whitelist approval. Please contact the community for early beta access.'
-      });
-    }
+  // Check if user already exists
+  const existing = await db.select().from(users)
+    .where(or(eq(users.email, email.toLowerCase()), eq(users.username, username)));
+
+  if (existing.length > 0) {
+    return res.status(409).json({ message: 'User with this email or username already exists' });
   }
 
   // Hash password
   const { hash, salt } = await hashPassword(password);
 
   // Create user
-  const [newUser] = await db
-    .insert(users)
-    .values({
-      username: username || email.split('@')[0],
-      email: email.toLowerCase(),
-      password: hash,
-      passwordSalt: salt,
-      firstName: firstName || null,
-      lastName: lastName || null,
-      emailVerified: isDev,
-      accountStatus: isDev ? 'active' : 'pending',
-      authProvider: 'local',
-    })
-    .returning({ id: users.id, email: users.email, username: users.username });
+  const [newUser] = await db.insert(users).values({
+    email: email.toLowerCase(),
+    username,
+    password: hash,
+    passwordSalt: salt,
+    accountStatus: 'active',
+    emailVerified: true, // Auto-verify whitelisted users
+  }).returning();
+
+  // Mark whitelist as used
+  await db.update(signupWhitelist)
+    .set({ used: true })
+    .where(eq(signupWhitelist.email, email.toLowerCase()));
 
   return res.status(201).json({
     message: 'Account created successfully',
-    user: {
-      id: newUser.id,
-      email: newUser.email,
-      username: newUser.username,
-    },
+    user: { id: newUser.id, email: newUser.email, username: newUser.username }
   });
 }
 
-// Handle login
+// ============ LOGIN ============
 async function handleLogin(req, res) {
-  const { username, email, password } = req.body;
-  const identifier = username || email;
+  const { email, password } = req.body;
 
-  if (!identifier || !password) {
-    return res.status(400).json({ message: 'Email/username and password are required' });
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
   }
 
-  // Find user by email or username
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(
-      or(
-        eq(users.email, identifier.toLowerCase()),
-        eq(users.username, identifier)
-      )
-    )
-    .limit(1);
+  const db = getDb();
+
+  // Find user
+  const [user] = await db.select().from(users)
+    .where(eq(users.email, email.toLowerCase()));
 
   if (!user) {
-    return res.status(401).json({ message: 'Invalid credentials' });
-  }
-
-  // Check email verification
-  if (!user.emailVerified) {
-    return res.status(401).json({
-      message: 'Please verify your email before logging in',
-      emailVerified: false
-    });
-  }
-
-  // Check account status
-  if (user.accountStatus !== 'active') {
-    return res.status(401).json({
-      message: 'Account is not active',
-      accountStatus: user.accountStatus
-    });
+    return res.status(401).json({ message: 'Invalid email or password' });
   }
 
   // Verify password
   const isValid = await verifyPassword(password, user.password, user.passwordSalt);
   if (!isValid) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+    return res.status(401).json({ message: 'Invalid email or password' });
   }
 
   // Update last login
-  await db
-    .update(users)
+  await db.update(users)
     .set({ lastLogin: new Date() })
     .where(eq(users.id, user.id));
 
-  // Generate token
-  const token = await generateToken(user);
+  // Create token
+  const token = await createToken(user.id, user.email);
 
   // Set cookie
-  res.setHeader('Set-Cookie', `token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`);
+  res.setHeader('Set-Cookie', `auth_token=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}`);
 
   return res.status(200).json({
     message: 'Login successful',
-    token,
-    user: {
-      id: user.id,
-      email: user.email,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    },
+    user: { id: user.id, email: user.email, username: user.username },
+    token
   });
 }
 
+// ============ MAIN HANDLER ============
 export default async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  setCors(req, res);
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -198,23 +207,22 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  try {
-    const action = req.query.action || req.body.action;
+  const action = req.query.action;
 
-    if (action === 'register') {
-      return await handleRegister(req, res);
-    } else if (action === 'login') {
-      return await handleLogin(req, res);
-    } else {
-      return res.status(400).json({ message: 'Invalid action. Use ?action=login or ?action=register' });
+  try {
+    switch (action) {
+      case 'register':
+        return await handleRegister(req, res);
+      case 'login':
+        return await handleLogin(req, res);
+      default:
+        return res.status(400).json({ message: 'Invalid action. Use ?action=register or ?action=login' });
     }
   } catch (error) {
     console.error('Auth error:', error);
-    // Temporarily show error for debugging
     return res.status(500).json({
       message: 'Internal server error',
-      debug: error.message,
-      stack: error.stack?.split('\n').slice(0, 3)
+      debug: error.message
     });
   }
 }
