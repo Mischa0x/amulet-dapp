@@ -479,6 +479,31 @@ display: none;
   opacity: 0.8;
 }
 
+.walletPrompt {
+  margin-top: 20px;
+  padding: 16px 24px;
+  background: rgba(29, 122, 252, 0.1);
+  border: 1px solid rgba(29, 122, 252, 0.3);
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.walletPrompt p {
+  margin: 0;
+  color: var(--brand-blue-dark);
+  font-weight: 500;
+  opacity: 1;
+}
+
+.composerDisabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.composerDisabled .inputText {
+  cursor: not-allowed;
+}
+
 /* Markdown content styling - uses theme variables that auto-swap */
 .markdownContent {
   font-size: 15px;

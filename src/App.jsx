@@ -26,6 +26,7 @@ const BlogPage = lazy(() => import('./pages/Blog/BlogPage'));
 const BlogPostPage = lazy(() => import('./pages/Blog/BlogPostPage'));
 const ReferralLanding = lazy(() => import('./pages/Referral/ReferralLanding'));
 const AuthPage = lazy(() => import('./pages/Auth/AuthPage'));
+const AdminPage = lazy(() => import('./pages/Admin/AdminPage'));
 
 // Simple loading fallback
 const PageLoader = () => (
@@ -64,6 +65,7 @@ function App() {
                   <Route path="/visits" element={<Visits />} />
                   <Route path="/token" element={<TokenPage />} />
                   <Route path="/rewards" element={<RewardsPage />} />
+                  <Route path="/admin" element={<AdminPage />} />
                 </Route>
                 <Route path="/dashboard" element={<Dashboard />} />
               </Route>

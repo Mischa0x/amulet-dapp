@@ -1,5 +1,6 @@
 // AgentSidebar.jsx
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./AgentSidebar.module.css";
 import ThemeToggle from "../../components/ThemeToggle";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -14,6 +15,23 @@ export default function AgentSidebar({
   setDrawerOpen,
 }) {
   const panelRef = useRef(null);
+  const navigate = useNavigate();
+
+  // Check if user is email authenticated
+  const [isEmailAuth, setIsEmailAuth] = useState(false);
+
+  useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
+    setIsEmailAuth(!!authToken);
+  }, []);
+
+  // Logout function for email-authenticated users
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    setIsEmailAuth(false);
+    navigate('/');
+  };
 
   // Reflect state on body
   useEffect(() => {
@@ -208,67 +226,73 @@ export default function AgentSidebar({
               </div>
             </div>
 
-            <div
-              className={styles.buttonCardTeal2}
-              role="button"
-              tabIndex={0}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                onNavigate?.("/orderhistory");
-                closeDrawerIfMobile();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+            {/* Order History - only visible for email-authenticated users */}
+            {isEmailAuth && (
+              <div
+                className={styles.buttonCardTeal2}
+                role="button"
+                tabIndex={0}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
                   onNavigate?.("/orderhistory");
                   closeDrawerIfMobile();
-                }
-              }}
-              aria-label="Open Order History"
-              title="Order History"
-            >
-              <img
-                className={styles.icon24}
-                src="/assets/orderHistoryIcon.svg"
-                alt=""
-              />
-              <div className={styles.frame}>
-                <div className={styles.shopSupplements}>Order History</div>
-                <div className={styles.longevityEnhaced}>
-                  Check your orders
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    onNavigate?.("/orderhistory");
+                    closeDrawerIfMobile();
+                  }
+                }}
+                aria-label="Open Order History"
+                title="Order History"
+              >
+                <img
+                  className={styles.icon24}
+                  src="/assets/orderHistoryIcon.svg"
+                  alt=""
+                />
+                <div className={styles.frame}>
+                  <div className={styles.shopSupplements}>Order History</div>
+                  <div className={styles.longevityEnhaced}>
+                    Check your orders
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div
-              className={styles.buttonCardTeal3}
-              role="button"
-              tabIndex={0}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                onNavigate?.("/visits");
-                closeDrawerIfMobile();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
+            {/* View Visits - only visible for email-authenticated users */}
+            {isEmailAuth && (
+              <div
+                className={styles.buttonCardTeal3}
+                role="button"
+                tabIndex={0}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
                   onNavigate?.("/visits");
                   closeDrawerIfMobile();
-                }
-              }}
-              aria-label="Open Visits"
-              title="View Visits"
-            >
-              <img
-                className={styles.icon24}
-                src="/assets/viewVisitsIcon.svg"
-                alt=""
-              />
-              <div className={styles.frame}>
-                <div className={styles.shopSupplements2}>View Visits</div>
-                <div className={styles.longevityEnhaced2}>
-                  Track medical history
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    onNavigate?.("/visits");
+                    closeDrawerIfMobile();
+                  }
+                }}
+                aria-label="Open Visits"
+                title="View Visits"
+              >
+                <img
+                  className={styles.icon24}
+                  src="/assets/viewVisitsIcon.svg"
+                  alt=""
+                />
+                <div className={styles.frame}>
+                  <div className={styles.shopSupplements2}>View Visits</div>
+                  <div className={styles.longevityEnhaced2}>
+                    Track medical history
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div
               className={styles.buttonCardGold}
@@ -366,6 +390,21 @@ export default function AgentSidebar({
 
           <div className={styles.sidebarFooter}>
             <ThemeToggle />
+            {isEmailAuth && (
+              <button
+                className={styles.logoutButton}
+                onClick={handleLogout}
+                aria-label="Logout"
+                title="Logout"
+              >
+                <img
+                  className={styles.icon16}
+                  src="/assets/logout-icon.svg"
+                  alt=""
+                />
+                <span className={styles.logoutLabel}>Logout</span>
+              </button>
+            )}
             <div className={styles.connectWrapper}>
               <ConnectButton />
             </div>

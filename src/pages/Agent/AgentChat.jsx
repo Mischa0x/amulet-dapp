@@ -19,9 +19,12 @@ export default function AgentChat() {
   const abortControllerRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { updateCredits } = useCredits();
   const { addItem } = useCart();
+
+  // Check if wallet is connected (required for queries)
+  const canQuery = isConnected;
 
   // Load all products once
   useEffect(() => {
@@ -87,6 +90,11 @@ export default function AgentChat() {
   const sendMessage = useCallback(async (text) => {
     const userText = text || draft.trim();
     if (!userText || isLoading) return;
+
+    // Block queries if wallet not connected
+    if (!canQuery) {
+      return;
+    }
 
     // Abort any previous request
     if (abortControllerRef.current) {
@@ -200,6 +208,11 @@ export default function AgentChat() {
               <div className={styles.welcomeMessage}>
                 <h2>Welcome to Amulette</h2>
                 <p>How can I help you live forever?</p>
+                {!canQuery && (
+                  <div className={styles.walletPrompt}>
+                    <p>Connect your wallet to start chatting with Dr. Alex</p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -285,12 +298,18 @@ export default function AgentChat() {
       </div>
 
       {/* Composer */}
-      <div className={styles.composer}>
+      <div className={`${styles.composer} ${!canQuery ? styles.composerDisabled : ''}`}>
         <textarea
           ref={inputRef}
           aria-label="Message"
           className={styles.inputText}
-          placeholder={isLoading ? "Dr. Alex is typing..." : "Describe your health concern..."}
+          placeholder={
+            !canQuery
+              ? "Connect wallet to chat..."
+              : isLoading
+                ? "Dr. Alex is typing..."
+                : "Describe your health concern..."
+          }
           value={draft}
           rows={1}
           onChange={handleDraftChange}
@@ -300,7 +319,7 @@ export default function AgentChat() {
               sendMessage();
             }
           }}
-          disabled={isLoading}
+          disabled={isLoading || !canQuery}
         />
 
         <div className={styles.composerActions}>
@@ -308,7 +327,7 @@ export default function AgentChat() {
             className={styles.sendButton}
             onClick={() => sendMessage()}
             aria-label="Send"
-            disabled={!draft.trim() || isLoading}
+            disabled={!draft.trim() || isLoading || !canQuery}
           >
             <img
               className={styles.icon24}
