@@ -351,8 +351,8 @@
   padding: 6px 12px;
   border: none;
   border-radius: var(--alias-border-radius-md);
-  background: rgba(255, 100, 100, 0.1);
-  color: #d32f2f;
+  background: var(--brand-blue-llighter);
+  color: var(--brand-black);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
@@ -360,7 +360,7 @@
 }
 
 .logoutButton:hover {
-  background: rgba(255, 100, 100, 0.2);
+  background: var(--brand-blue-lighter);
 }
 
 .logoutLabel {
