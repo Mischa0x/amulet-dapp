@@ -1510,3 +1510,45 @@ AGENTS_API_URL=https://peakhealth-agents-production.railway.app
 ```
 Add environment variables to Vercel and test the complete visits flow
 ```
+
+## Session History (2026-01-20) - Bug Fixes
+
+### Issues Fixed
+
+#### 1. Agent Chat "Trouble Connecting" Error
+**Problem:** Users on `/agent` page were getting "Sorry, I'm having trouble connecting right now. Please try again in a moment."
+
+**Root Cause:** `ANTHROPIC_API_URL` constant was used in `api/chat.js` line 168 but never defined, causing a `ReferenceError`.
+
+**Fix:** Added missing constant at top of file:
+```javascript
+const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+```
+
+**File Modified:** `api/chat.js`
+
+**Commit:** `84ba276` - fix: Add missing ANTHROPIC_API_URL constant
+
+#### 2. Auth Page "Connect Wallet" Button Not Working
+**Problem:** The "CONNECT WALLET" button on `/auth` page had no functionality - it was a placeholder with no click handler.
+
+**Fix:**
+- Added `useConnectModal` hook from RainbowKit
+- Added `useAccount` hook from wagmi
+- Added `useEffect` to redirect to `/agent` when wallet connects
+- Added `onClick={openConnectModal}` to button
+
+**File Modified:** `src/pages/Auth/AuthPage.jsx`
+
+**Commit:** `7d46f2f` - fix: Connect wallet button now opens RainbowKit modal
+
+### Commits Summary
+| Commit | Description |
+|--------|-------------|
+| `84ba276` | fix: Add missing ANTHROPIC_API_URL constant |
+| `7d46f2f` | fix: Connect wallet button now opens RainbowKit modal |
+
+### To Resume
+```
+Continue with any additional Amulet DApp features or bug fixes
+```
