@@ -74,7 +74,7 @@ export default function AuthPage() {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-            username: formData.email, // Backend accepts email as username
+            email: formData.email,
             password: formData.password,
           }),
         });
