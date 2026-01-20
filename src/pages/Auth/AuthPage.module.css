@@ -177,7 +177,10 @@ color: var(--brand-white-always);
   outline: none;
   transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
-.input::placeholder { color: rgba(0, 0, 0, 0.4); }
+.input::placeholder {
+  color: var(--brand-black);
+  opacity: 0.5;
+}
 .input:focus {
   border-color: var(--brand-blue-default);
   box-shadow: 0 0 0 1px rgba(0, 123, 255, 0.18);
@@ -357,9 +360,9 @@ justify-content: center;
   z-index: 1;
 }
 
-/* (el resto de tu CSS de Auth que ya tenías) */
-input, select, textarea{
-    color: #ff0000;
+/* Input text color - theme aware */
+input, select, textarea {
+  color: var(--brand-black);
 }
 
 @media (max-width: 1250px) {
