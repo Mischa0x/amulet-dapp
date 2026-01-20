@@ -8,44 +8,27 @@ export default async function handler(req, res) {
     const sql = neon(process.env.DATABASE_URL);
     const results = {};
 
-    // Get enum values for account_status
-    try {
-      const enums = await sql`
-        SELECT e.enumlabel
-        FROM pg_type t
-        JOIN pg_enum e ON t.oid = e.enumtypid
-        WHERE t.typname = 'account_status'
-      `;
-      results.account_status_values = enums.map(e => e.enumlabel);
-    } catch (e) {
-      results.account_status_values = { error: e.message };
-    }
-
-    // Get enum values for auth_provider
-    try {
-      const enums = await sql`
-        SELECT e.enumlabel
-        FROM pg_type t
-        JOIN pg_enum e ON t.oid = e.enumtypid
-        WHERE t.typname = 'auth_provider'
-      `;
-      results.auth_provider_values = enums.map(e => e.enumlabel);
-    } catch (e) {
-      results.auth_provider_values = { error: e.message };
-    }
-
-    // Try insert with account_status
-    if (req.query.test === 'insert') {
+    // Add email to whitelist
+    const emailToAdd = req.query.whitelist;
+    if (emailToAdd) {
       try {
         const result = await sql`
-          INSERT INTO users (username, email, password_hash, password_salt, email_verified, created_at, account_status, auth_provider)
-          VALUES ('testuser999', 'test999@example.com', 'hash', 'salt', true, NOW(), 'active', 'local')
-          RETURNING id, username, email
+          INSERT INTO signup_whitelist (email, created_at)
+          VALUES (${emailToAdd.toLowerCase()}, NOW())
+          ON CONFLICT (email) DO NOTHING
+          RETURNING id, email
         `;
-        results.insert_test = result;
+        results.whitelist_added = result.length > 0 ? result[0] : { message: 'Already whitelisted' };
       } catch (e) {
-        results.insert_test = { error: e.message };
+        results.whitelist_added = { error: e.message };
       }
+    }
+
+    // Check whitelist
+    const checkEmail = req.query.check;
+    if (checkEmail) {
+      const found = await sql`SELECT * FROM signup_whitelist WHERE email = ${checkEmail.toLowerCase()}`;
+      results.whitelist_check = found.length > 0 ? found[0] : { found: false };
     }
 
     return res.status(200).json(results);
