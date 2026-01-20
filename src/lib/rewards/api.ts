@@ -5,9 +5,9 @@
  * Uses real API endpoints with fallback to mock data if API returns empty.
  *
  * Backend endpoints:
- * - GET /api/rewards/leaderboard?epoch={24h|7d|30d|all}
- * - GET /api/rewards/personal?epoch={epoch}&wallet={address}
- * - GET /api/rewards/social-proof?epoch={epoch}
+ * - GET /api/rewards?action=leaderboard&epoch={24h|7d|30d|all}
+ * - GET /api/rewards?action=personal&epoch={epoch}&wallet={address}
+ * - GET /api/rewards?action=social-proof&epoch={epoch}
  */
 
 import type { Epoch, LeaderboardEntry, PersonalStats, SocialProofStats } from './types';
@@ -36,7 +36,7 @@ export async function fetchLeaderboard(
   }
 
   try {
-    const res = await fetch(`/api/rewards/leaderboard?epoch=${epoch}`, { signal });
+    const res = await fetch(`/api/rewards?action=leaderboard&epoch=${epoch}`, { signal });
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();
@@ -78,7 +78,7 @@ export async function fetchPersonalStats(
 
   try {
     const res = await fetch(
-      `/api/rewards/personal?epoch=${epoch}&wallet=${encodeURIComponent(wallet)}`,
+      `/api/rewards?action=personal&epoch=${epoch}&wallet=${encodeURIComponent(wallet)}`,
       { signal }
     );
     if (!res.ok) throw new Error('API error');
@@ -106,7 +106,7 @@ export async function fetchSocialProof(
   }
 
   try {
-    const res = await fetch(`/api/rewards/social-proof?epoch=${epoch}`, { signal });
+    const res = await fetch(`/api/rewards?action=social-proof&epoch=${epoch}`, { signal });
     if (!res.ok) throw new Error('API error');
 
     const data = await res.json();

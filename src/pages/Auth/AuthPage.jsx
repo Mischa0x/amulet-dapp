@@ -42,7 +42,7 @@ export default function AuthPage() {
         }
 
         // Register
-        const response = await fetch(`${API_URL}/api/auth/register`, {
+        const response = await fetch(`${API_URL}/api/auth?action=register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -65,7 +65,7 @@ export default function AuthPage() {
         alert("Account created! Please log in.");
       } else {
         // Login
-        const response = await fetch(`${API_URL}/api/auth/login`, {
+        const response = await fetch(`${API_URL}/api/auth?action=login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",

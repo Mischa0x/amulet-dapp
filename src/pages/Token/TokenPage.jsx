@@ -151,7 +151,7 @@ function TokenPage() {
 
   const syncStakeCredits = async () => {
     try {
-      await fetch('/api/credits/sync-stake', {
+      await fetch('/api/credits?action=sync-stake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address }),
@@ -167,7 +167,7 @@ function TokenPage() {
     if (!address) return;
     setClaimingFree(true);
     try {
-      const res = await fetch('/api/credits/claim', {
+      const res = await fetch('/api/credits?action=claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address }),
