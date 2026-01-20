@@ -214,32 +214,37 @@ async function handleAdminListUsers(req, res) {
     return res.status(401).json({ error: 'Unauthorized - Admin access required' });
   }
 
-  const keys = await kv.keys('credits:*');
-  const users = [];
+  try {
+    const keys = await kv.keys('credits:*');
+    const users = [];
 
-  for (const key of keys) {
-    const address = key.replace('credits:', '');
-    const creditData = await kv.get(key);
-    if (creditData) {
-      users.push({
-        address,
-        balance: creditData.balance || 0,
-        freeClaimedAt: creditData.freeClaimedAt || null,
-        stakedCredits: creditData.stakedCredits || 0,
-        purchasedCredits: creditData.purchasedCredits || 0,
-        totalUsed: creditData.totalUsed || 0,
-      });
+    for (const key of keys) {
+      const address = key.replace('credits:', '');
+      const creditData = await kv.get(key);
+      if (creditData) {
+        users.push({
+          address,
+          balance: creditData.balance || 0,
+          freeClaimedAt: creditData.freeClaimedAt || null,
+          stakedCredits: creditData.stakedCredits || 0,
+          purchasedCredits: creditData.purchasedCredits || 0,
+          totalUsed: creditData.totalUsed || 0,
+        });
+      }
     }
+
+    users.sort((a, b) => b.balance - a.balance);
+
+    return res.status(200).json({
+      totalUsers: users.length,
+      totalCreditsInCirculation: users.reduce((sum, u) => sum + u.balance, 0),
+      totalCreditsUsed: users.reduce((sum, u) => sum + u.totalUsed, 0),
+      users,
+    });
+  } catch (error) {
+    logError('api/credits', 'Admin list users error', { error: error.message, stack: error.stack });
+    return res.status(500).json({ error: 'Failed to list users', details: error.message });
   }
-
-  users.sort((a, b) => b.balance - a.balance);
-
-  return res.status(200).json({
-    totalUsers: users.length,
-    totalCreditsInCirculation: users.reduce((sum, u) => sum + u.balance, 0),
-    totalCreditsUsed: users.reduce((sum, u) => sum + u.totalUsed, 0),
-    users,
-  });
 }
 
 // ============ ADMIN: ADJUST CREDITS ============
