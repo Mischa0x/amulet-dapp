@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amulet - Investor Brief</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 50px;
+      page-break-after: always;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+    }
+
+    /* Cover Page */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      background: linear-gradient(135deg, #1D7AFC 0%, #0A4A8C 100%);
+      color: white;
+      padding: 60px;
+    }
+
+    .cover h1 {
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+
+    .cover .tagline {
+      font-size: 24px;
+      font-weight: 300;
+      opacity: 0.9;
+      margin-bottom: 60px;
+    }
+
+    .cover .subtitle {
+      font-size: 18px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      opacity: 0.8;
+    }
+
+    .cover .date {
+      position: absolute;
+      bottom: 40px;
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    /* Section Headers */
+    h2 {
+      font-size: 32px;
+      font-weight: 600;
+      color: #1D7AFC;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #1D7AFC;
+    }
+
+    h3 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #4a4a5a;
+      margin-bottom: 20px;
+    }
+
+    /* Feature Cards */
+    .feature {
+      margin-bottom: 50px;
+      page-break-inside: avoid;
+    }
+
+    .feature-image {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      margin-bottom: 20px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .feature-badge {
+      display: inline-block;
+      background: #1D7AFC;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .feature-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 12px;
+    }
+
+    .feature-description {
+      font-size: 15px;
+      color: #5a5a6a;
+      line-height: 1.7;
+    }
+
+    /* Stats Section */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 30px 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #1D7AFC;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #6a6a7a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+      color: #8a8a9a;
+      font-size: 14px;
+    }
+
+    .contact {
+      background: #f8fafc;
+      padding: 40px;
+      border-radius: 12px;
+      margin-top: 40px;
+    }
+
+    .contact h3 {
+      margin-bottom: 20px;
+    }
+
+    .contact p {
+      margin-bottom: 8px;
+    }
+
+    @media print {
+      .page {
+        page-break-after: always;
+      }
+      .cover {
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cover Page -->
+  <div class="cover page">
+    <h1>AMULET</h1>
+    <p class="tagline">AI-Powered Longevity Intelligence Platform</p>
+    <p class="subtitle">Product Demo Brief</p>
+    <p class="date">January 2026</p>
+  </div>
+
+  <!-- Overview Page -->
+  <div class="page">
+    <h2>Platform Overview</h2>
+
+    <p>Amulet is an AI-powered health and longevity platform that combines personalized health consultations, supplement e-commerce, and telehealth services into a unified experience.</p>
+
+    <p>Our platform leverages advanced AI to provide users with actionable health insights while connecting them with quality supplements and medical professionals.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">AI</div>
+        <div class="stat-label">Health Agent</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">Web3</div>
+        <div class="stat-label">Wallet Auth</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">DTC</div>
+        <div class="stat-label">E-Commerce</div>
+      </div>
+    </div>
+
+    <h3>Key Features</h3>
+    <p>
+      <strong>AI Health Consultations</strong> - Chat with our AI health agent for personalized longevity advice and supplement recommendations.<br><br>
+      <strong>Supplement Marketplace</strong> - Curated selection of longevity-focused supplements with direct checkout.<br><br>
+      <strong>Telehealth Integration</strong> - Book and track doctor visits with full medical history.<br><br>
+      <strong>Rewards System</strong> - Earn and track rewards through platform engagement.
+    </p>
+  </div>
+
+  <!-- Feature 1: Landing Page -->
+  <div class="page">
+    <h2>Product Demos</h2>
+
+    <div class="feature">
+      <span class="feature-badge">Landing Experience</span>
+      <h3 class="feature-title">Landing Page</h3>
+      <img src="Landing Page.jpg" alt="Amulet Landing Page" class="feature-image">
+      <p class="feature-description">
+        A modern, conversion-optimized landing page that introduces users to the Amulet platform. Features a clean hero section with clear value proposition, interactive demo of the AI chat functionality, and seamless onboarding flow. Users can connect their wallet or sign up with email to get started.
+      </p>
+    </div>
+  </div>
+
+  <!-- Feature 2: Login -->
+  <div class="page">
+    <div class="feature">
+      <span class="feature-badge">Authentication</span>
+      <h3 class="feature-title">Multi-Auth Login System</h3>
+      <img src="Login.jpg" alt="Amulet Login" class="feature-image">
+      <p class="feature-description">
+        Flexible authentication supporting both traditional email/password login and Web3 wallet connection via RainbowKit. Users can choose their preferred authentication method, with seamless session management and secure token handling. Supports multiple wallet providers including MetaMask, Coinbase Wallet, and WalletConnect.
+      </p>
+    </div>
+  </div>
+
+  <!-- Feature 3: Shop Supplements -->
+  <div class="page">
+    <div class="feature">
+      <span class="feature-badge">E-Commerce</span>
+      <h3 class="feature-title">Supplement Marketplace</h3>
+      <img src="Shop Supplements.jpg" alt="Shop Supplements" class="feature-image">
+      <p class="feature-description">
+        A curated catalog of longevity-focused supplements with detailed product information, pricing, and direct add-to-cart functionality. Products are organized by category (cognitive, sleep, energy, etc.) with AI-powered recommendations based on user health goals. Integrated with Stripe for secure payment processing.
+      </p>
+    </div>
+  </div>
+
+  <!-- Feature 4: Buy Credits -->
+  <div class="page">
+    <div class="feature">
+      <span class="feature-badge">Monetization</span>
+      <h3 class="feature-title">Credit Purchase System</h3>
+      <img src="Buy Credits with Stripe.jpg" alt="Buy Credits with Stripe" class="feature-image">
+      <p class="feature-description">
+        Users can purchase compute credits to access AI health consultations. Multiple credit packages available with volume discounts. Seamless Stripe checkout integration with automatic credit delivery. Credits can also be earned through staking tokens or claiming free monthly allocations.
+      </p>
+    </div>
+  </div>
+
+  <!-- Feature 5: Doctor Visits -->
+  <div class="page">
+    <div class="feature">
+      <span class="feature-badge">Telehealth</span>
+      <h3 class="feature-title">Doctor Visit Tracking</h3>
+      <img src="Doctor Visits.jpg" alt="Doctor Visits" class="feature-image">
+      <p class="feature-description">
+        Comprehensive telehealth integration allowing users to schedule, track, and review their medical visits. Full visit history with doctor notes, prescriptions, and follow-up recommendations. Integrated health questionnaires prepare patients for consultations and ensure doctors have relevant context.
+      </p>
+    </div>
+  </div>
+
+  <!-- Feature 6: Rewards -->
+  <div class="page">
+    <div class="feature">
+      <span class="feature-badge">Engagement</span>
+      <h3 class="feature-title">Rewards & Leaderboard</h3>
+      <img src="Track Rewards.png" alt="Track Rewards" class="feature-image">
+      <p class="feature-description">
+        Gamified rewards system that incentivizes platform engagement. Users earn points through AI consultations, purchases, and referrals. Real-time leaderboard displays top users with achievements and tier levels. Social proof elements drive viral growth and community building.
+      </p>
+    </div>
+
+    <div class="contact">
+      <h3>Contact</h3>
+      <p><strong>Website:</strong> amulet-dapp.vercel.app</p>
+      <p><strong>Email:</strong> team@amulet.ai</p>
+    </div>
+
+    <div class="footer">
+      <p>Confidential - For Investor Review Only</p>
+      <p>© 2026 Amulet. All rights reserved.</p>
+    </div>
+  </div>
+
+</body>
+</html>

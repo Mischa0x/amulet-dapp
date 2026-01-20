@@ -2,24 +2,25 @@
 
 **Source:** `github.com/Mischa0x/amulet-dapp`
 **Target:** `github.com/mszsorondo/amulet.ai` (branch: `new_frontend`)
-**Date:** 2026-01-19 (Updated with security audit fixes)
+**Date:** 2026-01-20 (Updated with auth improvements & admin dashboard)
 
 ---
 
 ## Table of Contents
 
 1. [Conflict Analysis](#1-conflict-analysis)
-2. [Security Architecture](#2-security-architecture) *(NEW)*
+2. [Security Architecture](#2-security-architecture)
 3. [Blog System](#3-blog-system)
 4. [Compute Credits Methodology](#4-compute-credits-methodology)
 5. [Query Credit Tracking System](#5-query-credit-tracking-system)
 6. [Stripe Integration](#6-stripe-integration)
-7. [Referral System](#7-referral-system) *(NEW)*
+7. [Referral System](#7-referral-system)
 8. [View Visits Page (Beluga Integration)](#8-view-visits-page-beluga-integration)
 9. [Order History Page (Beluga Integration)](#9-order-history-page-beluga-integration)
 10. [Shop Supplements Page (Beluga Integration)](#10-shop-supplements-page-beluga-integration)
 11. [Environment Variables](#11-environment-variables)
-12. [Migration Checklist](#12-migration-checklist)
+12. [Authentication & Admin System](#12-authentication--admin-system) *(NEW)*
+13. [Migration Checklist](#13-migration-checklist)
 
 ---
 
@@ -979,6 +980,9 @@ VITE_APP_URL=https://your-domain.com
 
 # WalletConnect
 VITE_WALLETCONNECT_PROJECT_ID=your_project_id
+
+# Admin Dashboard (optional)
+ADMIN_SECRET=your_secure_admin_key
 ```
 
 ### Vercel KV Setup
@@ -991,7 +995,87 @@ VITE_WALLETCONNECT_PROJECT_ID=your_project_id
 
 ---
 
-## 12. Migration Checklist
+## 12. Authentication & Admin System
+
+### Overview (Updated 2026-01-20)
+The app supports dual authentication: Web3 wallet connection AND email/password login.
+
+### Authentication Modes
+
+| Mode | Access | Features |
+|------|--------|----------|
+| **Wallet Only** | All pages except Visits/OrderHistory | AI chat (requires wallet for credits), Shop, Rewards |
+| **Email Auth** | All pages | Visits, Order History, Logout button visible |
+| **Both** | Full access | Recommended for full functionality |
+
+### Logout Button
+- Only visible when user is logged in with email (not wallet-only)
+- Located in sidebar footer (bottom left)
+- Clears `authToken` and `user` from localStorage
+- Redirects to landing page
+
+### Query Blocking (Wallet Required)
+- AI chat queries require a connected wallet
+- When wallet disconnected:
+  - Input shows "Connect wallet to chat..."
+  - Send button disabled
+  - Welcome message shows connection prompt
+- Users can still browse shop, rewards, blog, etc.
+
+### Menu Visibility
+| Menu Item | Wallet Only | Email Auth |
+|-----------|-------------|------------|
+| Shop Supplements | ✅ | ✅ |
+| Get Tokens | ✅ | ✅ |
+| Rewards | ✅ | ✅ |
+| Blog | ✅ | ✅ |
+| Order History | ❌ | ✅ |
+| View Visits | ❌ | ✅ |
+
+### Admin Dashboard
+
+**Route:** `/admin`
+
+**Features:**
+- View all users with credit balances
+- Summary stats: total users, credits in circulation, credits used
+- Search users by wallet address
+- Adjust credits (add/subtract) with reason tracking
+- Transaction history per user
+
+**Access Control:**
+Set `ADMIN_SECRET` in Vercel environment variables, then:
+1. Go to `/admin`
+2. Enter admin key in the input field
+3. Key is stored in localStorage for session
+
+**API Endpoints (merged into credits API):**
+```
+GET  /api/credits?action=admin-list     - List all users (admin only)
+POST /api/credits?action=admin-adjust   - Adjust user credits (admin only)
+```
+
+**Request Headers:**
+```
+x-admin-key: {ADMIN_SECRET value}
+```
+
+### Files Modified
+
+```
+src/pages/Agent/AgentSidebar.jsx    - Logout button, menu visibility
+src/pages/Agent/AgentSidebar.module.css
+src/pages/Agent/AgentChat.jsx       - Query blocking when wallet disconnected
+src/pages/Agent/AgentChat.module.css
+src/pages/Admin/AdminPage.jsx       - New admin dashboard
+src/pages/Admin/AdminPage.module.css
+api/credits/index.js                - Admin endpoints added
+public/assets/logout-icon.svg       - New icon
+```
+
+---
+
+## 13. Migration Checklist
 
 ### Phase 0: Security Setup (Do This First)
 
