@@ -1,14 +1,24 @@
 /**
  * Credits API - Combined endpoint
  * GET  /api/credits?address={address} - Get balance
+ * GET  /api/credits?action=admin-list - List all users (admin only)
  * POST /api/credits?action=claim - Claim free credits
  * POST /api/credits?action=sync-stake - Sync staked credits
+ * POST /api/credits?action=admin-adjust - Adjust user credits (admin only)
  */
 import { kv } from '@vercel/kv';
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
 import { setCorsHeaders, handlePreflight, validateAddress, checkRateLimit } from '../../lib/apiUtils.js';
 import { logError } from '../../lib/logger.js';
+
+// Admin check
+function isAdmin(req) {
+  const adminKey = req.headers['x-admin-key'];
+  const adminSecret = process.env.ADMIN_SECRET;
+  if (adminSecret && adminKey === adminSecret) return true;
+  return false;
+}
 
 const FREE_CREDITS = 40;
 const CLAIM_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
@@ -193,6 +203,74 @@ async function handleSyncStake(req, res) {
   });
 }
 
+// ============ ADMIN: LIST ALL USERS ============
+async function handleAdminListUsers(req, res) {
+  if (!isAdmin(req)) {
+    return res.status(401).json({ error: 'Unauthorized - Admin access required' });
+  }
+
+  const keys = await kv.keys('credits:*');
+  const users = [];
+
+  for (const key of keys) {
+    const address = key.replace('credits:', '');
+    const creditData = await kv.get(key);
+    if (creditData) {
+      users.push({
+        address,
+        balance: creditData.balance || 0,
+        freeClaimedAt: creditData.freeClaimedAt || null,
+        stakedCredits: creditData.stakedCredits || 0,
+        purchasedCredits: creditData.purchasedCredits || 0,
+        totalUsed: creditData.totalUsed || 0,
+      });
+    }
+  }
+
+  users.sort((a, b) => b.balance - a.balance);
+
+  return res.status(200).json({
+    totalUsers: users.length,
+    totalCreditsInCirculation: users.reduce((sum, u) => sum + u.balance, 0),
+    totalCreditsUsed: users.reduce((sum, u) => sum + u.totalUsed, 0),
+    users,
+  });
+}
+
+// ============ ADMIN: ADJUST CREDITS ============
+async function handleAdminAdjustCredits(req, res) {
+  if (!isAdmin(req)) {
+    return res.status(401).json({ error: 'Unauthorized - Admin access required' });
+  }
+
+  const { address: rawAddress, amount, reason } = req.body;
+
+  if (!rawAddress) return res.status(400).json({ error: 'Address required' });
+
+  const address = validateAddress(rawAddress);
+  if (!address) return res.status(400).json({ error: 'Invalid address format' });
+
+  if (typeof amount !== 'number' || isNaN(amount)) {
+    return res.status(400).json({ error: 'Valid amount required' });
+  }
+
+  const creditData = await kv.get(`credits:${address}`) || {
+    balance: 0, freeClaimedAt: null, stakedCredits: 0, purchasedCredits: 0, totalUsed: 0,
+  };
+
+  const newBalance = Math.max(0, creditData.balance + amount);
+
+  await kv.set(`credits:${address}`, { ...creditData, balance: newBalance });
+
+  await kv.lpush(`transactions:${address}`, {
+    type: 'admin_adjustment', amount, reason: reason || 'Admin adjustment', timestamp: Date.now(),
+  });
+
+  return res.status(200).json({
+    success: true, address, previousBalance: creditData.balance, newBalance, adjustment: amount,
+  });
+}
+
 // ============ MAIN HANDLER ============
 export default async function handler(req, res) {
   if (handlePreflight(req, res)) return;
@@ -201,20 +279,25 @@ export default async function handler(req, res) {
   }
 
   try {
+    const action = req.query.action || req.body?.action;
+
     if (req.method === 'GET') {
+      if (action === 'admin-list') {
+        return await handleAdminListUsers(req, res);
+      }
       return await handleGetBalance(req, res);
     }
 
     if (req.method === 'POST') {
-      const action = req.query.action || req.body?.action;
-
       switch (action) {
         case 'claim':
           return await handleClaim(req, res);
         case 'sync-stake':
           return await handleSyncStake(req, res);
+        case 'admin-adjust':
+          return await handleAdminAdjustCredits(req, res);
         default:
-          return res.status(400).json({ error: 'Invalid action. Use ?action=claim or ?action=sync-stake' });
+          return res.status(400).json({ error: 'Invalid action' });
       }
     }
 

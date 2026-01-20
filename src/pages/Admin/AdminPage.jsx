@@ -23,10 +23,9 @@ export default function AdminPage() {
     try {
       const adminKey = localStorage.getItem("adminKey") || "";
 
-      const response = await fetch(`${API_URL}/api/admin/users`, {
+      const response = await fetch(`${API_URL}/api/credits?action=admin-list`, {
         headers: {
           "x-admin-key": adminKey,
-          "x-wallet-address": address || "",
         },
       });
 
@@ -58,12 +57,11 @@ export default function AdminPage() {
     try {
       const adminKey = localStorage.getItem("adminKey") || "";
 
-      const response = await fetch(`${API_URL}/api/admin/users?action=adjust-credits`, {
+      const response = await fetch(`${API_URL}/api/credits?action=admin-adjust`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-admin-key": adminKey,
-          "x-wallet-address": address || "",
         },
         body: JSON.stringify({
           address: selectedUser.address,
