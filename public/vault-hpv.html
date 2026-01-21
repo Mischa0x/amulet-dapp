@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DrPepe.ai's Cure to HPV - IP Market</title>
+  <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-card: #1c2128;
+      --bg-input: #0d1117;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --text-primary: #ffffff;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --accent-blue: #1d7afc;
+      --accent-green: #22a06b;
+      --accent-purple: #8270db;
+      --brand-blue: #1d7afc;
+    }
+
+    body {
+      font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--text-primary);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .beta-badge {
+      background: var(--accent-blue);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .network-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .menu-icon {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    /* Title Section */
+    .title-section {
+      margin-bottom: 32px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .vault-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .drpepe-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .drpepe-badge img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: flex;
+      gap: 48px;
+      margin-bottom: 40px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stat-value.green {
+      color: var(--accent-green);
+    }
+
+    /* Main Layout */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 24px;
+    }
+
+    /* Deposit Card */
+    .deposit-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      height: fit-content;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .input-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .input-wrapper {
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper input {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 24px;
+      font-family: inherit;
+      font-weight: 600;
+      width: 60%;
+      outline: none;
+    }
+
+    .input-wrapper input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .token-select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .token-select img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .token-select span {
+      font-weight: 600;
+    }
+
+    .balance-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .slippage-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .slippage-row span {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .slippage-input {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 13px;
+      width: 60px;
+      text-align: center;
+    }
+
+    .deposit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--accent-blue);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .deposit-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Right Column */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Info Card */
+    .info-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .card-icon {
+      font-size: 18px;
+    }
+
+    /* Performance Card */
+    .performance-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .perf-item {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .perf-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .perf-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    /* IP Market Card */
+    .ip-description {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .ip-description ul {
+      margin-top: 12px;
+      padding-left: 20px;
+    }
+
+    .ip-description li {
+      margin-bottom: 8px;
+    }
+
+    /* Strategy Card */
+    .strategy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .strategy-badge img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .strategy-description {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .strategy-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .strategy-stat {
+      background: var(--bg-card);
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    .strategy-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .strategy-stat-value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    /* Addresses */
+    .addresses {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .address-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .address-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .address-value {
+      font-size: 13px;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .copy-icon {
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-row {
+        flex-wrap: wrap;
+        gap: 24px;
+      }
+
+      .addresses {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <a href="#" class="back-link">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M10 12l-4-4 4-4" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+        Back to Vaults
+      </a>
+      <div class="header-right">
+        <span class="beta-badge">Beta</span>
+        <div class="network-badge">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="#627EEA">
+            <circle cx="8" cy="8" r="8"/>
+          </svg>
+          0x5efi...
+        </div>
+        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </div>
+    </header>
+
+    <!-- Title Section -->
+    <section class="title-section">
+      <div class="title-row">
+        <div class="vault-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <h1 class="title">DrPepe.ai's Cure to HPV - IP market</h1>
+        <div class="drpepe-badge">
+          <img src="/assets/blue_logo_transparent_square.png" alt="DrPepe.ai">
+          DrPepe.ai
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-label">Your Wallet</span>
+          <span class="stat-value">$5M</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Your Deposit</span>
+          <span class="stat-value">$1M</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">TVL</span>
+          <span class="stat-value">$5M</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">vAPR</span>
+          <span class="stat-value green">20%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Deposit Card -->
+      <div class="deposit-card">
+        <div class="tabs">
+          <button class="tab active">Deposit</button>
+          <button class="tab">Withdraw</button>
+        </div>
+
+        <label class="input-label">Deposit Amount</label>
+        <div class="input-wrapper">
+          <input type="text" placeholder="0.00" value="4383098209">
+          <div class="token-select">
+            <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
+            <span>USDC</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+              <path d="M3 4.5l3 3 3-3"/>
+            </svg>
+          </div>
+        </div>
+        <div class="balance-row">
+          <span>≈ $5,498,786.00</span>
+          <span></span>
+        </div>
+
+        <div class="slippage-row">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="var(--text-muted)">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" fill="none"/>
+            <path d="M8 4v4l3 2"/>
+          </svg>
+          <span>Adjust Slippage (%)</span>
+          <input type="text" class="slippage-input" value="1%">
+        </div>
+
+        <button class="deposit-btn">Deposit & Stake</button>
+      </div>
+
+      <!-- Right Column -->
+      <div class="right-column">
+        <!-- Performance Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <span class="card-title">Your Performance</span>
+            <span class="card-icon">📈</span>
+          </div>
+          <div class="performance-grid">
+            <div class="perf-item">
+              <div class="perf-label">Your Apy</div>
+              <div class="perf-value">20%</div>
+            </div>
+            <div class="perf-item">
+              <div class="perf-label">Your IP share</div>
+              <div class="perf-value">20%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IP Market Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <span class="card-title">DrPepe.ai's first de-risked, IP market</span>
+            <span class="card-icon">🧬</span>
+          </div>
+          <div class="ip-description">
+            <p>This is DrPepe.ai's first de-risked IP market funding the cure to HPV via repurposed Chloroquine (topical, injection).</p>
+            <ul>
+              <li>Chloroquine is an anti-malaria drug that gained memetic popularity during Covid-19 via Elon Musk, Trump, RFK, etc.</li>
+              <li>HPV infects up to 80% of all adults and 5% of cancers worldwide is d/t HPV.</li>
+              <li>100x Monetization Strategy</li>
+              <li>OTC retinoid/etc for external HPV skin lesions (crushed up pills applied topically, 95%+ cure)</li>
+              <li>Rare disease clinical trial for internal oral HPV lesions (submit for FDA approval after just one 30 person trial, chloroquine injection directly into HPV tissue, 90%+ cure expected)</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Strategy Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <span class="card-title">De-risked DeFi Strategy</span>
+          </div>
+          <div class="strategy-badge">
+            <img src="https://cryptologos.cc/logos/pendle-pendle-logo.png" alt="Pendle">
+            <span>Pendle - PT-USR-24APR2025</span>
+          </div>
+          <p class="strategy-description">
+            This strategy involves purchasing Principal Tokens (PT) for USR that mature on April 24, 2025. By buying these tokens at a discount to their maturity value, you lock in a guaranteed fixed return if held until the maturity date.
+          </p>
+          <div class="strategy-stats">
+            <div class="strategy-stat">
+              <div class="strategy-stat-label">Allocation</div>
+              <div class="strategy-stat-value">$ 5M | 100 %</div>
+            </div>
+            <div class="strategy-stat">
+              <div class="strategy-stat-label">APY</div>
+              <div class="strategy-stat-value">20 %</div>
+            </div>
+          </div>
+
+          <div class="addresses">
+            <div class="address-item">
+              <span class="address-label">Vault Address</span>
+              <span class="address-value">
+                0x578D...4a972D
+                <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                </svg>
+              </span>
+            </div>
+            <div class="address-item">
+              <span class="address-label">Asset Address</span>
+              <span class="address-value">
+                0x578D...4a972D
+                <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                </svg>
+              </span>
+            </div>
+            <div class="address-item">
+              <span class="address-label">Gauge contract address</span>
+              <span class="address-value">
+                0x578D...4a972D
+                <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2"/>
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Copy addresses
+    document.querySelectorAll('.address-value').forEach(addr => {
+      addr.addEventListener('click', () => {
+        navigator.clipboard.writeText('0x578D4a972D');
+        addr.style.opacity = '0.5';
+        setTimeout(() => addr.style.opacity = '1', 200);
+      });
+    });
+  </script>
+</body>
+</html>
