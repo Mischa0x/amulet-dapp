@@ -552,7 +552,16 @@
   .cardGroup {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding-bottom: 4px;
+  }
+
+  .cardGroup::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
   }
 
   .buttonCardTeal,
@@ -561,8 +570,9 @@
   .buttonCardGold,
   .buttonCardRewards,
   .buttonCardBlog {
-    width: 16.66%;
-    padding: 0.6rem;
+    min-width: 52px;
+    flex-shrink: 0;
+    padding: 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
