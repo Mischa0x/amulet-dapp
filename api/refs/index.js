@@ -2,6 +2,7 @@
  * Referral API
  *
  * GET /api/refs?address=0x... - Get referral stats
+ * GET /api/refs?address=0x...&action=list - Get list of referred wallets
  * POST /api/refs - Register a referral
  */
 
@@ -37,6 +38,46 @@ export default async function handler(req, res) {
       const rateLimit = await checkRateLimit(normalizedAddress, 120, 60000);
       if (!rateLimit.allowed) {
         return res.status(429).json({ error: 'Too many requests' });
+      }
+
+      const { action } = req.query;
+
+      // Return list of referred wallets
+      if (action === 'list') {
+        const listKey = `referrals:${normalizedAddress}:list`;
+        const referredWallets = await kv.smembers(listKey) || [];
+
+        // Get additional info for each referred wallet (when they joined, their activity)
+        const walletsWithDetails = await Promise.all(
+          referredWallets.map(async (wallet) => {
+            const referredByKey = `referred_by:${wallet}`;
+            const allTimeKey = `rewards:${wallet}:alltime`;
+            const creditsKey = `credits:${wallet}`;
+
+            const [allTimeData, creditsData] = await Promise.all([
+              kv.get(allTimeKey),
+              kv.get(creditsKey),
+            ]);
+
+            return {
+              wallet,
+              joinedAt: allTimeData?.firstSeen || null,
+              lastActive: allTimeData?.lastSeen || null,
+              totalCompute: allTimeData?.totalCompute || 0,
+              queriesRun: allTimeData?.queriesRun || 0,
+              creditsBalance: creditsData?.balance || 0,
+            };
+          })
+        );
+
+        // Sort by most recent first
+        walletsWithDetails.sort((a, b) => (b.joinedAt || 0) - (a.joinedAt || 0));
+
+        return res.status(200).json({
+          address: normalizedAddress,
+          totalReferred: referredWallets.length,
+          referredWallets: walletsWithDetails,
+        });
       }
 
       const countKey = `referrals:${normalizedAddress}:count`;

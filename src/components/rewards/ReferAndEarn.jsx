@@ -15,6 +15,9 @@ export default function ReferAndEarn({ referralCount = 0 }) {
   const [copied, setCopied] = useState(false);
   const [registrationStatus, setRegistrationStatus] = useState(null);
   const [baseUrl, setBaseUrl] = useState('https://amulet-dapp.vercel.app');
+  const [showReferrals, setShowReferrals] = useState(false);
+  const [referredWallets, setReferredWallets] = useState([]);
+  const [loadingWallets, setLoadingWallets] = useState(false);
 
   // Use current origin for local testing
   useEffect(() => {
@@ -95,6 +98,44 @@ export default function ReferAndEarn({ referralCount = 0 }) {
     window.open(`https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${text}`, '_blank');
   };
 
+  const fetchReferredWallets = async () => {
+    if (!address || loadingWallets) return;
+
+    setLoadingWallets(true);
+    try {
+      const response = await fetch(`/api/refs?address=${address}&action=list`);
+      if (response.ok) {
+        const data = await response.json();
+        setReferredWallets(data.referredWallets || []);
+      }
+    } catch {
+      // Silently fail
+    } finally {
+      setLoadingWallets(false);
+    }
+  };
+
+  const handleToggleReferrals = () => {
+    if (!showReferrals && referredWallets.length === 0) {
+      fetchReferredWallets();
+    }
+    setShowReferrals(!showReferrals);
+  };
+
+  const truncateWallet = (wallet) => {
+    if (!wallet) return '';
+    return `${wallet.slice(0, 6)}...${wallet.slice(-4)}`;
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return 'N/A';
+    return new Date(timestamp).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
   if (!isConnected) {
     return null;
   }
@@ -162,6 +203,48 @@ export default function ReferAndEarn({ referralCount = 0 }) {
           When friends join using your link, you both get +1 point added to your leaderboard score.
         </span>
       </div>
+
+      {/* Referred Wallets Section */}
+      {referralCount > 0 && (
+        <div className={styles.referralsSection}>
+          <button
+            onClick={handleToggleReferrals}
+            className={styles.viewReferralsBtn}
+          >
+            <span>{showReferrals ? 'Hide' : 'View'} Referred Wallets</span>
+            <ChevronIcon expanded={showReferrals} />
+          </button>
+
+          {showReferrals && (
+            <div className={styles.referralsList}>
+              {loadingWallets ? (
+                <div className={styles.loadingWallets}>Loading...</div>
+              ) : referredWallets.length === 0 ? (
+                <div className={styles.noWallets}>No referred wallets yet</div>
+              ) : (
+                referredWallets.map((wallet) => (
+                  <div key={wallet.wallet} className={styles.walletItem}>
+                    <div className={styles.walletAddress}>
+                      {truncateWallet(wallet.wallet)}
+                    </div>
+                    <div className={styles.walletStats}>
+                      <span className={styles.walletStat}>
+                        {wallet.totalCompute || 0} compute
+                      </span>
+                      <span className={styles.walletStat}>
+                        {wallet.queriesRun || 0} queries
+                      </span>
+                      <span className={styles.walletDate}>
+                        {formatDate(wallet.joinedAt)}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -203,6 +286,24 @@ function InfoIcon() {
   return (
     <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ expanded }) {
+  return (
+    <svg
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      style={{
+        transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+        transition: 'transform 0.2s',
+      }}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
     </svg>
   );
 }
